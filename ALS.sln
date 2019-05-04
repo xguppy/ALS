@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ALS.UserService", "ALS.UserService\ALS.UserService.csproj", "{0E31070A-3160-4129-A598-220FEAAB82AA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ALS", "ALS\ALS.csproj", "{7CD3894E-86F5-4509-8029-D44A2B414A55}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -8,9 +8,9 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0E31070A-3160-4129-A598-220FEAAB82AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0E31070A-3160-4129-A598-220FEAAB82AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0E31070A-3160-4129-A598-220FEAAB82AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0E31070A-3160-4129-A598-220FEAAB82AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CD3894E-86F5-4509-8029-D44A2B414A55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CD3894E-86F5-4509-8029-D44A2B414A55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CD3894E-86F5-4509-8029-D44A2B414A55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CD3894E-86F5-4509-8029-D44A2B414A55}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
