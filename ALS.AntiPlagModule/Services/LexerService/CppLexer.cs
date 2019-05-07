@@ -8,7 +8,7 @@ namespace ALS.AntiPlagModule.Services.LexerService
         // TODO add read from file and Parse Logic
         public string[] KeyWords => null;
         public string[] Operators => null;
-        private int[] _tokens;
+        private int[] _tokens = new int[] { };
         public int[] Tokens => _tokens;
 
         public void Parse(ILexerFactory lexer, string code)
