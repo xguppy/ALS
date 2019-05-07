@@ -26,7 +26,7 @@ namespace ALS.CheckModule.Processes
         /// <returns></returns>
         public bool Execute(int timeMilliseconds)
         {
-            var result = true;
+            bool result;
             using (AppProcess)
             {
                 InitExecute();
@@ -36,7 +36,6 @@ namespace ALS.CheckModule.Processes
                 }
                 result = AppProcess.WaitForExit(timeMilliseconds);
             }
-
             return result;
         }
     }
