@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using ALS.CheckModule.Processes;
 
@@ -16,35 +15,25 @@ namespace ALS.CheckModule
         /// <param name="pathModel">Путь до эталонной программы</param>
         /// <param name="pathUser">Путь до пользовательской программы</param>
         /// <param name="inputData">Входные данные</param>
-        public CompareModel(string pathModel, string pathUser, string inputData)
+        public CompareModel(string pathModel, string pathUser, Queue<string> inputData)
         {
-            //Берём входные данные
-            var inputModel = new Queue<string>();
-            using (var fs = new StreamReader(inputData))
-            {
-                while (!fs.EndOfStream)
-                {
-                    inputModel.Enqueue(fs.ReadLine());
-                }
-            }
-            //Копируем входные данные для пользователя
-            var inputUser = new Queue<string>(inputModel);
-            _model = new ProcessProgram(pathModel, inputModel);
-            _user = new ProcessProgram(pathUser, inputUser);
-            
+            _model = new ProcessProgram(pathModel, inputData);
+            _user = new ProcessProgram(pathUser, inputData);
         }
 
-        public async Task<bool> Compare(int timeMilliseconds)
+        public async Task<CompareData> Compare(int timeMilliseconds)
         {
-            bool okUserProg = false, okModelProg = false;
+            bool okUserProg = false;
+            bool okModelProg = false;
             //Начнём и подождём завершения
             await Task.Run(() => okModelProg = _model.Execute(timeMilliseconds));
             await Task.Run(() => okUserProg = _user.Execute(timeMilliseconds));
             if(okUserProg == false)
                 throw new Exception($"Время выполнения программы завышено, требуется {timeMilliseconds} мс" +
-                                    $"программа выполнилась за {_model.Time} мс");
+                                    $"программа выполнилась за {_user.Time} мс");
             if(okModelProg == false)
                 throw new Exception("Неверная модель");
+            var userCompare = new CompareData{Time = _user.Time, Memory = _user.Memory, IsCorrect = false};
             //Теперь сравним выводы
             using (var fsModel = _model.Output)
             {
@@ -54,17 +43,17 @@ namespace ALS.CheckModule
                     {
                         if (fsModel.ReadLine() != fsUser.ReadLine())
                         {
-                            return false;
+                            return userCompare;
                         }
                     }
-                    
                     if (!fsModel.EndOfStream)
                     {
-                        return false;
+                        return userCompare;
                     }
                 }
             }
-            return true;
+            userCompare.IsCorrect = true;
+            return userCompare;
         }
     }
 }

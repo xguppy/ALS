@@ -26,7 +26,7 @@ namespace ALS.CheckModule.Processes
         /// <param name="timeMilliseconds">Время исполнения</param>
         public bool Execute(int timeMilliseconds)
         {
-            var result = true;
+            bool result;
             using (AppProcess)
             {
                 InitExecute();
