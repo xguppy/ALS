@@ -18,7 +18,7 @@ namespace ALS.AntiPlagModule.Services
         /// <summary>
         /// Обработанное представление программы в виде числовых лексем
         /// </summary>
-        int[] Tokens { get; }
+        ICollection<int> Tokens { get; }
         /// <summary>
         /// Основная логика обработки
         /// </summary>

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ALS.AntiPlagModule.Services.CompareModels
 {
-    public interface ICompareModel
+    public interface IModelComparable
     {
         float Execute(BaseCompare compare);
     }

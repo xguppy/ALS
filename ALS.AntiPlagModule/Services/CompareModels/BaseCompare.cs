@@ -15,11 +15,7 @@ namespace ALS.AntiPlagModule.Services.CompareModels
         /// </summary>
         public readonly ILexer SecondParam;
 
-        public BaseCompare(ILexer firstParam, ILexer secondParam)
-        {
-            FirstParam = firstParam;
-            SecondParam = secondParam;
-        }
+        public BaseCompare(ILexer firstParam, ILexer secondParam) => (FirstParam, SecondParam) = (firstParam, secondParam);
 
         /// <summary>
         /// Returns result of algorithm work
