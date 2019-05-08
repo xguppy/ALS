@@ -9,11 +9,11 @@ namespace ALS.AntiPlagModule.Services.CompareModels
         /// <summary>
         /// Lexems to compare with second
         /// </summary>
-        public readonly ILexer FirstParam;
+        protected readonly ILexer FirstParam;
         /// <summary>
         /// Lexems for compare
         /// </summary>
-        public readonly ILexer SecondParam;
+        protected readonly ILexer SecondParam;
 
         public BaseCompare(ILexer firstParam, ILexer secondParam) => (FirstParam, SecondParam) = (firstParam, secondParam);
 
