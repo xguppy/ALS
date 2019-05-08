@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ALS.AntiPlagModule.Services.CompareModels
 {
     public class CompareLevenshtein : BaseCompare
     {
-        public CompareLevenshtein(ILexer firstParam, ILexer secondParam) : base(firstParam, secondParam) { }
+        public CompareLevenshtein(ICollection<int> firstParam, ICollection<int> secondParam) : base(firstParam, secondParam) { }
 
         /// <summary>
         /// Calculating of Levenshtein algorithm!
@@ -14,8 +15,8 @@ namespace ALS.AntiPlagModule.Services.CompareModels
         public override int Execute()
         {
             // Алгоритм расстояния Левенштейна
-            int m = FirstParam.Tokens.Count;  // Размер исходного контейнера
-            int n = SecondParam.Tokens.Count; // Размер контейнера, с которым сравниваем
+            int m = FirstParam.Count;  // Размер исходного контейнера
+            int n = SecondParam.Count; // Размер контейнера, с которым сравниваем
             int value_algorithm = 0;     // Число, полученное из алгоритма Левенштейна
 
             if (m != 0 && n != 0)
@@ -39,7 +40,7 @@ namespace ALS.AntiPlagModule.Services.CompareModels
                 {
                     for (int j = 1; j <= n; ++j)
                     {
-                        cost = FirstParam.Tokens.ToArray()[i - 1] == SecondParam.Tokens.ToArray()[j - 1] ? 0 : 1; // Если равны, ничего не присваиваем, иначе стоимость равна 1
+                        cost = FirstParam.ToArray()[i - 1] == SecondParam.ToArray()[j - 1] ? 0 : 1; // Если равны, ничего не присваиваем, иначе стоимость равна 1
                         matrix[i, j] = Math.Min(Math.Min(matrix[i - 1, j] + 1, matrix[i, j - 1] + 1), matrix[i - 1, j - 1] + cost);
                     }
                 }

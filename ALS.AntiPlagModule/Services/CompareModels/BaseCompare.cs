@@ -9,13 +9,13 @@ namespace ALS.AntiPlagModule.Services.CompareModels
         /// <summary>
         /// Lexems to compare with second
         /// </summary>
-        protected readonly ILexer FirstParam;
+        protected readonly ICollection<int> FirstParam;
         /// <summary>
         /// Lexems for compare
         /// </summary>
-        protected readonly ILexer SecondParam;
+        protected readonly ICollection<int> SecondParam;
 
-        public BaseCompare(ILexer firstParam, ILexer secondParam) => (FirstParam, SecondParam) = (firstParam, secondParam);
+        public BaseCompare(ICollection<int> firstParam, ICollection<int> secondParam) => (FirstParam, SecondParam) = (firstParam, secondParam);
 
         /// <summary>
         /// Returns result of algorithm work

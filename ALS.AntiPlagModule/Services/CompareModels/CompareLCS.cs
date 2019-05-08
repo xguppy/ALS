@@ -1,10 +1,11 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace ALS.AntiPlagModule.Services.CompareModels
 {
     public class CompareLCS: BaseCompare
     {
-        public CompareLCS(ILexer firstParam, ILexer secondParam) : base(firstParam, secondParam) { }
+        public CompareLCS(ICollection<int> firstParam, ICollection<int> secondParam) : base(firstParam, secondParam) { }
 
         /// <summary>
         /// Calculating of LCS algorithm!
@@ -13,8 +14,8 @@ namespace ALS.AntiPlagModule.Services.CompareModels
         public override int Execute()
         {
             int u = 0, v = 0;
-            int len1 = FirstParam.Tokens.Count;
-            int len2 = SecondParam.Tokens.Count;
+            int len1 = FirstParam.Count;
+            int len2 = SecondParam.Count;
             int res = 0;
             if (len1 != 0 && len2 != 0)
             {
@@ -24,7 +25,7 @@ namespace ALS.AntiPlagModule.Services.CompareModels
                 {
                     for (int j = 0; j < len2; ++j)
                     {
-                        if (FirstParam.Tokens.ToArray()[i] == FirstParam.Tokens.ToArray()[j])
+                        if (FirstParam.ToArray()[i] == FirstParam.ToArray()[j])
                         {
                             a[i + 1, j + 1] = a[i, j] + 1;
                             if (a[i + 1, j + 1] > a[u, v])

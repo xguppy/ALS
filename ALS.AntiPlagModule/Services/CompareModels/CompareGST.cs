@@ -8,7 +8,7 @@ namespace ALS.AntiPlagModule.Services.CompareModels
     {
         public const int DefaultMinLengthTokens = 10;
 
-        public CompareGST(ILexer firstParam, ILexer secondParam) : base(firstParam, secondParam) { }
+        public CompareGST(ICollection<int> firstParam, ICollection<int> secondParam) : base(firstParam, secondParam) { }
 
         /// <summary>
         /// marking data for GST algorithm
@@ -95,7 +95,7 @@ namespace ALS.AntiPlagModule.Services.CompareModels
         /// <returns>Levenshtein alg value</returns>
         public override int Execute()
         {
-            var tiles = GST(FirstParam.Tokens, SecondParam.Tokens);
+            var tiles = GST(FirstParam, SecondParam);
             int res = 0;
             foreach (var elem in tiles)
                 res += elem[2];

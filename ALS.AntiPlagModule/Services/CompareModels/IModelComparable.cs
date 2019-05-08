@@ -6,6 +6,6 @@ namespace ALS.AntiPlagModule.Services.CompareModels
 {
     public interface IModelComparable
     {
-        float Execute(BaseCompare compare);
+        float Execute(ICollection<int> firstTokens, ICollection<int> secondTokens);
     }
 }
