@@ -12,6 +12,7 @@ namespace ALS.EntityСontext
         public DbSet<User> Users { get; set; }
         public DbSet<TestRun> TestRuns { get; set; }
         public DbSet<Variant> Variants { get; set; }
+        public DbSet<AntiplagiatData> AntiplagiatDatas { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
             => modelBuilder.ForNpgsqlHasEnum<Evaluation>();
 
