@@ -32,7 +32,7 @@ namespace ALS.CheckModule.Processes
                 InitExecute();
                 result = AppProcess.WaitForExit(timeMilliseconds);
                 var err = Error.ReadToEnd();
-                if (err != "")
+                if (!String.IsNullOrEmpty(err))
                 {
                     throw new Exception(err);
                 }
