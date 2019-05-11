@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 
 namespace ALS.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class UsersController : ControllerBase
     {
@@ -66,6 +66,7 @@ namespace ALS.Controllers
             };
 
             // сериализация ответа
+            Response.StatusCode = 200;
             Response.ContentType = "application/json";
             await Response.WriteAsync(JsonConvert.SerializeObject(response, new JsonSerializerSettings { Formatting = Formatting.Indented }));
         }
