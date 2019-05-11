@@ -25,7 +25,7 @@ namespace ALS.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly IAuthService _authService;
-        private ApplicationContext _db;
+        private readonly ApplicationContext _db;
 
         public UsersController(IConfiguration configuration, IAuthService authService, ApplicationContext db)
         {
@@ -55,11 +55,11 @@ namespace ALS.Controllers
         /// <param name="Email">email from request</param>
         /// <param name="appUser">user</param>
         /// <returns></returns>
-        private async Task SendIdentityResponse(string Email, User appUser)
+        private async Task SendIdentityResponse(string email, User appUser)
         {
             var response = new
             {
-                access_token = _authService.GetAuthData(Email, appUser),
+                access_token = _authService.GetAuthData(email, appUser),
                 email = appUser.Email
             };
 
@@ -72,7 +72,7 @@ namespace ALS.Controllers
         [HttpPost]
         public async Task Register([FromBody] UserRegisterDTO model)
         {
-            User appUser = new User() { Email = model.Email, Name = model.Name, Surname = model.Surname, Patronymic = model.Patronymic, PwHash = _authService.GetHashedPassword(model.Password), GroupId = model.GroupId };
+            User appUser = new User { Email = model.Email, Name = model.Name, Surname = model.Surname, Patronymic = model.Patronymic, PwHash = _authService.GetHashedPassword(model.Password), GroupId = model.GroupId };
 
             try
             {
@@ -83,7 +83,7 @@ namespace ALS.Controllers
             catch (Exception)
             {
                 Response.StatusCode = 400;
-                await Response.WriteAsync($"Invalid user data");
+                await Response.WriteAsync("Invalid user data");
             }
         }
 
