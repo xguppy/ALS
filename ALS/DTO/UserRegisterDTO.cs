@@ -22,5 +22,8 @@ namespace ALS.DTO
         public string Surname { get; set; }
 
         public string Patronymic { get; set; }
+
+        [Required]
+        public int GroupId { get; set; }
     }
 }

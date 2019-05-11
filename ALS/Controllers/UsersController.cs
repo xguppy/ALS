@@ -72,7 +72,7 @@ namespace ALS.Controllers
         [HttpPost]
         public async Task Register([FromBody] UserRegisterDTO model)
         {
-            User appUser = new User() { Email = model.Email, Name = model.Name, Surname = model.Surname, Patronymic = model.Patronymic, PwHash = _authService.GetHashedPassword(model.Password) };
+            User appUser = new User() { Email = model.Email, Name = model.Name, Surname = model.Surname, Patronymic = model.Patronymic, PwHash = _authService.GetHashedPassword(model.Password), GroupId = model.GroupId };
 
             try
             {
