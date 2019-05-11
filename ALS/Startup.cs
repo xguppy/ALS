@@ -42,9 +42,9 @@ namespace ALS
                     cfg.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
-                        ValidIssuer = "ALS",
+                        ValidIssuer = Configuration["JwtIssuer"],
                         ValidateAudience = true,
-                        ValidAudience = "localhost:5000",
+                        ValidAudience = Configuration["JwtAudience"],
                         
                         //ValidateIssuer = false,
                         //ValidateAudience = false,
