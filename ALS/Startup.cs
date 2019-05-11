@@ -35,13 +35,7 @@ namespace ALS
 
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             services
-                .AddAuthentication(options =>
-                {
-                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-
-                })
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(cfg =>
                 {
                     cfg.RequireHttpsMetadata = false;
@@ -63,7 +57,7 @@ namespace ALS
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ApplicationContext dbContext)
         {
             if (env.IsDevelopment())
             {
@@ -88,6 +82,8 @@ namespace ALS
                     name: "default",
                     template: "{controller}/{action=Index}/{id?}");
             });
+
+            dbContext.Database.EnsureCreated(); 
 
             app.UseSpa(spa =>
             {
