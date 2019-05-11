@@ -52,7 +52,7 @@ namespace ALS.Controllers
         /// <summary>
         /// Send response when user successfully register/login
         /// </summary>
-        /// <param name="Email">email from request</param>
+        /// <param name="email">email from request</param>
         /// <param name="appUser">user</param>
         /// <returns></returns>
         private async Task SendIdentityResponse(string email, User appUser)
