@@ -34,20 +34,7 @@ namespace ALS.Controllers
         [HttpPost]
         public async Task Login([FromBody] UserLoginDTO model)
         {
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
-
-            if (result.Succeeded)
-            {
-                var appUser = _userManager.Users.SingleOrDefault(r => r.Email == model.Email);
-                await SendIdentityResponse(model.Email, appUser);
-
-            }
-            else
-            {
-                Response.StatusCode = 400;
-                await Response.WriteAsync("Invalid mail or password.");
-                return;
-            }
+            
         }
 
         /// <summary>
