@@ -7,7 +7,7 @@ using CryptoHelper;
 
 namespace ALS.Services
 {
-    interface IAuthService
+    public interface IAuthService
     {
         string GetAuthData(string email, User user);
         string GetHashedPassword(string pass);

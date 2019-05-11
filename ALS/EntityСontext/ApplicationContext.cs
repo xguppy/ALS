@@ -26,6 +26,10 @@ namespace ALS.EntityСontext
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ForNpgsqlHasEnum<Evaluation>();
+
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

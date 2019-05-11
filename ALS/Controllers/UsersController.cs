@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ALS.DTO;
 using ALS.EntityСontext;
+using ALS.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -20,21 +21,30 @@ namespace ALS.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly SignInManager<User> _signInManager;
-        private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly IAuthService _authService;
+        private ApplicationContext _db;
 
-        public UsersController(SignInManager<User> signInManager, UserManager<User> userManager, IConfiguration configuration)
+        public UsersController(IConfiguration configuration, IAuthService authService, ApplicationContext db)
         {
-            _signInManager = signInManager;
-            _userManager = userManager;
             _configuration = configuration;
+            _authService = authService;
+            _db = db;
         }
 
         [HttpPost]
         public async Task Login([FromBody] UserLoginDTO model)
         {
-            
+            User appUser = _db.Users.FirstOrDefault(u => u.Email == model.Email && _authService.ValidateUserPassword(u.PwHash, model.Password));
+            if (appUser != null)
+            {
+                await SendIdentityResponse(model.Email, appUser);
+            }
+            else
+            {
+                Response.StatusCode = 400;
+                await Response.WriteAsync("Invalid login or password");
+            }
         }
 
         /// <summary>
@@ -47,7 +57,7 @@ namespace ALS.Controllers
         {
             var response = new
             {
-                //access_token = GenerateJWT(Email, appUser),
+                access_token = _authService.GetAuthData(Email, appUser),
                 email = appUser.Email,
                 id = appUser.Id
             };
@@ -61,6 +71,18 @@ namespace ALS.Controllers
         [HttpPost]
         public async Task Register([FromBody] UserRegisterDTO model)
         {
+            User appUser = new User() { Email = model.Email, Name = model.Name, Surname = model.Surname, Patronymic = model.Patronymic, PwHash = _authService.GetHashedPassword(model.Password) };
+
+            try
+            {
+                await _db.Users.AddAsync(appUser);
+                await SendIdentityResponse(model.Email, appUser);
+            }
+            catch (Exception)
+            {
+                Response.StatusCode = 400;
+                await Response.WriteAsync("Invalid user data");
+            }
         }
         
     }
