@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using ALS.DTO;
 using ALS.EntityСontext;
 using ALS.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -59,8 +60,7 @@ namespace ALS.Controllers
             var response = new
             {
                 access_token = _authService.GetAuthData(Email, appUser),
-                email = appUser.Email,
-                id = appUser.Id
+                email = appUser.Email
             };
 
             // сериализация ответа
@@ -77,17 +77,18 @@ namespace ALS.Controllers
             try
             {
                 await _db.Users.AddAsync(appUser);
+                await _db.SaveChangesAsync();
                 await SendIdentityResponse(model.Email, appUser);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 Response.StatusCode = 400;
-                await Response.WriteAsync("Invalid user data");
+                await Response.WriteAsync($"Invalid user data");
             }
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task Test()
         {
             var curUser = User.FindFirst(ClaimTypes.NameIdentifier).Value;
