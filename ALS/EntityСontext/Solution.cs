@@ -14,5 +14,7 @@ namespace ALS.EntityСontext
         public string SourceCode { get; set; }
         public Variant Variant { get; set; }
         public List<TestRun> TestRuns { get; set; }
+        public int UserId { get; set; }
+        public User User { get; set; }
     }
 }

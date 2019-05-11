@@ -11,7 +11,7 @@ namespace ALS.EntityСontext
         public string Description { get; set; }
         public Evaluation Evaluation { get; set; }
         public string Cipher { get; set; }
-        public string Login { get; set; }
+        public int UserId { get; set; }
         [Column(TypeName = "jsonb")]
         public string Constraints { get; set; }
         public User User { get; set; }
