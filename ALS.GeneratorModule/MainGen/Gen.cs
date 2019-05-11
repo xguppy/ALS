@@ -1,4 +1,4 @@
-using System;
+п»їusing System;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
@@ -22,7 +22,7 @@ namespace Generator.MainGen
         //public  List<Pair<string, string>>  Tests{ get; set; }
         
 
-        // Выполнение необходимой функции (указаны в файле GenFunctions)
+        // Р’С‹РїРѕР»РЅРµРЅРёРµ РЅРµРѕР±С…РѕРґРёРјРѕР№ С„СѓРЅРєС†РёРё (СѓРєР°Р·Р°РЅС‹ РІ С„Р°Р№Р»Рµ GenFunctions)
         private string CheckF(string str)
         {
             if (str.Contains(GenFunctions.FuncName.Rnd.Value))
@@ -81,11 +81,11 @@ namespace Generator.MainGen
 
         public async Task<ResultData> Run(string fileName,int lr = 1, int variant = 1)
         {     
-            // тупа парсинг
+            // С‚СѓРїР° РїР°СЂСЃРёРЅРі
             var d = await Task.Run( () => _pr.Read(fileName));
             if (d == null) return null;
 
-            // тупа генерация
+            // С‚СѓРїР° РіРµРЅРµСЂР°С†РёСЏ
             _generated = await Task.Run(() => ProcessData(d.Sd));
 
             foreach (var elem in _generated)
@@ -93,7 +93,7 @@ namespace Generator.MainGen
                 var pattern = $"({elem.First})";
                 d.Template = d.Template.Replace(pattern, elem.Second);
                 d.Code = d.Code.Replace(pattern, elem.Second);
-                // кансер шо пипес
+                // РєР°РЅСЃРµСЂ С€Рѕ РїРёРїРµСЃ
                 for (int i = 0; i < d.TestsD.Count; i++)
                 {
                     for (int j = 0; j < d.TestsD[i].Data.Count; j++)
@@ -108,11 +108,11 @@ namespace Generator.MainGen
                 sw.WriteLine(d.Code);
             }
 
-            // тупа компиляция
+            // С‚СѓРїР° РєРѕРјРїРёР»СЏС†РёСЏ
             bool isCompiled = await Task.Run( () => Compile(lr, variant));
             if (!isCompiled)
             {
-                throw new Exception("Ошибка во время компиляции!");
+                throw new Exception("РћС€РёР±РєР° РІРѕ РІСЂРµРјСЏ РєРѕРјРїРёР»СЏС†РёРё!");
             }
 
             return new ResultData() { Template = d.Template, Code = $"code_var_{lr}_{variant}.exe", Tests = TestsToJSON(d.TestsD) };

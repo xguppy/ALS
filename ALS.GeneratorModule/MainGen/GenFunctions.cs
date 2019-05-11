@@ -1,4 +1,4 @@
-using System;
+п»їusing System;
 using System.Collections.Generic;
 using Generator.MainGen.Structs;
 
@@ -6,8 +6,8 @@ namespace Generator.MainGen
 {
     public class GenFunctions
     {   
-        // вот бы енум у которого можно было бы указывать значения (прям как в крестах)
-        // Список доступных функций 
+        // РІРѕС‚ Р±С‹ РµРЅСѓРј Сѓ РєРѕС‚РѕСЂРѕРіРѕ РјРѕР¶РЅРѕ Р±С‹Р»Рѕ Р±С‹ СѓРєР°Р·С‹РІР°С‚СЊ Р·РЅР°С‡РµРЅРёСЏ (РїСЂСЏРј РєР°Рє РІ РєСЂРµСЃС‚Р°С…)
+        // РЎРїРёСЃРѕРє РґРѕСЃС‚СѓРїРЅС‹С… С„СѓРЅРєС†РёР№ 
         public sealed class FuncName
         {
             public static readonly FuncName Rnd = new FuncName("_rnd");
@@ -46,7 +46,7 @@ namespace Generator.MainGen
             }
             return args;
         }
-        // выражения
+        // РІС‹СЂР°Р¶РµРЅРёСЏ
         public string Expression(string str, List<Pair<string, string>> values)
         {
             var args = GetArgs(str, values);
@@ -62,7 +62,7 @@ namespace Generator.MainGen
 
     
 
-        // Рандомизация ----------------------------------
+        // Р Р°РЅРґРѕРјРёР·Р°С†РёСЏ ----------------------------------
         public string GenValue(string a, string b, string type, Random r, string count = "1")
         {
             string str;
