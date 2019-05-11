@@ -80,7 +80,7 @@ namespace ALS.Controllers
                 await _db.SaveChangesAsync();
                 await SendIdentityResponse(model.Email, appUser);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Response.StatusCode = 400;
                 await Response.WriteAsync($"Invalid user data");
