@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using ALS.DTO;
 using ALS.EntityСontext;
 using ALS.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -84,6 +85,14 @@ namespace ALS.Controllers
                 await Response.WriteAsync("Invalid user data");
             }
         }
-        
+
+        [HttpGet]
+        [Authorize]
+        public async Task Test()
+        {
+            var curUser = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            await Response.WriteAsync("Hello, {curUser}!");
+        }
+
     }
 }
