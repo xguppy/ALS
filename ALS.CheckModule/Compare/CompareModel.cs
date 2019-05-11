@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using ALS.CheckModule.Processes;
 
-namespace ALS.CheckModule
+namespace ALS.CheckModule.Compare
 {
     public class CompareModel
     {

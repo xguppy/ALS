@@ -1,6 +1,6 @@
 using System;
 
-namespace ALS.CheckModule
+namespace ALS.CheckModule.Compare
 {
     [Serializable]
     public struct CompareData
