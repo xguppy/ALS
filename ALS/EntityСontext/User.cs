@@ -11,7 +11,7 @@ namespace ALS.EntityСontext
         public string Name {get; set;}
         public string Surname { get; set; }
         public string Patronymic { get; set; }
-        public int GroupId { get; set; }
+        public int? GroupId { get; set; }
         public List<LaboratoryWork> LaboratoryWorks { get; set; }
         public List<Solution> Solutions { get; set; }
         public Group Group { get; set; }

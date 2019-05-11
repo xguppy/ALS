@@ -34,8 +34,7 @@ namespace ALS
             services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });
 
             services.AddSingleton<IAuthService>(new AuthService(Configuration));
-
-            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+            
             services
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(cfg =>
@@ -93,8 +92,7 @@ namespace ALS
                     template: "{controller}/{action=Index}/{id?}");
             });
 
-            dbContext.Database.EnsureCreated(); 
-
+            dbContext.Database.EnsureCreated();
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "ClientApp";

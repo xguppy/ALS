@@ -37,8 +37,8 @@ namespace ALS.Controllers
         [HttpPost]
         public async Task Login([FromBody] UserLoginDTO model)
         {
-            User appUser = _db.Users.FirstOrDefault(u => u.Email == model.Email && _authService.ValidateUserPassword(u.PwHash, model.Password));
-            if (appUser != null)
+            User appUser = _db.Users.FirstOrDefault(u => u.Email == model.Email);
+            if (appUser != null && _authService.ValidateUserPassword(appUser.PwHash, model.Password))
             {
                 await SendIdentityResponse(model.Email, appUser);
             }
@@ -89,10 +89,11 @@ namespace ALS.Controllers
 
         [HttpGet]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize]
         public async Task Test()
         {
-            var curUser = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            await Response.WriteAsync("Hello, {curUser}!");
+            var curUser = User.FindFirst(ClaimTypes.Name).Value;
+            await Response.WriteAsync($"Hello, {curUser}!");
         }
 
     }
