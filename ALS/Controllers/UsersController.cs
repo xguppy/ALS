@@ -60,7 +60,7 @@ namespace ALS.Controllers
         {
             var response = new
             {
-                access_token = GenerateJWT(Email, appUser),
+                //access_token = GenerateJWT(Email, appUser),
                 email = appUser.Email,
                 id = appUser.Id
             };
@@ -74,51 +74,7 @@ namespace ALS.Controllers
         [HttpPost]
         public async Task Register([FromBody] UserRegisterDTO model)
         {
-            var user = new User
-            {
-                UserName = model.Email,
-                Email = model.Email,
-                Name = model.Name,
-                Surname = model.Surname,
-                Patronymic = model.Patronymic
-            };
-            var result = await _userManager.CreateAsync(user, model.Password);
-
-            if (result.Succeeded)
-            {
-                await _signInManager.SignInAsync(user, false);
-                await SendIdentityResponse(model.Email, user);
-            }
-            else
-            {
-                Response.StatusCode = 400;
-                await Response.WriteAsync("Invalid register data or user error");
-                return;
-            }
         }
-
-        public object GenerateJWT(string email, User user)
-        {
-            var claims = new List<Claim>
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, email),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.NameIdentifier, user.Id)
-            };
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtKey"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var expires = DateTime.Now.AddDays(Convert.ToDouble(_configuration["JwtExpires"]));
-
-            var token = new JwtSecurityToken(
-                _configuration["JwtIssuer"],
-                _configuration["JwtAudience"],
-                claims,
-                expires: expires,
-                signingCredentials: creds
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
+        
     }
 }
