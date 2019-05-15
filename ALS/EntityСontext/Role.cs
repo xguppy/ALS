@@ -8,7 +8,7 @@ namespace ALS.EntityСontext
     public class Role
     {
         public int RoleId { get; set; }
-        public string Name { get; set; }
+        public RoleEnum RoleName { get; set; }
         
         public ICollection<UserRole> UserRoles { get; set; }
     }

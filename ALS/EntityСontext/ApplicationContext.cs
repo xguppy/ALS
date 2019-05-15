@@ -21,11 +21,17 @@ namespace ALS.EntityСontext
             : base(options)
         {
         }
+
+        public ApplicationContext()
+        {
+            
+        }
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ForNpgsqlHasEnum<Evaluation>();
+            modelBuilder.ForNpgsqlHasEnum<RoleEnum>();
 
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email)
