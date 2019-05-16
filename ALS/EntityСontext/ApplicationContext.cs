@@ -14,6 +14,7 @@ namespace ALS.EntityСontext
         public DbSet<AntiplagiatData> AntiplagiatDatas { get; set; }
         public DbSet<TemplateLaboratoryWork> TemplateLaboratoryWorks { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
 
 
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
