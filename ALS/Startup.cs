@@ -112,6 +112,8 @@ namespace ALS
         void SetupDatabase(ApplicationContext context)
         {
             // check and add roles
+            AuthService auth = new AuthService(Configuration);
+
             if (context.Roles.ToList().Count == 0)
             {
                 context.Roles.Add(new Role { RoleName = RoleEnum.Student });
@@ -120,6 +122,25 @@ namespace ALS
 
                 context.SaveChanges();
             }
+            if (context.Users.ToList().Count == 0)
+            {
+                var student = new User { Surname = "Студентов", Name = "Студент", Patronymic = "Студентович", Email = "tmpstudent@mail.com", PwHash = auth.GetHashedPassword("tmpstudent") };
+                var teacher = new User { Surname = "Преподов", Name = "Препод", Patronymic = "Преподович", Email = "tmpprepod@mail.com", PwHash = auth.GetHashedPassword("tmpprepod") };
+                var admin = new User { Surname = "Админов", Name = "Админ", Patronymic = "Админович", Email = "tmpadmin@mail.com", PwHash = auth.GetHashedPassword("tmpadmin") };
+                
+                context.Users.Add(admin);
+                context.Users.Add(teacher);
+                context.Users.Add(student);
+
+                context.SaveChanges();
+
+                context.UserRoles.Add(new UserRole { UserId = student.Id, RoleId = 1 });
+                context.UserRoles.Add(new UserRole { UserId = teacher.Id, RoleId = 2 });
+                context.UserRoles.Add(new UserRole { UserId = admin.Id, RoleId = 3 });
+
+                context.SaveChanges();
+            }
+
         }
     }
 }
