@@ -6,6 +6,7 @@ using ALS.EntityСontext;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.EntityFrameworkCore;
 
 namespace ALS.Filters
 {
@@ -23,7 +24,7 @@ namespace ALS.Filters
             using (var db = new ApplicationContext())
             {
                 var check = db
-                    .Users.FirstOrDefault(usr => usr.Email == curUser)?
+                    .Users.Include(u => u.UserRoles).ThenInclude(ur => ur.Role).FirstOrDefault(usr => usr.Email == curUser)?
                     .UserRoles.FirstOrDefault(roleUser => roleUser.Role.RoleName == roleAttr.RoleName);
                 if (check == null)
                 {

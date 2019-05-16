@@ -15,6 +15,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using ALS.Filters;
 using Microsoft.AspNetCore.Http;
+using System.Linq;
 
 namespace ALS
 {
@@ -104,6 +105,21 @@ namespace ALS
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
+
+            SetupDatabase(dbContext);
+        }
+
+        void SetupDatabase(ApplicationContext context)
+        {
+            // check and add roles
+            if (context.Roles.ToList().Count == 0)
+            {
+                context.Roles.Add(new Role { RoleName = RoleEnum.Student });
+                context.Roles.Add(new Role { RoleName = RoleEnum.Teacher });
+                context.Roles.Add(new Role { RoleName = RoleEnum.Admin });
+
+                context.SaveChanges();
+            }
         }
     }
 }
