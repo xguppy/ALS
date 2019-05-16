@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 using ALS.DTO;
 using ALS.EntityСontext;
@@ -11,11 +8,8 @@ using ALS.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 
 namespace ALS.Controllers
@@ -24,13 +18,11 @@ namespace ALS.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly IConfiguration _configuration;
         private readonly IAuthService _authService;
         private readonly ApplicationContext _db;
 
         public UsersController(IConfiguration configuration, IAuthService authService, ApplicationContext db)
         {
-            _configuration = configuration;
             _authService = authService;
             _db = db;
         }

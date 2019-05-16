@@ -23,8 +23,8 @@ namespace ALS.CheckModule.Compare
 
         public async Task<CompareData> Compare(int timeMilliseconds)
         {
-            bool okUserProg = false;
-            bool okModelProg = false;
+            var okUserProg = false;
+            var okModelProg = false;
             //Начнём и подождём завершения
             await Task.Run(() => okModelProg = _model.Execute(timeMilliseconds));
             await Task.Run(() => okUserProg = _user.Execute(timeMilliseconds));

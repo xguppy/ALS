@@ -15,10 +15,8 @@ namespace ALS.Filters
         public void OnActionExecuting(ActionExecutingContext context)
         {
             var controllerInfo = (ControllerActionDescriptor)context.ActionDescriptor;
-            
-            var roleAttr = Attribute.GetCustomAttribute(controllerInfo.ControllerTypeInfo.AsType(), typeof(RoleAttribute)) as RoleAttribute;
-            
-            if (roleAttr == null) return;
+
+            if (!(Attribute.GetCustomAttribute(controllerInfo.ControllerTypeInfo.AsType(), typeof(RoleAttribute)) is RoleAttribute roleAttr)) return;
             
             var curUser = context.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             
