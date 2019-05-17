@@ -16,5 +16,6 @@ namespace ALS.EntityСontext
         public List<TestRun> TestRuns { get; set; }
         public int UserId { get; set; }
         public User User { get; set; }
+        public bool IsSolved { get; set; }
     }
 }
