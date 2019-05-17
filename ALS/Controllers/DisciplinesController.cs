@@ -36,7 +36,7 @@ namespace ALS.Controllers
             var discipline = await _db.Disciplines.FirstOrDefaultAsync(d => d.Cipher == Cipher);
             if (discipline != null)
             {
-                return Ok(discipline);
+                return Ok(await _db.Disciplines.Where(d => d.Cipher == Cipher).Select(d => new { d.Cipher, d.Name }).FirstAsync());
             }
             return NotFound();
         }

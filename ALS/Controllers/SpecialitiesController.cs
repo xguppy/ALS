@@ -36,7 +36,7 @@ namespace ALS.Controllers
             var speciality = await _db.Specialties.FirstOrDefaultAsync(s => s.Code == Code);
             if (speciality != null)
             {
-                return Ok(speciality);
+                return Ok(await _db.Specialties.Where(s => s.Code == Code).Select(s => new { s.Code, s.Name }).FirstAsync());
             }
             return NotFound();
         }
