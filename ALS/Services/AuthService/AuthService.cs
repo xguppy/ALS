@@ -15,11 +15,11 @@ namespace ALS.Services.AuthService
     public class AuthService: IAuthService
     {
         // Generates JWT
-        private IConfiguration _config { get; }
+        private IConfiguration _Config { get; }
 
         public AuthService(IConfiguration config)
         {
-            _config = config;
+            _Config = config;
         }
 
         public string GetAuthData(string email, User user)
@@ -40,13 +40,13 @@ namespace ALS.Services.AuthService
                 }
             }
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JwtKey"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_Config["JwtKey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var expires = DateTime.Now.AddDays(Convert.ToDouble(_config["JwtExpires"]));
+            var expires = DateTime.Now.AddDays(Convert.ToDouble(_Config["JwtExpires"]));
 
             var token = new JwtSecurityToken(
-                _config["JwtIssuer"],
-                _config["JwtAudience"],
+                _Config["JwtIssuer"],
+                _Config["JwtAudience"],
                 claims,
                 expires: expires,
                 signingCredentials: creds
