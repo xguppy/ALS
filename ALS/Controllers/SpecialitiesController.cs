@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using ALS.DTO;
 using ALS.EntityСontext;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace ALS.Controllers
@@ -15,11 +15,11 @@ namespace ALS.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
-    public class DisciplinesController : ControllerBase
+    public class SpecialitiesController : ControllerBase
     {
         private readonly ApplicationContext _db;
 
-        public DisciplinesController(ApplicationContext db)
+        public SpecialitiesController(ApplicationContext db)
         {
             _db = db;
         }
@@ -27,47 +27,47 @@ namespace ALS.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            return Ok(await Task.Run(() => _db.Disciplines.Select(d => new { d.Cipher, d.Name}).ToList()));
+            return Ok(await Task.Run(() => _db.Specialties.Select(s => new { s.Code, s.Name }).ToList()));
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get(string Cipher)
+        public async Task<IActionResult> Get(string Code)
         {
-            var discipline = await _db.Disciplines.FirstOrDefaultAsync(d => d.Cipher == Cipher);
-            if (discipline != null)
+            var speciality = await _db.Specialties.FirstOrDefaultAsync(s => s.Code == Code);
+            if (speciality != null)
             {
-                return Ok(await _db.Disciplines.Where(d => d.Cipher == Cipher).Select(d => new { d.Cipher, d.Name }).FirstAsync());
+                return Ok(await _db.Specialties.Where(s => s.Code == Code).Select(s => new { s.Code, s.Name }).FirstAsync());
             }
             return NotFound();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] DisciplineDTO model)
+        public async Task<IActionResult> Create([FromBody] SpecialityDTO model)
         {
-            Discipline discipline = new Discipline { Name = model.Name, Cipher = model.Cipher };
+            Specialty speciality = new Specialty { Name = model.Name, Code = model.Code };
             try
             {
-                await _db.Disciplines.AddAsync(discipline);
+                await _db.Specialties.AddAsync(speciality);
                 await _db.SaveChangesAsync();
             }
             catch (DbUpdateException e)
             {
                 await Response.WriteAsync(e.Message);
             }
-            return Ok(discipline);
+            return Ok(speciality);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Update([FromBody] DisciplineDTO model)
+        public async Task<IActionResult> Update([FromBody] SpecialityDTO model)
         {
-            var disciplineUpdate = await _db.Disciplines.FirstOrDefaultAsync(d => d.Cipher == model.Cipher);
+            var specialityUpdate = await _db.Specialties.FirstOrDefaultAsync(s => s.Code == model.Code);
 
-            if (disciplineUpdate != null)
+            if (specialityUpdate != null)
             {
                 try
                 {
-                    disciplineUpdate.Name = model.Name;
-                    _db.Disciplines.Update(disciplineUpdate);
+                    specialityUpdate.Name = model.Name;
+                    _db.Specialties.Update(specialityUpdate);
                     await _db.SaveChangesAsync();
                 }
                 catch (DbUpdateException e)
@@ -80,14 +80,14 @@ namespace ALS.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(string Cipher)
+        public async Task<IActionResult> Delete(string Code)
         {
-            var discipline = await _db.Disciplines.FirstOrDefaultAsync(d => d.Cipher == Cipher);
-            if (discipline != null)
+            var speciality = await _db.Specialties.FirstOrDefaultAsync(s => s.Code == Code);
+            if (speciality != null)
             {
                 try
                 {
-                    _db.Disciplines.Remove(discipline);
+                    _db.Specialties.Remove(speciality);
                     await _db.SaveChangesAsync();
                 }
                 catch (DbUpdateException e)
