@@ -82,11 +82,31 @@ namespace ALS.Controllers
 
         [HttpGet]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [Authorize]
         public async Task Test()
         {
             var curUser = User.FindFirst(ClaimTypes.Name).Value;
             await Response.WriteAsync($"Hello, {curUser}!");
+        }
+
+        [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+        public async Task TestAdmin()
+        {
+            await Response.WriteAsync("Done!");
+        }
+
+        [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Student")]
+        public async Task TestStudent()
+        {
+            await Response.WriteAsync("Done!");
+        }
+
+        [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Teacher")]
+        public async Task TestTeacher()
+        {
+            await Response.WriteAsync("Done!");
         }
 
     }
