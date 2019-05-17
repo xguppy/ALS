@@ -38,14 +38,11 @@ namespace ALS.Controllers
             {
                 return Ok(discipline);
             }
-            else
-            {
-                return NotFound();
-            }
+            return NotFound();
         }
 
         [HttpPost]
-        public async Task Create([FromBody] DisciplineDTO model)
+        public async Task<IActionResult> Create([FromBody] DisciplineDTO model)
         {
             Discipline discipline = new Discipline { Name = model.Name, Cipher = model.Cipher };
             try
@@ -57,10 +54,11 @@ namespace ALS.Controllers
             {
                 await Response.WriteAsync(e.Message);
             }
+            return Ok(discipline);
         }
 
         [HttpPost]
-        public async Task Update([FromBody] DisciplineDTO model)
+        public async Task<IActionResult> Update([FromBody] DisciplineDTO model)
         {
             var disciplineUpdate = await _db.Disciplines.FirstOrDefaultAsync(d => d.Cipher == model.Cipher);
 
@@ -76,11 +74,9 @@ namespace ALS.Controllers
                 {
                     await Response.WriteAsync(e.Message);
                 }
+                return Ok();
             }
-            else
-            {
-                await Response.WriteAsync("Discipline not found");
-            }
+            return NotFound();
         }
 
         [HttpPost]
@@ -100,10 +96,7 @@ namespace ALS.Controllers
                 }
                 return Ok();
             }
-            else
-            {
-                return NotFound();
-            }
+            return NotFound();
         }
     }
 }
