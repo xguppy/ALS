@@ -21,7 +21,7 @@ namespace ALS.Controllers
         private readonly IAuthService _authService;
         private readonly ApplicationContext _db;
 
-        public UsersController(IConfiguration configuration, IAuthService authService, ApplicationContext db)
+        public UsersController(IAuthService authService, ApplicationContext db)
         {
             _authService = authService;
             _db = db;
