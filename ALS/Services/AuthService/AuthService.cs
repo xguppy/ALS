@@ -36,10 +36,7 @@ namespace ALS.Services.AuthService
                 var dbUser = db.Users.Include(u => u.UserRoles).ThenInclude(ur => ur.Role).FirstOrDefault(u => u.Email == email);
                 if (dbUser != null)
                 {
-                    foreach (var role in dbUser.UserRoles)
-                    {
-                        claims.Add(new Claim(ClaimTypes.Role, role.Role.RoleName.ToString()));
-                    }
+                    claims.AddRange(dbUser.UserRoles.Select(role => new Claim(ClaimTypes.Role, role.Role.RoleName.ToString())));
                 }
             }
 
