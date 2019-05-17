@@ -13,11 +13,11 @@ namespace ALS.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
-    public class GroupController : Controller
+    public class GroupsController : Controller
     {
         private readonly ApplicationContext _db;
 
-        public GroupController(ApplicationContext db)
+        public GroupsController(ApplicationContext db)
         {
             _db = db;
         }
