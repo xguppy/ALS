@@ -31,12 +31,12 @@ namespace ALS.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get(string Cipher)
+        public async Task<IActionResult> Get(string cipher)
         {
-            var discipline = await _db.Disciplines.FirstOrDefaultAsync(d => d.Cipher == Cipher);
+            var discipline = await _db.Disciplines.FirstOrDefaultAsync(d => d.Cipher == cipher);
             if (discipline != null)
             {
-                return Ok(await _db.Disciplines.Where(d => d.Cipher == Cipher).Select(d => new { d.Cipher, d.Name }).FirstAsync());
+                return Ok(await _db.Disciplines.Where(d => d.Cipher == cipher).Select(d => new { d.Cipher, d.Name }).FirstAsync());
             }
             return NotFound();
         }
@@ -80,9 +80,9 @@ namespace ALS.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(string Cipher)
+        public async Task<IActionResult> Delete(string cipher)
         {
-            var discipline = await _db.Disciplines.FirstOrDefaultAsync(d => d.Cipher == Cipher);
+            var discipline = await _db.Disciplines.FirstOrDefaultAsync(d => d.Cipher == cipher);
             if (discipline != null)
             {
                 try
