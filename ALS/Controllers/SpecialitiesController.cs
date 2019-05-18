@@ -12,7 +12,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ALS.Controllers
 {
-    [Route("api/[controller]")]
+    [Produces("application/json")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
     public class SpecialitiesController : ControllerBase
@@ -54,7 +55,7 @@ namespace ALS.Controllers
             {
                 await Response.WriteAsync(e.Message);
             }
-            return Ok(speciality);
+            return Ok(model);
         }
 
         [HttpPost]
