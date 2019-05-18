@@ -60,7 +60,7 @@ namespace ALS.Controllers
         
         
         [HttpPost]
-        public async Task<IActionResult> Update([FromBody] GroupDTO model, [FromBody] int groupId)
+        public async Task<IActionResult> Update([FromBody] GroupDTO model, int groupId)
         {
             var groupUpdate = await _db.Groups.FirstOrDefaultAsync(group => group.GroupId == groupId);
 

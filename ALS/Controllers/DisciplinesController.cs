@@ -12,7 +12,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ALS.Controllers
 {
-    [Route("api/[controller]")]
+    [Produces("application/json")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
     public class DisciplinesController : ControllerBase
@@ -25,7 +26,7 @@ namespace ALS.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetAll()
         {
             return Ok(await Task.Run(() => _db.Disciplines.Select(d => new { d.Cipher, d.Name}).ToList()));
         }
@@ -54,7 +55,7 @@ namespace ALS.Controllers
             {
                 await Response.WriteAsync(e.Message);
             }
-            return Ok(discipline);
+            return Ok(model);
         }
 
         [HttpPost]
