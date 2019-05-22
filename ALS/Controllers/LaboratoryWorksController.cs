@@ -87,7 +87,7 @@ namespace ALS.Controllers
                     _db.LaboratoryWorks.Update(laboratoryWorkUpdate);
                     await _db.SaveChangesAsync();
                 }
-                catch (DbUpdateException e)
+                catch (Exception e)
                 {
                     await Response.WriteAsync(e.Message);
                 }
@@ -112,7 +112,7 @@ namespace ALS.Controllers
                     _db.LaboratoryWorks.Remove(laboratoryWorkDelete);
                     await _db.SaveChangesAsync();
                 }
-                catch (DbUpdateException e)
+                catch (Exception e)
                 {
                     await Response.WriteAsync(e.Message);
                 }
