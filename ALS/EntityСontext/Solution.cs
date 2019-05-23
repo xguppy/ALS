@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ALS.EntityСontext
@@ -8,8 +9,11 @@ namespace ALS.EntityСontext
     {
         public int SolutionId { get; set; }
         public int VariantId { get; set; }
-        public int Mark { get; set; }
+        [Range(3, 5)]
+        public int? Mark { get; set; }
+        [Required]
         public DateTime SendDate { get; set; }
+        [Required]
         [Column(TypeName = "jsonb")]
         public string SourceCode { get; set; }
         public Variant Variant { get; set; }

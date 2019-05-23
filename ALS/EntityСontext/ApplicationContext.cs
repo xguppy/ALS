@@ -37,6 +37,9 @@ namespace ALS.EntityСontext
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email)
                 .IsUnique();
+            modelBuilder.Entity<AntiplagiatData>()
+                .HasIndex(antiplagiatData => new {antiplagiatData.SolutionFirstId, antiplagiatData.SolutionSecondId})
+                .IsUnique();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

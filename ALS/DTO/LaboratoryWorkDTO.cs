@@ -11,7 +11,6 @@ namespace ALS.DTO
         public Evaluation Evaluation { get; set; }
         public string Cipher { get; set; }
         public int UserId { get; set; }
-        [Column(TypeName = "jsonb")]
         public string Constraints { get; set; }
     }
 }

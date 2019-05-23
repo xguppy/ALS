@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ALS.EntityСontext
@@ -7,11 +8,17 @@ namespace ALS.EntityСontext
     {
         public int LaboratoryWorkId { get; set; }
         public int TemplateLaboratoryWorkId { get; set; }
+        [Required]
+        [StringLength(150, MinimumLength=5)]
         public string Name { get; set; }
+        [Required]
+        [StringLength(256, MinimumLength=5)]
         public string Description { get; set; }
         public Evaluation Evaluation { get; set; }
         public string Cipher { get; set; }
         public int UserId { get; set; }
+        [Required]
+        [StringLength(256, MinimumLength=5)]
         [Column(TypeName = "jsonb")]
         public string Constraints { get; set; }
         public User User { get; set; }
