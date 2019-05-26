@@ -15,8 +15,7 @@ namespace ALS.EntityСontext
         public int? GroupId { get; set; }
         public List<LaboratoryWork> LaboratoryWorks { get; set; }
         public List<Solution> Solutions { get; set; }
+        public List<UserRole> UserRoles { get; set; }
         public Group Group { get; set; }
-
-        public ICollection<UserRole> UserRoles { get; set; }
     }
 }
