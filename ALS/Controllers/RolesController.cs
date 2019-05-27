@@ -13,11 +13,11 @@ namespace ALS.Controllers
     [Route("api/[controller]/[action]")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
-    public class RoleController : Controller
+    public class RolesController : Controller
     {
         private readonly ApplicationContext _db;
         
-        public RoleController(ApplicationContext db)
+        public RolesController(ApplicationContext db)
         {
             _db = db;
         }
