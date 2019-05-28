@@ -12,6 +12,6 @@ namespace ALS.AntiPlagModule.Constants
         public const int Number = 0xff01;
         public const int String = 0xff02;
         public const int Real = 0xff03;
-        public const int Unknown = 0xfff;
+        public const int Unknown = 0xffff;
     }
 }

@@ -25,21 +25,31 @@ namespace ALS.AntiPlagModule.Services.LexerService
                 // trying to get type of the token
                 // keyword?
                 if (KeyWords.Contains(token.Text))
+                {
                     Tokens.Add(LexerConstants.KeyWordsStart + Array.IndexOf(KeyWords, token.Text));
+                }
                 // operator?
                 else if (Operators.Contains(token.Text))
+                {
                     Tokens.Add(LexerConstants.OpStart + Array.IndexOf(Operators, token.Text));
+                }
                 // string/char?
                 else if (token.Text.Last() == '\"' || token.Text.Last() == '\'')
+                {
                     Tokens.Add(LexerConstants.String);
+                }
                 else if (char.IsDigit(token.Text.First()))
                 {
                     // int?
                     if (token.Text.Contains('.'))
+                    {
                         Tokens.Add(LexerConstants.Real);
+                    }
                     // real?
                     else
+                    {
                         Tokens.Add(LexerConstants.Number);
+                    }
                 }
                 // id?
                 else if (char.IsLetter(token.Text.First()))
@@ -52,7 +62,6 @@ namespace ALS.AntiPlagModule.Services.LexerService
                     Tokens.Add(LexerConstants.Unknown);
                 }
             }
-            
         }
     }
 }
