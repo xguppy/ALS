@@ -51,6 +51,7 @@ namespace ALS.DTO
     {
         Discipline,
         Group,
-        Time
+        Time,
+        All
     }
 }
