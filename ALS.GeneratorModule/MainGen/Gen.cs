@@ -72,17 +72,17 @@ namespace Generator.MainGen
             res = "[" + res + "]";
             return res;
         }
-        
-        private bool Compile(int lr,int variant)
+
+        private bool Compile(int lr, int variant)
         {
-            ProcessCompiler pc = new ProcessCompiler($"code_var_{lr}_{variant}.cpp", $"code_var_{lr}_{variant}.exe");
+            ProcessCompiler pc = new ProcessCompiler($"code_lr{lr}_var{variant}.cpp", $"code_lr{lr}_var{variant}.exe");
             return pc.Execute(Int32.MaxValue);
         }
 
-        public async Task<ResultData> Run(string fileName,int lr = 1, int variant = 1)
-        {     
+        public async Task<ResultData> Run(string fileName, int lr = 1, int variant = 1)
+        {
             // тупа парсинг
-            var d = await Task.Run( () => _pr.Read(fileName));
+            var d = await Task.Run(() => _pr.Read(fileName));
             if (d == null) return null;
 
             // тупа генерация
@@ -102,20 +102,25 @@ namespace Generator.MainGen
                     }
                 }
             }
-                        
-            using (StreamWriter sw = new StreamWriter($"code_var_{lr}_{variant}.cpp", false, Encoding.UTF8))
+
+            using (StreamWriter sw = new StreamWriter($"code_lr{lr}_var{variant}.cpp", false, Encoding.UTF8))
             {
-                sw.WriteLine(d.Code);
+                await sw.WriteLineAsync(d.Code);
             }
 
             // тупа компиляция
-            bool isCompiled = await Task.Run( () => Compile(lr, variant));
+            bool isCompiled = await Task.Run(() => Compile(lr, variant));
             if (!isCompiled)
             {
                 throw new Exception("Ошибка во время компиляции!");
             }
 
-            return new ResultData() { Template = d.Template, Code = $"code_var_{lr}_{variant}.exe", Tests = TestsToJSON(d.TestsD) };
+            return new ResultData()
+            {
+                Template = d.Template, /* шаблон задания */
+                Code = new System.Uri(Environment.CurrentDirectory + "\\" + $"code_lr{lr}_var{variant}.exe").AbsoluteUri, /* путь до бинарника */
+                Tests = TestsToJSON(d.TestsD) /* тестовые данные */
+            };
         }
     }
 }
