@@ -62,11 +62,11 @@ namespace ALS.Controllers
             }
 
             var responseData = new List<AntiplagiatResponseDTO>();
-            var firstToken = _lexer.Parse(sourceCode);
+            var firstToken = await Task.Run(() => _lexer.Parse(sourceCode));
 
             foreach (var solution in solutions)
             {
-                var secondToken = _lexer.Parse(solution.SourceCode);
+                var secondToken = await Task.Run(() => _lexer.Parse(solution.SourceCode));
                 var res = new float[_models.Length];
 
                 for (int i = 0; i < res.Length; ++i)
