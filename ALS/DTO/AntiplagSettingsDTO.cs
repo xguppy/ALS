@@ -17,16 +17,13 @@ namespace ALS.DTO
         /// <summary>
         /// id of checked work
         /// </summary>
-        public int UserId { get; set; }
+        public int? SolutionId { get; set; }
+        public string SourceCode { get; set; }
         /// <summary>
         /// Should system check works of user that work is checking??
         /// </summary>
         public bool CheckUserWork { get; set; } = false;
-
-        /// <summary>
-        /// Cryterias for sorting
-        /// </summary>
-        public SortBy[] SortCryterias { get; set; } = new SortBy[] { };
+        public bool CheckTime { get; set; } = false;
 
         /// <summary>
         /// Period of Date for check (first date)
@@ -36,22 +33,5 @@ namespace ALS.DTO
         /// Period of Date for check (last date)
         /// </summary>
         public DateTime? DateTimeLast { get; set; }
-
-        /// <summary>
-        /// Groups to sort
-        /// </summary>
-        public int[] GroupIds { get; set; }
-        /// <summary>
-        /// Disciplines to sort
-        /// </summary>
-        public int[] DisciplineIds { get; set; }
-    }
-
-    public enum SortBy
-    {
-        Discipline,
-        Group,
-        Time,
-        All
     }
 }
