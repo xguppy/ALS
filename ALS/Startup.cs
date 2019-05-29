@@ -13,6 +13,9 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
 using System.Linq;
+using ALS.AntiPlagModule.Services;
+using ALS.AntiPlagModule.Services.LexerService;
+using ALS.AntiPlagModule.Services.LexerFactory;
 
 namespace ALS
 {
@@ -34,6 +37,7 @@ namespace ALS
             services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });
 
             services.AddSingleton<IAuthService>(new AuthService(Configuration));
+            services.AddSingleton<ILexer>(new CppLexer(new CppLexerFactory()));
             
             services
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
