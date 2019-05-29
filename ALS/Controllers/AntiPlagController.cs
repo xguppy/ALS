@@ -30,6 +30,7 @@ namespace ALS.Controllers
             _lexer = lexer;
         }
 
+        [HttpPost]
         public async Task<IActionResult> Check([FromBody] AntiplagSettingsDTO settings)
         {
             // get values from database
