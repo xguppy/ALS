@@ -102,7 +102,27 @@ namespace ALS
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
-
+            
+            if (!System.IO.Directory.Exists("sourceCodeUser"))
+            {
+                System.IO.Directory.CreateDirectory("sourceCodeUser");
+            }
+            
+            if (!System.IO.Directory.Exists("sourceCodeModel"))
+            {
+                System.IO.Directory.CreateDirectory("sourceCodeModel");
+            }
+            
+            if (!System.IO.Directory.Exists("executeUser"))
+            {
+                System.IO.Directory.CreateDirectory("executeUser");
+            }
+            
+            if (!System.IO.Directory.Exists("executeModel"))
+            {
+                System.IO.Directory.CreateDirectory("executeModel");
+            }
+            
             SetupDatabase(dbContext);
         }
 
