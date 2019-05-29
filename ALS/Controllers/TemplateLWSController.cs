@@ -14,11 +14,11 @@ namespace ALS.Controllers
     [Route("api/[controller]/[action]")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Teacher")]
-    public class TemplateLWController : ControllerBase
+    public class TemplateLWSController : ControllerBase
     {
         private readonly ApplicationContext _db;
 
-        public TemplateLWController(ApplicationContext db)
+        public TemplateLWSController(ApplicationContext db)
         {
             _db = db;
         }
