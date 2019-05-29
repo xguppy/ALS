@@ -39,22 +39,24 @@ namespace ALS.Controllers
                 {
                     solution.SourceCode = sourceCode;
                     solution.SendDate = DateTime.Now;
-                    var sourceCodeFile = $@"{Environment.CurrentDirectory}/sourceCodeUser/{ProcessCompiler.CreatePath(solution.Variant.LaboratoryWorkId, solution.VariantId)}.cpp";
+                    var sourceCodeFile = Path.Combine(Environment.CurrentDirectory,"sourceCodeUser", $"{ProcessCompiler.CreatePath(solution.Variant.LaboratoryWorkId, solution.VariantId)}.cpp");
                     using (var fileWrite =
                         new StreamWriter(sourceCodeFile))
                     {
                         await fileWrite.WriteAsync(sourceCode);
                     }
 
-                    var programFile =
-                        $@"{Environment.CurrentDirectory}/executeUser/{ProcessCompiler.CreatePath(solution.Variant.LaboratoryWorkId, solution.VariantId)}.exe";
-                    var compiler = new ProcessCompiler(sourceCodeFile, programFile);
-                    var isCompile = false;
-                    await Task.Run(() => isCompile = compiler.Execute(60000));
+                    var programFileUser =
+                        Path.Combine(Environment.CurrentDirectory,"executeUser", $"{ProcessCompiler.CreatePath(solution.Variant.LaboratoryWorkId, solution.VariantId)}.exe");
+                    var programFileModel =
+                        Path.Combine(Environment.CurrentDirectory,"executeModel", $"{ProcessCompiler.CreatePath(solution.Variant.LaboratoryWorkId, solution.VariantId)}.exe");
+                    var compiler = new ProcessCompiler(sourceCodeFile, programFileUser);
+                    var isCompile = await Task.Run(() =>  compiler.Execute(60000));
                     if (isCompile != true)
                     {
                         return BadRequest(await compiler.Error.ReadToEndAsync());
                     }
+                    
                 }
             }
             return BadRequest();
