@@ -20,6 +20,9 @@ namespace ALS.CheckModule.Processes
             AppProcess.StartInfo.Arguments = $"{arguments} {nameInput} -o {nameOutput}";
             InitProcess();
         }
+
+        public static string CreatePath(int lab, int var)
+            => $"code_lr{lab}_var{var}";
         /// <summary>
         /// Запуск компиляции
         /// </summary>
