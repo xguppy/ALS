@@ -15,7 +15,7 @@ namespace Generator
             StringBuilder str = new StringBuilder("");
             for (int i = 0; i < count; i++)
             {
-                str.Append("{NextI(a, b, r)}, ");
+                str.Append($"{NextI(a, b, r)}, ");
             }
             return str.ToString().Remove(str.Length - 2);
         }
@@ -34,7 +34,7 @@ namespace Generator
                 str.Append($"{NextDStr(a, b, r)}, ");
             }
 
-            return str.ToString().Remove(str.Length - 2).ToString();
+            return str.ToString().Remove(str.Length - 2);
         }
 
         public static string NextDStr(double a, double b, Random r, int finesse = 3)
