@@ -1,4 +1,4 @@
-п»їusing System;
+using System;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
@@ -6,6 +6,8 @@ using Generator.Parsing;
 using Generator.MainGen.Structs;
 using System.Threading.Tasks;
 using ALS.CheckModule.Processes;
+using Newtonsoft.Json;
+using Generator.MainGen;
 
 namespace Generator.MainGen
 {
@@ -15,25 +17,18 @@ namespace Generator.MainGen
         private List<Pair<string, string>> _generated;
         private GenFunctions _genFunctions = new GenFunctions();
 
-        
-        //public string Template { get; set; }
-        //public string Code { get; set; }
-        //public List<DataContainer> Tests { get; set; }
-        //public  List<Pair<string, string>>  Tests{ get; set; }
-        
-
-        // Р’С‹РїРѕР»РЅРµРЅРёРµ РЅРµРѕР±С…РѕРґРёРјРѕР№ С„СѓРЅРєС†РёРё (СѓРєР°Р·Р°РЅС‹ РІ С„Р°Р№Р»Рµ GenFunctions)
+        // Выполнение необходимой функции (указаны в файле GenFunctions)
         private string CheckF(string str)
         {
-            if (str.Contains(GenFunctions.FuncName.Rnd.Value))
+            if (str.Contains($"#{FuncsEnum.rnd}"))
             {
                 str = _genFunctions.Rnd(str, _generated);
             }
-            else if (str.Contains(GenFunctions.FuncName.GenAE.Value))
+            else if (str.Contains($"#{FuncsEnum.genAE}"))
             {
                 str = _genFunctions.Expression(str, _generated);
             }
-            else if (str.Contains(GenFunctions.FuncName.GetAECode.Value))
+            else if (str.Contains($"#{FuncsEnum.getAEcode}"))
             {
                 str = _genFunctions.ExpressionCodeOnC();
             }
@@ -52,40 +47,20 @@ namespace Generator.MainGen
             return ls;
         }
 
-        
-        private string TestsToJSON(List<DataContainer> tests)
+        private async Task<bool> Compile(int lr,int var)
         {
-            string res = "";
-            foreach(var dc in tests)
-            {
-                string local = $"\"Name\":\"{dc.Name}\",\"Data\":[";
-                foreach (var data in dc.Data)
-                {
-                    local += $"\"{data}\",";
-                }
-                local = local.TrimEnd(',');
-                local += "]";
-                local = "{" + local + "},";
-                res += local;
-            }
-            res = res.TrimEnd(',');
-            res = "[" + res + "]";
-            return res;
+            string lrPath = ProcessCompiler.CreatePath(lr, var);
+            ProcessCompiler pc = new ProcessCompiler($"sourceCodeModel\\{lrPath}.cpp", $"executeModel\\{lrPath}.exe");
+            return await Task.Run (() => pc.Execute(60000));
         }
 
-        private bool Compile(int lr, int variant)
-        {
-            ProcessCompiler pc = new ProcessCompiler($"code_lr{lr}_var{variant}.cpp", $"code_lr{lr}_var{variant}.exe");
-            return pc.Execute(Int32.MaxValue);
-        }
-
-        public async Task<ResultData> Run(string fileName, int lr = 1, int variant = 1)
-        {
-            // С‚СѓРїР° РїР°СЂСЃРёРЅРі
-            var d = await Task.Run(() => _pr.Read(fileName));
+        public async Task<ResultData> Run(string fileName,int lr = 1, int var = 1)
+        {     
+            // тупа парсинг
+            var d = await Task.Run( () => _pr.Read(fileName));
             if (d == null) return null;
 
-            // С‚СѓРїР° РіРµРЅРµСЂР°С†РёСЏ
+            // тупа генерация
             _generated = await Task.Run(() => ProcessData(d.Sd));
 
             foreach (var elem in _generated)
@@ -93,7 +68,7 @@ namespace Generator.MainGen
                 var pattern = $"({elem.First})";
                 d.Template = d.Template.Replace(pattern, elem.Second);
                 d.Code = d.Code.Replace(pattern, elem.Second);
-                // РєР°РЅСЃРµСЂ С€Рѕ РїРёРїРµСЃ
+                // кансер шо пипес
                 for (int i = 0; i < d.TestsD.Count; i++)
                 {
                     for (int j = 0; j < d.TestsD[i].Data.Count; j++)
@@ -103,23 +78,29 @@ namespace Generator.MainGen
                 }
             }
 
-            using (StreamWriter sw = new StreamWriter($"code_lr{lr}_var{variant}.cpp", false, Encoding.UTF8))
+            if (!_genFunctions.CheckTests(d.TestsD))
+            {
+                throw new Exception("Тестовые данные содержат ошибку!");
+            }
+
+            string lrPath = ProcessCompiler.CreatePath(lr, var);
+
+            using (StreamWriter sw = new StreamWriter($"sourceCodeModel\\{lrPath}.cpp", false, Encoding.UTF8))
             {
                 await sw.WriteLineAsync(d.Code);
             }
 
-            // С‚СѓРїР° РєРѕРјРїРёР»СЏС†РёСЏ
-            bool isCompiled = await Task.Run(() => Compile(lr, variant));
-            if (!isCompiled)
+            // тупа компиляция
+            if (!await Compile(lr, var))
             {
-                throw new Exception("РћС€РёР±РєР° РІРѕ РІСЂРµРјСЏ РєРѕРјРїРёР»СЏС†РёРё!");
-            }
+                throw new Exception("Ошибка во время компиляции!");
+            }        
+            
 
-            return new ResultData()
-            {
-                Template = d.Template, /* С€Р°Р±Р»РѕРЅ Р·Р°РґР°РЅРёСЏ */
-                Code = new System.Uri(Environment.CurrentDirectory + "\\" + $"code_lr{lr}_var{variant}.exe").AbsoluteUri, /* РїСѓС‚СЊ РґРѕ Р±РёРЅР°СЂРЅРёРєР° */
-                Tests = TestsToJSON(d.TestsD) /* С‚РµСЃС‚РѕРІС‹Рµ РґР°РЅРЅС‹Рµ */
+            return new ResultData() {
+                Template = d.Template, /* шаблон задания */
+                Code = new System.Uri(Environment.CurrentDirectory + $"\\executeModel\\{lrPath}.exe").AbsoluteUri, /* путь до бинарника */
+                Tests = JsonConvert.SerializeObject(d.TestsD) /* тестовые данные */
             };
         }
     }
