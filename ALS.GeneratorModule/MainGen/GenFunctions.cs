@@ -1,4 +1,4 @@
-using System;
+п»їusing System;
 using System.Collections.Generic;
 using Generator.MainGen.Structs;
 using Generator.Parsing;
@@ -31,7 +31,7 @@ namespace Generator.MainGen
             }
             return args;
         }
-        // выражения
+        // РІС‹СЂР°Р¶РµРЅРёСЏ
         public string Expression(string str, List<Pair<string, string>> values)
         {
             var args = GetArgs(str, values);
@@ -47,7 +47,7 @@ namespace Generator.MainGen
 
     
 
-        // Рандомизация ----------------------------------
+        // Р Р°РЅРґРѕРјРёР·Р°С†РёСЏ ----------------------------------
         private string GenValue(string a, string b, string type, Random r, string count = "1")
         {
             string str;

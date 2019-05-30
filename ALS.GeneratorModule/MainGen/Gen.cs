@@ -1,4 +1,4 @@
-using System;
+п»їusing System;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
@@ -17,7 +17,7 @@ namespace Generator.MainGen
         private List<Pair<string, string>> _generated;
         private GenFunctions _genFunctions = new GenFunctions();
 
-        // Выполнение необходимой функции (указаны в файле GenFunctions)
+        // Р’С‹РїРѕР»РЅРµРЅРёРµ РЅРµРѕР±С…РѕРґРёРјРѕР№ С„СѓРЅРєС†РёРё (СѓРєР°Р·Р°РЅС‹ РІ С„Р°Р№Р»Рµ GenFunctions)
         private string CheckF(string str)
         {
             if (str.Contains($"#{FuncsEnum.rnd}"))
@@ -56,11 +56,11 @@ namespace Generator.MainGen
 
         public async Task<ResultData> Run(string fileName,int lr = 1, int var = 1)
         {     
-            // тупа парсинг
+            // С‚СѓРїР° РїР°СЂСЃРёРЅРі
             var d = await Task.Run( () => _pr.Read(fileName));
             if (d == null) return null;
 
-            // тупа генерация
+            // С‚СѓРїР° РіРµРЅРµСЂР°С†РёСЏ
             _generated = await Task.Run(() => ProcessData(d.Sd));
 
             foreach (var elem in _generated)
@@ -68,7 +68,7 @@ namespace Generator.MainGen
                 var pattern = $"({elem.First})";
                 d.Template = d.Template.Replace(pattern, elem.Second);
                 d.Code = d.Code.Replace(pattern, elem.Second);
-                // кансер шо пипес
+                // РєР°РЅСЃРµСЂ С€Рѕ РїРёРїРµСЃ
                 for (int i = 0; i < d.TestsD.Count; i++)
                 {
                     for (int j = 0; j < d.TestsD[i].Data.Count; j++)
@@ -80,7 +80,7 @@ namespace Generator.MainGen
 
             if (!_genFunctions.CheckTests(d.TestsD))
             {
-                throw new Exception("Тестовые данные содержат ошибку!");
+                throw new Exception("РўРµСЃС‚РѕРІС‹Рµ РґР°РЅРЅС‹Рµ СЃРѕРґРµСЂР¶Р°С‚ РѕС€РёР±РєСѓ!");
             }
 
             string lrPath = ProcessCompiler.CreatePath(lr, var);
@@ -90,17 +90,17 @@ namespace Generator.MainGen
                 await sw.WriteLineAsync(d.Code);
             }
 
-            // тупа компиляция
+            // С‚СѓРїР° РєРѕРјРїРёР»СЏС†РёСЏ
             if (!await Compile(lr, var))
             {
-                throw new Exception("Ошибка во время компиляции!");
+                throw new Exception("РћС€РёР±РєР° РІРѕ РІСЂРµРјСЏ РєРѕРјРїРёР»СЏС†РёРё!");
             }        
             
 
             return new ResultData() {
-                Template = d.Template, /* шаблон задания */
-                Code = new System.Uri(Environment.CurrentDirectory + $"\\executeModel\\{lrPath}.exe").AbsoluteUri, /* путь до бинарника */
-                Tests = JsonConvert.SerializeObject(d.TestsD) /* тестовые данные */
+                Template = d.Template, /* С€Р°Р±Р»РѕРЅ Р·Р°РґР°РЅРёСЏ */
+                Code = new System.Uri(Environment.CurrentDirectory + $"\\executeModel\\{lrPath}.exe").AbsoluteUri, /* РїСѓС‚СЊ РґРѕ Р±РёРЅР°СЂРЅРёРєР° */
+                Tests = JsonConvert.SerializeObject(d.TestsD) /* С‚РµСЃС‚РѕРІС‹Рµ РґР°РЅРЅС‹Рµ */
             };
         }
     }
