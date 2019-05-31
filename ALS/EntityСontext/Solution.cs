@@ -9,7 +9,6 @@ namespace ALS.EntityСontext
         public int SolutionId { get; set; }
         public int VariantId { get; set; }
         public DateTime? SendDate { get; set; }
-        [Column(TypeName = "jsonb")]
         public string SourceCode { get; set; }
         public Variant Variant { get; set; }
         public List<TestRun> TestRuns { get; set; }
