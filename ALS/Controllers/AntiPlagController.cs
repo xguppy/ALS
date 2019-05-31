@@ -92,7 +92,7 @@ namespace ALS.Controllers
                 }
             }
 
-            responseData.OrderByDescending(r => r.AlgorithmsData.Max()).Take(settings.CountResults);
+            responseData = responseData.OrderByDescending(r => r.AlgorithmsData.Max()).Take(settings.CountResults).ToList();
 
             return Ok(responseData);
         }
