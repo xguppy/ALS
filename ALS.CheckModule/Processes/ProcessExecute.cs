@@ -39,7 +39,7 @@ namespace ALS.CheckModule.Processes
         /// <summary>
         /// Время потраченное на выполнение процесса
         /// </summary>
-        public long Time => AppProcess.TotalProcessorTime.Milliseconds;
+        public int Time => AppProcess.TotalProcessorTime.Milliseconds;
         /// <summary>
         /// Максимальное количество затраченной памяти
         /// </summary>

@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 using ALS.CheckModule.Compare;
 using ALS.CheckModule.Processes;
 using ALS.EntityСontext;
+using Generator.MainGen;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace ALS.Controllers
 {
@@ -31,18 +33,20 @@ namespace ALS.Controllers
         {
             var userIdentifier = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
             var solution =
-                await _db.Solutions.Include(sol => sol.Variant).FirstOrDefaultAsync(sol => sol.SolutionId == solutionId);
+                await _db.Solutions.Include(sol => sol.Variant).ThenInclude(var => var.LaboratoryWork).Include(sol => sol.TestRuns).FirstOrDefaultAsync(sol => sol.SolutionId == solutionId);
             if (solution != null && userIdentifier != solution.UserId)
             {
+                if (solution.IsSolved)
+                {
+                    return Ok("Solution is solve");
+                }
                 solution.SourceCode = sourceCode;
                 solution.SendDate = DateTime.Now;
                 var sourceCodeFile = Path.Combine(Environment.CurrentDirectory,"sourceCodeUser", $"{ProcessCompiler.CreatePath(solution.Variant.LaboratoryWorkId, solution.VariantId)}.cpp");
-                using (var fileWrite =
-                    new StreamWriter(sourceCodeFile))
+                using (var fileWrite = new StreamWriter(sourceCodeFile))
                 {
                     await fileWrite.WriteAsync(sourceCode);
                 }
-
                 var programFileUser =
                     Path.Combine(Environment.CurrentDirectory,"executeUser", $"{ProcessCompiler.CreatePath(solution.Variant.LaboratoryWorkId, solution.VariantId)}.exe");
                 var programFileModel =
@@ -53,7 +57,25 @@ namespace ALS.Controllers
                 {
                     return BadRequest(await compiler.Error.ReadToEndAsync());
                 }
-                var inputDataJson = solution.Variant.InputDataRuns;
+                System.IO.File.Delete(sourceCodeFile);
+                var gen = new GenFunctions();
+                var inputDatas = gen.GetTestsFromJson(solution.Variant.InputDataRuns);
+                var constrains = JsonConvert.DeserializeObject<CompareData>(solution.Variant.LaboratoryWork.Constraints, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Populate });
+                _db.TestRuns.RemoveRange(solution.TestRuns);
+                foreach (var elem in inputDatas)
+                {
+                    var cmp = new CompareModel(programFileModel, programFileUser, elem);
+                    var dataRun = await cmp.Compare(constrains.Time, constrains.Memory);
+                    var testRun = new TestRun {Solution = solution, InputData = elem.ToArray(), OutputData = cmp.UserOutput.ToArray(), ResultRun = JsonConvert.SerializeObject(dataRun)};
+                    await _db.TestRuns.AddAsync(testRun);
+                    if (dataRun.IsCorrect != true)
+                    {
+                        solution.IsSolved = false;
+                    }
+                }
+                _db.Solutions.Update(solution);
+                await _db.SaveChangesAsync();
+                return Ok();
             }
             return BadRequest();
         }
