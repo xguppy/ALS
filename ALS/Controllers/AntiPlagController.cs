@@ -11,6 +11,8 @@ using ALS.DTO;
 using Microsoft.EntityFrameworkCore;
 using ALS.AntiPlagModule.Services.CompareModels;
 using ALS.AntiPlagModule.Services;
+using System.Security.Claims;
+using Newtonsoft.Json;
 
 namespace ALS.Controllers
 {
@@ -92,6 +94,9 @@ namespace ALS.Controllers
                     }
                 }
             }
+
+            await _db.AntiplagiatStats.AddAsync(new AntiplagiatStat { UserId = Convert.ToInt32(User.Claims.FirstOrDefault(u => u.Type == ClaimTypes.NameIdentifier).Value), DateCheck = DateTime.Now, RequestData = JsonConvert.SerializeObject(settings) });
+            await _db.SaveChangesAsync();
 
             responseData = responseData.OrderByDescending(r => r.AlgorithmsData.Max()).Take(settings.CountResults).ToList();
 

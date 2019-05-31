@@ -16,6 +16,7 @@ namespace ALS.EntityСontext
         public List<LaboratoryWork> LaboratoryWorks { get; set; }
         public List<Solution> Solutions { get; set; }
         public List<UserRole> UserRoles { get; set; }
+        public List<AntiplagiatStat> AntiplagiatStats { get; set; }
         public Group Group { get; set; }
     }
 }
