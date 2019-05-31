@@ -1,13 +1,17 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Antlr4.Runtime.Misc;
 
 namespace ALS.EntityСontext
 {
     public class LaboratoryWork
     {
         public int LaboratoryWorkId { get; set; }
-        public int TemplateLaboratoryWorkId { get; set; }
+        public int? TemplateLaboratoryWorkId { get; set; }
+        [ForeignKey(nameof(Discipline))]
+        [Required]
+        public string DisciplineCipher { get; set; }
         [Required]
         [StringLength(150, MinimumLength=5)]
         public string Name { get; set; }

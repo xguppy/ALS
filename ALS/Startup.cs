@@ -168,7 +168,7 @@ namespace ALS
             }
             if (context.LaboratoryWorks.Count() == 0)
             {
-                context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 2, Cipher = "pr1", Name = "lr1", Description = "lr1_description" });
+                context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 2, Cipher = "pr1", Name = "lr1", Description = "lr1_description", Constraints = "{\"Memory\": 512000, \"Time\": 60000}", DisciplineCipher = "pr1"});
                 context.SaveChanges();
             }
             if (context.Variants.Count() == 0)
