@@ -25,7 +25,7 @@ namespace ALS.AntiPlagModule.Services.CompareModels
                 {
                     for (int j = 0; j < len2; ++j)
                     {
-                        if (FirstParam.ToArray()[i] == FirstParam.ToArray()[j])
+                        if (FirstParam.ToArray()[i] == SecondParam.ToArray()[j])
                         {
                             a[i + 1, j + 1] = a[i, j] + 1;
                             if (a[i + 1, j + 1] > a[u, v])
