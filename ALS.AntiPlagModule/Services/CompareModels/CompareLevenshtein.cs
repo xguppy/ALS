@@ -17,6 +17,8 @@ namespace ALS.AntiPlagModule.Services.CompareModels
             // Алгоритм расстояния Левенштейна
             int m = FirstParam.Count;  // Размер исходного контейнера
             int n = SecondParam.Count; // Размер контейнера, с которым сравниваем
+            var arr1 = FirstParam.ToArray();
+            var arr2 = SecondParam.ToArray();
             int value_algorithm = 0;     // Число, полученное из алгоритма Левенштейна
 
             if (m != 0 && n != 0)
@@ -40,7 +42,7 @@ namespace ALS.AntiPlagModule.Services.CompareModels
                 {
                     for (int j = 1; j <= n; ++j)
                     {
-                        cost = FirstParam.ToArray()[i - 1] == SecondParam.ToArray()[j - 1] ? 0 : 1; // Если равны, ничего не присваиваем, иначе стоимость равна 1
+                        cost = arr1[i - 1] == arr2[j - 1] ? 0 : 1; // Если равны, ничего не присваиваем, иначе стоимость равна 1
                         matrix[i, j] = Math.Min(Math.Min(matrix[i - 1, j] + 1, matrix[i, j - 1] + 1), matrix[i - 1, j - 1] + cost);
                     }
                 }
