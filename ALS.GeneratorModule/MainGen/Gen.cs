@@ -6,6 +6,8 @@ using Generator.Parsing;
 using Generator.MainGen.Structs;
 using System.Threading.Tasks;
 using ALS.CheckModule.Processes;
+using Newtonsoft.Json;
+using Generator.MainGen;
 
 namespace Generator.MainGen
 {
@@ -15,25 +17,18 @@ namespace Generator.MainGen
         private List<Pair<string, string>> _generated;
         private GenFunctions _genFunctions = new GenFunctions();
 
-        
-        //public string Template { get; set; }
-        //public string Code { get; set; }
-        //public List<DataContainer> Tests { get; set; }
-        //public  List<Pair<string, string>>  Tests{ get; set; }
-        
-
         // Выполнение необходимой функции (указаны в файле GenFunctions)
         private string CheckF(string str)
         {
-            if (str.Contains(GenFunctions.FuncName.Rnd.Value))
+            if (str.Contains($"#{FuncsEnum.rnd}"))
             {
                 str = _genFunctions.Rnd(str, _generated);
             }
-            else if (str.Contains(GenFunctions.FuncName.GenAE.Value))
+            else if (str.Contains($"#{FuncsEnum.genAE}"))
             {
                 str = _genFunctions.Expression(str, _generated);
             }
-            else if (str.Contains(GenFunctions.FuncName.GetAECode.Value))
+            else if (str.Contains($"#{FuncsEnum.getAEcode}"))
             {
                 str = _genFunctions.ExpressionCodeOnC();
             }
@@ -52,37 +47,17 @@ namespace Generator.MainGen
             return ls;
         }
 
-        
-        private string TestsToJSON(List<DataContainer> tests)
+        private async Task<bool> Compile(int lr,int var)
         {
-            string res = "";
-            foreach(var dc in tests)
-            {
-                string local = $"\"Name\":\"{dc.Name}\",\"Data\":[";
-                foreach (var data in dc.Data)
-                {
-                    local += $"\"{data}\",";
-                }
-                local = local.TrimEnd(',');
-                local += "]";
-                local = "{" + local + "},";
-                res += local;
-            }
-            res = res.TrimEnd(',');
-            res = "[" + res + "]";
-            return res;
+            string lrPath = ProcessCompiler.CreatePath(lr, var);
+            ProcessCompiler pc = new ProcessCompiler($"sourceCodeModel\\{lrPath}.cpp", $"executeModel\\{lrPath}.exe");
+            return await Task.Run (() => pc.Execute(60000));
         }
 
-        private bool Compile(int lr, int variant)
-        {
-            ProcessCompiler pc = new ProcessCompiler($"code_lr{lr}_var{variant}.cpp", $"code_lr{lr}_var{variant}.exe");
-            return pc.Execute(Int32.MaxValue);
-        }
-
-        public async Task<ResultData> Run(string fileName, int lr = 1, int variant = 1)
-        {
+        public async Task<ResultData> Run(string fileName,int lr = 1, int var = 1)
+        {     
             // тупа парсинг
-            var d = await Task.Run(() => _pr.Read(fileName));
+            var d = await Task.Run( () => _pr.Read(fileName));
             if (d == null) return null;
 
             // тупа генерация
@@ -103,23 +78,29 @@ namespace Generator.MainGen
                 }
             }
 
-            using (StreamWriter sw = new StreamWriter($"code_lr{lr}_var{variant}.cpp", false, Encoding.UTF8))
+            if (!_genFunctions.CheckTests(d.TestsD))
+            {
+                throw new Exception("Тестовые данные содержат ошибку!");
+            }
+
+            string lrPath = ProcessCompiler.CreatePath(lr, var);
+
+            using (StreamWriter sw = new StreamWriter($"sourceCodeModel\\{lrPath}.cpp", false, Encoding.UTF8))
             {
                 await sw.WriteLineAsync(d.Code);
             }
 
             // тупа компиляция
-            bool isCompiled = await Task.Run(() => Compile(lr, variant));
-            if (!isCompiled)
+            if (!await Compile(lr, var))
             {
                 throw new Exception("Ошибка во время компиляции!");
-            }
+            }        
+            
 
-            return new ResultData()
-            {
+            return new ResultData() {
                 Template = d.Template, /* шаблон задания */
-                Code = new System.Uri(Environment.CurrentDirectory + "\\" + $"code_lr{lr}_var{variant}.exe").AbsoluteUri, /* путь до бинарника */
-                Tests = TestsToJSON(d.TestsD) /* тестовые данные */
+                Code = new System.Uri(Environment.CurrentDirectory + $"\\executeModel\\{lrPath}.exe").AbsoluteUri, /* путь до бинарника */
+                Tests = JsonConvert.SerializeObject(d.TestsD) /* тестовые данные */
             };
         }
     }

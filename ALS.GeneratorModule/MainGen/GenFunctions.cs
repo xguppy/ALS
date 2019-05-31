@@ -1,28 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using Generator.MainGen.Structs;
+using Generator.Parsing;
+using Newtonsoft.Json;
 
 namespace Generator.MainGen
 {
     public class GenFunctions
-    {   
-        // вот бы енум у которого можно было бы указывать значения (прям как в крестах)
-        // Список доступных функций 
-        public sealed class FuncName
-        {
-            public static readonly FuncName Rnd = new FuncName("_rnd");
-            public static readonly FuncName GenAE = new FuncName("_genAE");
-            public static readonly FuncName GetAECode = new FuncName("_getAEcode");
-
-            private FuncName(string value)
-            {
-                Value = value;
-            }
-
-            public string Value { get; private set; }
-        }
-        //********************************************
-
+    { 
         public Random Random = new Random();
         private ArithmExpr _arithmExpr = new ArithmExpr();
 
@@ -63,7 +48,7 @@ namespace Generator.MainGen
     
 
         // Рандомизация ----------------------------------
-        public string GenValue(string a, string b, string type, Random r, string count = "1")
+        private string GenValue(string a, string b, string type, Random r, string count = "1")
         {
             string str;
                 
@@ -81,7 +66,7 @@ namespace Generator.MainGen
             return str;
         }
 
-        public string Rnd(string str, List<Pair<string, string>> values)
+        public string Rnd(string str, List<Pair<string, string>> values = null)
         {
             var args = GetArgs(str, values);
 
@@ -98,6 +83,58 @@ namespace Generator.MainGen
             return res;
         }
         //-----------------------------------------
+        public bool CheckTests(List<DataContainer> lDc)
+        {
+
+            foreach (DataContainer dc in lDc)
+            {
+                if (dc.Data.Count == 1) continue;
+
+                foreach (string str in dc.Data)
+                {
+                    if (str.Contains($"#{FuncsEnum.rnd}"))
+                    {
+                        return false;
+                    }
+                }
+
+            }
+
+            return true;
+        }
+        
+
+        //public async Task<string> GetTestFromJson(string json)
+        
+
+
+        public List<List<string>> GetTestsFromJson(string json)
+        {
+            List<List<string>> result = new List<List<string>>();
+
+            var tests = JsonConvert.DeserializeObject<List<DataContainer>>(json);
+
+            foreach(var dc in tests)
+            {
+                if (dc.Data.Count > 1)
+                {
+                    result.Add(dc.Data);
+                }
+                else
+                {
+                    if (dc.Data[0].Contains($"#{FuncsEnum.rnd}"))
+                    {
+                        result.Add(new List<string>(Rnd(dc.Data[0]).Split(',')));
+                    }
+                    else
+                    {
+                        result.Add(dc.Data);
+                    }
+                }
+            }
+
+            return result;
+        }
 
     }
 }

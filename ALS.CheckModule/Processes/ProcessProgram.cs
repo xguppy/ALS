@@ -7,13 +7,13 @@ namespace ALS.CheckModule.Processes
         /// <summary>
         /// Входны данные для программы
         /// </summary>
-        private readonly Queue<string> _inputData;
+        private readonly List<string> _inputData;
         /// <summary>
         /// Конструктор программы 
         /// </summary>
         /// <param name="nameProgram">Имя исполняемого файла</param>
         /// <param name="inputData">Входные данные</param>
-        public ProcessProgram(string nameProgram, Queue<string> inputData)
+        public ProcessProgram(string nameProgram, List<string> inputData)
         {
             AppProcess.StartInfo.FileName = nameProgram;
             _inputData = inputData;
@@ -30,9 +30,9 @@ namespace ALS.CheckModule.Processes
             using (AppProcess)
             {
                 InitExecute();
-                while (_inputData.Count != 0)
+                foreach (var elem in _inputData)
                 {
-                    Input = _inputData.Dequeue();
+                    Input = elem;
                 }
                 result = AppProcess.WaitForExit(timeMilliseconds);
             }
