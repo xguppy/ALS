@@ -50,7 +50,7 @@ namespace Generator.MainGen
         private async Task<bool> Compile(int lr,int var)
         {
             string lrPath = ProcessCompiler.CreatePath(lr, var);
-            ProcessCompiler pc = new ProcessCompiler($"sourceCodeModel\\{lrPath}.cpp", $"executeModel\\{lrPath}.exe");
+            ProcessCompiler pc = new ProcessCompiler(Path.Combine("sourceCodeModel", $"{lrPath}.cpp"), Path.Combine("executeModel", $"{lrPath}.exe"));
             return await Task.Run (() => pc.Execute(60000));
         }
 
@@ -85,7 +85,7 @@ namespace Generator.MainGen
 
             string lrPath = ProcessCompiler.CreatePath(lr, var);
 
-            using (StreamWriter sw = new StreamWriter($"sourceCodeModel\\{lrPath}.cpp", false, Encoding.UTF8))
+            using (StreamWriter sw = new StreamWriter(Path.Combine("sourceCodeModel", $"{lrPath}.cpp"), false, Encoding.UTF8))
             {
                 await sw.WriteLineAsync(d.Code);
             }
@@ -99,7 +99,7 @@ namespace Generator.MainGen
 
             return new ResultData() {
                 Template = d.Template, /* шаблон задания */
-                Code = new System.Uri(Environment.CurrentDirectory + $"\\executeModel\\{lrPath}.exe").AbsoluteUri, /* путь до бинарника */
+                Code = new System.Uri(Path.Combine(Environment.CurrentDirectory, "executeModel", $"{lrPath}.exe")).AbsoluteUri, /* путь до бинарника */
                 Tests = JsonConvert.SerializeObject(d.TestsD) /* тестовые данные */
             };
         }
