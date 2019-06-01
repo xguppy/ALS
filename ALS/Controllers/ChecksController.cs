@@ -64,11 +64,12 @@ namespace ALS.Controllers
                 var inputDatas = gen.GetTestsFromJson(solution.Variant.InputDataRuns);
                 var constrains = JsonConvert.DeserializeObject<CompareData>(solution.Variant.LaboratoryWork.Constraints, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Populate });
                 _db.TestRuns.RemoveRange(solution.TestRuns);
+                solution.IsSolved = true;
                 foreach (var elem in inputDatas)
                 {
                     var cmp = new CompareModel(programFileModel, programFileUser, elem);
                     var dataRun = await cmp.Compare(constrains.Time, constrains.Memory);
-                    var testRun = new TestRun {Solution = solution, InputData = elem.ToArray(), OutputData = cmp.UserOutput.ToArray(), ResultRun = JsonConvert.SerializeObject(dataRun)};
+                    var testRun = new TestRun {SolutionId = solution.SolutionId, InputData = elem.ToArray(), OutputData = cmp.UserOutput.ToArray(), ResultRun = JsonConvert.SerializeObject(dataRun)};
                     await _db.TestRuns.AddAsync(testRun);
                     if (dataRun.IsCorrect != true)
                     {

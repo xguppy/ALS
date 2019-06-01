@@ -19,6 +19,17 @@ namespace ALS.CheckModule.Processes
             _inputData = inputData;
             InitProcess();
         }
+
+        /// <summary>
+        /// Время потраченное на выполнение процесса
+        /// </summary>
+        public int Time { get; private set; }
+        //AppProcess.TotalProcessorTime.Milliseconds;
+        /// <summary>
+        /// Максимальное количество затраченной памяти
+        /// </summary>
+        public long Memory { get; private set; } 
+        //AppProcess.WorkingSet64;
         /// <summary>
         /// 
         /// </summary>
@@ -34,7 +45,9 @@ namespace ALS.CheckModule.Processes
                 {
                     Input = elem;
                 }
+                Memory = AppProcess.WorkingSet64;
                 result = AppProcess.WaitForExit(timeMilliseconds);
+                Time = AppProcess.TotalProcessorTime.Milliseconds;
             }
             return result;
         }

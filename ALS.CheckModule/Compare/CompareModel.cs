@@ -44,24 +44,25 @@ namespace ALS.CheckModule.Compare
 
             //Теперь сравним выводы
             _userOutput = new List<string>();
+            var modelOutput = new List<string>();
             using (var fsModel = _model.Output)
             {
-                using (var fsUser = _user.Output)
+                while (!fsModel.EndOfStream)
                 {
-                    while (!fsModel.EndOfStream && !fsUser.EndOfStream)
-                    {
-                        var userStr = fsUser.ReadLine();
-                        _userOutput.Add(userStr);
-                        if (fsModel.ReadLine() != userStr)
-                        {
-                            return userCompare;
-                        }
-                    }
-                    if (!fsModel.EndOfStream)
-                    {
-                        return userCompare;
-                    }
+                    modelOutput.Add(fsModel.ReadLine());
                 }
+            }
+            using (var fsUser = _user.Output)
+            {
+                while (!fsUser.EndOfStream)
+                {
+                    _userOutput.Add(fsUser.ReadLine());
+                }
+            }
+
+            if (String.Join(String.Empty, _userOutput) != String.Join(String.Empty, modelOutput))
+            {
+                return userCompare;
             }
             userCompare.IsCorrect = true;
             return userCompare;

@@ -37,14 +37,6 @@ namespace ALS.CheckModule.Processes
             set => InputStreamWriter.WriteLine(value);
         }
         /// <summary>
-        /// Время потраченное на выполнение процесса
-        /// </summary>
-        public int Time => AppProcess.TotalProcessorTime.Milliseconds;
-        /// <summary>
-        /// Максимальное количество затраченной памяти
-        /// </summary>
-        public long Memory => AppProcess.WorkingSet64;
-        /// <summary>
         /// Инициализация процесса
         /// </summary>
         protected void InitProcess()

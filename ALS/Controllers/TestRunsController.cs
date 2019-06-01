@@ -11,11 +11,11 @@ namespace ALS.Controllers
     [Route("api/[controller]/[action]")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Teacher")]
-    public class TestRuns : Controller
+    public class TestRunsController : Controller
     {
         private readonly ApplicationContext _db;
                 
-        public TestRuns(ApplicationContext db)
+        public TestRunsController(ApplicationContext db)
         {
             _db = db;
         }
