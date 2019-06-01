@@ -135,19 +135,19 @@ namespace ALS
             // check and add roles
             AuthService auth = new AuthService(Configuration);
 
-            if (context.Roles.Count() == 0)
+            if (!context.Roles.Any())
             {
-                context.Roles.Add(new Role { RoleName = RoleEnum.Student });
-                context.Roles.Add(new Role { RoleName = RoleEnum.Teacher });
-                context.Roles.Add(new Role { RoleName = RoleEnum.Admin });
+                context.Roles.Add(new Role { RoleId = 1, RoleName = RoleEnum.Student });
+                context.Roles.Add(new Role { RoleId = 2, RoleName = RoleEnum.Teacher });
+                context.Roles.Add(new Role { RoleId = 3, RoleName = RoleEnum.Admin });
 
                 context.SaveChanges();
             }
-            if (context.Users.Count() == 0)
+            if (!context.Users.Any())
             {
-                var student = new User { Surname = "Студентов", Name = "Студент", Patronymic = "Студентович", Email = "tmpstudent@mail.com", PwHash = auth.GetHashedPassword("tmpstudent") };
-                var teacher = new User { Surname = "Преподов", Name = "Препод", Patronymic = "Преподович", Email = "tmpprepod@mail.com", PwHash = auth.GetHashedPassword("tmpprepod") };
-                var admin = new User { Surname = "Админов", Name = "Админ", Patronymic = "Админович", Email = "tmpadmin@mail.com", PwHash = auth.GetHashedPassword("tmpadmin") };
+                var student = new User { Id = 1, Surname = "Студентов", Name = "Студент", Patronymic = "Студентович", Email = "tmpstudent@mail.com", PwHash = auth.GetHashedPassword("tmpstudent") };
+                var teacher = new User { Id = 2, Surname = "Преподов", Name = "Препод", Patronymic = "Преподович", Email = "tmpprepod@mail.com", PwHash = auth.GetHashedPassword("tmpprepod") };
+                var admin = new User { Id = 3,  Surname = "Админов", Name = "Админ", Patronymic = "Админович", Email = "tmpadmin@mail.com", PwHash = auth.GetHashedPassword("tmpadmin") };
 
                 context.Users.Add(admin);
                 context.Users.Add(teacher);
@@ -161,26 +161,29 @@ namespace ALS
 
                 context.SaveChanges();
             }
-            if (context.Disciplines.Count() == 0)
+            if (!context.Disciplines.Any())
             {
                 context.Disciplines.Add(new Discipline { Name = "Programming", Cipher = "pr1" });
                 context.SaveChanges();
             }
-            if (context.LaboratoryWorks.Count() == 0)
+            if (!context.LaboratoryWorks.Any())
             {
-                context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 2, Cipher = "pr1", Name = "lr1", Description = "lr1_description", Constraints = "{\"Memory\": 512000, \"Time\": 60000}", DisciplineCipher = "pr1"});
+                context.LaboratoryWorks.Add(new LaboratoryWork { LaboratoryWorkId = 1, UserId = 2, Cipher = "pr1", Name = "lr1", Description = "lr1_description", Constraints = "{\"Memory\": 512000, \"Time\": 60000}", DisciplineCipher = "pr1"});
+                context.LaboratoryWorks.Add(new LaboratoryWork { LaboratoryWorkId = 2, UserId = 2, Cipher = "pr1", Name = "lr2", Description = "Вывести четные элементы", Constraints = "{\"Memory\": 512000, \"Time\": 60000}", DisciplineCipher = "pr1"});
                 context.SaveChanges();
             }
-            if (context.Variants.Count() == 0)
+            if (!context.Variants.Any())
             {
-                context.Variants.Add(new Variant { LaboratoryWorkId = 1, Description = "var descr" });
+                context.Variants.Add(new Variant { VariantId = 1, LaboratoryWorkId = 1, Description = "var descr" });
+                context.Variants.Add(new Variant { VariantId = 2, LaboratoryWorkId = 2, Description = "smpl", InputDataRuns = "[{\"Name\":\"тест1\",\"Data\":[\"#rnd(1 | 20 | int | 10)\"]},{\"Name\":\"тест2\",\"Data\":[\"#rnd(1 | 20 | int | 10)\"]},{\"Name\":\"тест3\",\"Data\":[\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"7\",\"8\",\"9\",\"10\"]}]"});
                 context.SaveChanges();
             }
-            if (context.Solutions.Count() == 0)
+            if (!context.Solutions.Any())
             {
-                context.Solutions.Add(new Solution { IsSolved = true, VariantId = 1, SendDate = DateTime.Now.AddDays(2), UserId = 3, SourceCode = "#include <iostream>\n\nint func_arr(int* arr, size_t len);\nvoid input_arr(int* &arr, size_t len);\n\nint main()\n{\n	// Очень важный комментарий\n	// Или не очень\n	cout << \"Программа вывода суммы квадратов вектора\" << endl;\n	int len = 3;\n	int* arr = new int[len];\n	input_arr(arr, len);\n	cout << \"Результат равен \" << func_arr(arr, len) << endl;\n	return 0;\n}\n\nint func_arr(int* arr, size_t len)\n{\n	/*\n	Возвращает сумму квадратов элементов массива\n	*/\n	int res = 0;\n	for (size_t i = 0; i < len; ++i)\n	{\n		res += arr[i] * arr[i];\n	}\n	return res;\n}\n\nvoid input_arr(int* &arr, size_t len)\n{\n	// Ввод массива\n	for (size_t i = 0; i < len; ++i)\n		cin >> arr[i];\n}" });
-                context.Solutions.Add(new Solution { IsSolved = true, VariantId = 1, SendDate = DateTime.Now.AddDays(1), UserId = 2, SourceCode = "#include <iostream>\n\nint func_arr(int* arr, size_t len);\nvoid input_arr(int* &arr, size_t len);\n\nint main()\n{\n	// Очень важный комментарий\n	// Или не очень\n	cout << \"Программа вывода суммы квадратов вектора\" << endl;\n	int len = 3;\n	int* arr = new int[len];\n	input_arr(arr, len);\n	cout << \"Результат равен \" << func_arr(arr, len) << endl;\n	return 0;\n}\n\nint func_arr(int* arr, size_t len)\n{\n	/*\n	Возвращает сумму квадратов элементов массива\n	*/\n	int res = 0;\n	for (size_t i = 0; i < len; ++i)\n	{\n		res += arr[i] * arr[i];\n	}\n	return res;\n}\n\nvoid input_arr(int* &arr, size_t len)\n{\n	// Ввод массива\n	for (size_t i = 0; i < len; ++i)\n		cin >> arr[i];\n}" });
-                context.Solutions.Add(new Solution { IsSolved = true, VariantId = 1, SendDate = DateTime.Now, UserId = 1, SourceCode = "#include <iostream>\n\nint func_massiv(int* massiv, size_t size_a)\n{\n	/*\n	Возвращает сумму квадратов элементов массива\n	*/\n	int res = 0;\n	for (size_t i = 0; i < size_a; ++i)\n	{\n		res += massiv[i] * massiv[i];\n	}\n	return res;\n}\n\nvoid input_massiv(int* &massiv, size_t size_a)\n{\n	// Ввод массива\n	for (size_t i = 0; i < size_a; ++i)\n		cin >> massiv[i];\n}\n\nint main()\n{\n	cout << \"Моя(нет) программа вывода суммы квадратов элементов массива\" << endl;\n	int size_a = 3;\n	int* massiv = new int[size_a];\n	input_massiv(massiv, size_a);\n	cout << \"Ответ \" << func_massiv(massiv, size_a) << endl;\n	return 0;\n}\n\n" });
+                context.Solutions.Add(new Solution { SolutionId = 1, IsSolved = true, VariantId = 1, SendDate = DateTime.Now.AddDays(2), UserId = 3, SourceCode = "#include <iostream>\n\nint func_arr(int* arr, size_t len);\nvoid input_arr(int* &arr, size_t len);\n\nint main()\n{\n	// Очень важный комментарий\n	// Или не очень\n	cout << \"Программа вывода суммы квадратов вектора\" << endl;\n	int len = 3;\n	int* arr = new int[len];\n	input_arr(arr, len);\n	cout << \"Результат равен \" << func_arr(arr, len) << endl;\n	return 0;\n}\n\nint func_arr(int* arr, size_t len)\n{\n	/*\n	Возвращает сумму квадратов элементов массива\n	*/\n	int res = 0;\n	for (size_t i = 0; i < len; ++i)\n	{\n		res += arr[i] * arr[i];\n	}\n	return res;\n}\n\nvoid input_arr(int* &arr, size_t len)\n{\n	// Ввод массива\n	for (size_t i = 0; i < len; ++i)\n		cin >> arr[i];\n}" });
+                context.Solutions.Add(new Solution { SolutionId = 2, IsSolved = true, VariantId = 1, SendDate = DateTime.Now.AddDays(1), UserId = 2, SourceCode = "#include <iostream>\n\nint func_arr(int* arr, size_t len);\nvoid input_arr(int* &arr, size_t len);\n\nint main()\n{\n	// Очень важный комментарий\n	// Или не очень\n	cout << \"Программа вывода суммы квадратов вектора\" << endl;\n	int len = 3;\n	int* arr = new int[len];\n	input_arr(arr, len);\n	cout << \"Результат равен \" << func_arr(arr, len) << endl;\n	return 0;\n}\n\nint func_arr(int* arr, size_t len)\n{\n	/*\n	Возвращает сумму квадратов элементов массива\n	*/\n	int res = 0;\n	for (size_t i = 0; i < len; ++i)\n	{\n		res += arr[i] * arr[i];\n	}\n	return res;\n}\n\nvoid input_arr(int* &arr, size_t len)\n{\n	// Ввод массива\n	for (size_t i = 0; i < len; ++i)\n		cin >> arr[i];\n}" });
+                context.Solutions.Add(new Solution { SolutionId = 3, IsSolved = true, VariantId = 1, SendDate = DateTime.Now, UserId = 1, SourceCode = "#include <iostream>\n\nint func_massiv(int* massiv, size_t size_a)\n{\n	/*\n	Возвращает сумму квадратов элементов массива\n	*/\n	int res = 0;\n	for (size_t i = 0; i < size_a; ++i)\n	{\n		res += massiv[i] * massiv[i];\n	}\n	return res;\n}\n\nvoid input_massiv(int* &massiv, size_t size_a)\n{\n	// Ввод массива\n	for (size_t i = 0; i < size_a; ++i)\n		cin >> massiv[i];\n}\n\nint main()\n{\n	cout << \"Моя(нет) программа вывода суммы квадратов элементов массива\" << endl;\n	int size_a = 3;\n	int* massiv = new int[size_a];\n	input_massiv(massiv, size_a);\n	cout << \"Ответ \" << func_massiv(massiv, size_a) << endl;\n	return 0;\n}\n\n" });
+                context.Solutions.Add(new Solution { SolutionId = 4, IsSolved = false, VariantId = 2, UserId = 1});
                 context.SaveChanges();
             }
         }
