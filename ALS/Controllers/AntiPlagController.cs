@@ -55,6 +55,7 @@ namespace ALS.Controllers
                 }
             }
 
+            // fix if needed json or multipline files support!
             var sourceCode = settings.SolutionId == null ? settings.SourceCode : solutionCode;
 
             if (string.IsNullOrEmpty(sourceCode) || settings.CountResults <= 0)

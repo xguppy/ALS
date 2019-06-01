@@ -14,8 +14,10 @@ namespace ALS.AntiPlagModule.Services.CompareModels
         public override int Execute()
         {
             int u = 0, v = 0;
-            int len1 = FirstParam.Count;
-            int len2 = SecondParam.Count;
+            var arr1 = FirstParam.ToArray();
+            var arr2 = SecondParam.ToArray();
+            int len1 = arr1.Count();
+            int len2 = arr2.Count();
             int res = 0;
             if (len1 != 0 && len2 != 0)
             {
@@ -25,7 +27,7 @@ namespace ALS.AntiPlagModule.Services.CompareModels
                 {
                     for (int j = 0; j < len2; ++j)
                     {
-                        if (FirstParam.ToArray()[i] == FirstParam.ToArray()[j])
+                        if (arr1[i] == arr2[j])
                         {
                             a[i + 1, j + 1] = a[i, j] + 1;
                             if (a[i + 1, j + 1] > a[u, v])
