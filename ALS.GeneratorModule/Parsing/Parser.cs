@@ -60,7 +60,7 @@ namespace Generator.Parsing
             }
             catch (Exception)
             {
-                throw new Exception ("Error during parsing!");
+                throw new Exception ($"Файл {fileName} не корректен!");
             }
 
             return GenData;

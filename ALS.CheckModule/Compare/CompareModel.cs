@@ -32,7 +32,7 @@ namespace ALS.CheckModule.Compare
             //Начнём и подождём завершения
             await Task.Run(() => okModelProg = _model.Execute(timeMilliseconds));
             await Task.Run(() => okUserProg = _user.Execute(timeMilliseconds));
-            var userCompare = new CompareData{Time = _user.Time, Memory = _user.Memory, IsCorrect = false};
+            var userCompare = new CompareData {Time = _user.Time, Memory = _user.Memory, IsCorrect = false};
             if (okUserProg == false || _user.Memory > memory)
             {
                 return userCompare;

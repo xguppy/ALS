@@ -51,8 +51,7 @@ namespace Generator.MainGen
         private string GenValue(string a, string b, string type, Random r, string count = "1")
         {
             string str;
-                
-            if (type == "int")
+            if (type.Trim() == "int")
             {
                 Int32 A = Int32.Parse(a), B = Int32.Parse(b);
                 str = RndWrapper.NextIMass(A, B, Int32.Parse(count), r);

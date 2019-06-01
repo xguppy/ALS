@@ -1,8 +1,10 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Net.Mime;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Web;
 using ALS.CheckModule.Compare;
 using ALS.CheckModule.Processes;
 using ALS.EntityСontext;
@@ -15,7 +17,6 @@ using Newtonsoft.Json;
 
 namespace ALS.Controllers
 {
-    [Produces("application/json")]
     [Route("api/[controller]/[action]")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Student")]
@@ -29,16 +30,17 @@ namespace ALS.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Check([FromBody]string sourceCode, [FromHeader]int solutionId)
+        public async Task<IActionResult> Check([FromHeader] string sourceCode, [FromHeader]int solutionId)
         {
             var userIdentifier = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
             var solution =
                 await _db.Solutions.Include(sol => sol.Variant).ThenInclude(var => var.LaboratoryWork).Include(sol => sol.TestRuns).FirstOrDefaultAsync(sol => sol.SolutionId == solutionId);
-            if (solution != null && userIdentifier != solution.UserId)
+            sourceCode = HttpUtility.UrlDecode(sourceCode);
+            if (solution != null && userIdentifier == solution.UserId)
             {
                 if (solution.IsSolved)
                 {
-                    return Ok("Solution is solve");
+                    return Ok(Environment.CurrentDirectory);
                 }
                 solution.SourceCode = sourceCode;
                 solution.SendDate = DateTime.Now;
@@ -73,6 +75,7 @@ namespace ALS.Controllers
                         solution.IsSolved = false;
                     }
                 }
+                System.IO.File.Delete(programFileUser);
                 _db.Solutions.Update(solution);
                 await _db.SaveChangesAsync();
                 return Ok();

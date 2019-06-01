@@ -43,7 +43,7 @@ namespace ALS.CheckModule.Processes
         /// <summary>
         /// Максимальное количество затраченной памяти
         /// </summary>
-        public long Memory => AppProcess.PeakVirtualMemorySize64;
+        public long Memory => AppProcess.WorkingSet64;
         /// <summary>
         /// Инициализация процесса
         /// </summary>
