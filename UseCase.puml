@@ -1,0 +1,75 @@
+@startuml UseCases
+
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Студент" as Student
+actor "Преподаватель" as Teacher 
+actor "Администратор" as Admin
+
+rectangle ALS {
+    ("Войти в систему") as LogIn
+    ("Сменить пароль") as ChangePass
+
+    Student --> LogIn
+    Teacher --> LogIn
+    Admin --> LogIn
+
+    Student --> ChangePass
+    Teacher --> ChangePass
+    Admin --> ChangePass
+
+    ("Загрузить решение") as LoadSolution
+    Student --> LoadSolution
+    ("Отправить решение на сервис проверки") as SendSolution
+     LoadSolution <.. SendSolution: extends
+
+    ("Управление работами") as WorkManage
+    ("Создать работу") as CreateWork
+    ("Редактировать работу") as EditWork
+    ("Удалить работу") as DeleteWork
+    ("Управление вариантами") as VariantManage
+    ("Сгенерировать по шаблону") as GenerateVariant
+    ("Создать вариант") as CreateVariant
+    ("Редактировать вариант") as EditVariant
+    ("Удалить вариант") as DeleteVariant
+    ("Назнaчить вариант студенту") as SetVariantToStudent
+
+    Teacher -> WorkManage
+    WorkManage <-- CreateWork
+    WorkManage <-- EditWork
+    WorkManage <-- DeleteWork
+    WorkManage <-- VariantManage
+    VariantManage <-- CreateVariant
+    VariantManage <-- EditVariant
+    CreateVariant .> GenerateVariant: extends
+    VariantManage <-- DeleteVariant
+    VariantManage <-- SetVariantToStudent
+
+    ("Просмотр решений") as WatchAnswers
+    ("Одобрить решение") as SetMark
+    Teacher --> WatchAnswers
+    WatchAnswers <.. SetMark: extends
+
+    ("Проверить работу на плагиат") as CheckAntiPlag
+    Teacher --> CheckAntiPlag
+    CheckAntiPlag <.. ("Сохранить данные проверки"): include
+
+    ("Работать с таблицами-справочниками") as WorkWithTables
+    Admin --> WorkWithTables
+
+    ("Управлять дисциплинами") as WorkDiscipline
+    ("Управлять специальностями") as WorkSpec
+    ("Управлять группами") as WorkGroups
+
+    WorkWithTables <-- WorkDiscipline
+    WorkWithTables <-- WorkSpec 
+    WorkWithTables <-- WorkGroups
+
+    ("Управлять записями пользователей") as ManageUsers
+    ("Управлять ролями") as ManageRoles
+    Admin --> ManageUsers
+    Admin --> ManageRoles
+}
+
+@enduml

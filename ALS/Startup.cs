@@ -173,9 +173,9 @@ namespace ALS
             }
             if (!context.LaboratoryWorks.Any())
             {
-                context.LaboratoryWorks.Add(new LaboratoryWork { LaboratoryWorkId = 1, UserId = 2, Cipher = "pr1", Name = "lr1", Description = "lr1_description", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
-                context.LaboratoryWorks.Add(new LaboratoryWork { LaboratoryWorkId = 2, UserId = 2, Cipher = "pr1", Name = "lr2", Description = "Вывести четные элементы", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
-                context.LaboratoryWorks.Add(new LaboratoryWork { LaboratoryWorkId = 3, TemplateLaboratoryWorkId = 1, UserId = 2, Cipher = "pr1", Name = "lr3", Description = "descrition", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1" });
+                context.LaboratoryWorks.Add(new LaboratoryWork { LaboratoryWorkId = 1, UserId = 2, Name = "lr1", Description = "lr1_description", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
+                context.LaboratoryWorks.Add(new LaboratoryWork { LaboratoryWorkId = 2, UserId = 2, Name = "lr2", Description = "Вывести четные элементы", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
+                context.LaboratoryWorks.Add(new LaboratoryWork { LaboratoryWorkId = 3, TemplateLaboratoryWorkId = 1, UserId = 2, Name = "lr3", Description = "descrition", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1" });
                 context.SaveChanges();
             }
             if (!context.Variants.Any())

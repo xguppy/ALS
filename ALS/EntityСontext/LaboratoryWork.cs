@@ -19,7 +19,6 @@ namespace ALS.EntityСontext
         [StringLength(256, MinimumLength=5)]
         public string Description { get; set; }
         public Evaluation Evaluation { get; set; }
-        public string Cipher { get; set; }
         public int UserId { get; set; }
         [Required]
         [StringLength(256, MinimumLength=5)]

@@ -29,7 +29,7 @@ namespace ALS.Controllers
         public async Task<IActionResult> Get()
         {
             return Ok(await Task.Run(() => _db.LaboratoryWorks
-                .Select(laboratoryWork => new { laboratoryWork.TemplateLaboratoryWorkId, laboratoryWork.Name, laboratoryWork.Description, laboratoryWork.Evaluation, laboratoryWork.Cipher, laboratoryWork.UserId, laboratoryWork.Constraints}).ToList()));
+                .Select(laboratoryWork => new { laboratoryWork.TemplateLaboratoryWorkId, laboratoryWork.Name, laboratoryWork.Description, laboratoryWork.Evaluation, laboratoryWork.DisciplineCipher, laboratoryWork.UserId, laboratoryWork.Constraints}).ToList()));
         }
         
         [HttpGet]
@@ -37,7 +37,7 @@ namespace ALS.Controllers
         {
             var laboratoryWorks = await _db.LaboratoryWorks
                 .Where(laboratoryWork => laboratoryWork.LaboratoryWorkId == laboratoryWorkId)
-                .Select(laboratoryWork => new { laboratoryWork.TemplateLaboratoryWorkId, laboratoryWork.Name, laboratoryWork.Description, laboratoryWork.Evaluation, laboratoryWork.Cipher, laboratoryWork.UserId, laboratoryWork.Constraints})
+                .Select(laboratoryWork => new { laboratoryWork.TemplateLaboratoryWorkId, laboratoryWork.Name, laboratoryWork.Description, laboratoryWork.Evaluation, laboratoryWork.DisciplineCipher, laboratoryWork.UserId, laboratoryWork.Constraints})
                 .FirstAsync();
             if (laboratoryWorks != null)
             {
@@ -50,7 +50,7 @@ namespace ALS.Controllers
         public async Task<IActionResult> Create([FromBody] LaboratoryWorkDTO model)
         {
             var laboratoryWork = 
-                new LaboratoryWork { TemplateLaboratoryWorkId = model.TemplateLaboratoryWorkId, Name = model.Name, Description = model.Description, Evaluation = model.Evaluation, Cipher = model.Cipher, UserId = model.UserId, Constraints = model.Constraints};
+                new LaboratoryWork { TemplateLaboratoryWorkId = model.TemplateLaboratoryWorkId, Name = model.Name, Description = model.Description, Evaluation = model.Evaluation, DisciplineCipher  = model.DisciplineCipher, UserId = model.UserId, Constraints = model.Constraints};
             try
             {
                 await _db.LaboratoryWorks.AddAsync(laboratoryWork);
@@ -79,9 +79,9 @@ namespace ALS.Controllers
                     }
                     laboratoryWorkUpdate.TemplateLaboratoryWorkId = model.TemplateLaboratoryWorkId;
                     laboratoryWorkUpdate.Name = model.Name;
+                    laboratoryWorkUpdate.DisciplineCipher = model.DisciplineCipher;
                     laboratoryWorkUpdate.Description = model.Description;
                     laboratoryWorkUpdate.Evaluation = model.Evaluation;
-                    laboratoryWorkUpdate.Cipher = model.Cipher;
                     laboratoryWorkUpdate.UserId = model.UserId;
                     laboratoryWorkUpdate.Constraints = model.Constraints;
                     _db.LaboratoryWorks.Update(laboratoryWorkUpdate);
