@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Mime;
@@ -30,57 +31,79 @@ namespace ALS.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Check([FromHeader] string sourceCode, [FromHeader]int solutionId)
+        public async Task<IActionResult> Check([FromHeader] string sourceCode, [FromHeader] int variantId, [FromHeader] int userId)
         {
             var userIdentifier = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
-            var solution =
-                await _db.Solutions.Include(sol => sol.Variant).ThenInclude(var => var.LaboratoryWork).Include(sol => sol.TestRuns).FirstOrDefaultAsync(sol => sol.SolutionId == solutionId);
-            sourceCode = HttpUtility.UrlDecode(sourceCode);
-            if (solution != null && userIdentifier == solution.UserId)
+            var variant = await _db.Variants.Include(var => var.LaboratoryWork).FirstOrDefaultAsync(var => var.VariantId == variantId);
+            if (userIdentifier == userId && variant != null)
             {
-                if (solution.IsSolved)
+                var solution =
+                    await _db.Solutions.FirstOrDefaultAsync(sol => sol.VariantId == variantId && sol.UserId == userId && sol.IsSolved);
+                sourceCode = HttpUtility.UrlDecode(sourceCode);
+                if (solution == null)
                 {
-                    return Ok(Environment.CurrentDirectory);
-                }
-                solution.SourceCode = sourceCode;
-                solution.SendDate = DateTime.Now;
-                var sourceCodeFile = Path.Combine(Environment.CurrentDirectory,"sourceCodeUser", $"{ProcessCompiler.CreatePath(solution.Variant.LaboratoryWorkId, solution.VariantId)}.cpp");
-                using (var fileWrite = new StreamWriter(sourceCodeFile))
-                {
-                    await fileWrite.WriteAsync(sourceCode);
-                }
-                var programFileUser =
-                    Path.Combine(Environment.CurrentDirectory,"executeUser", $"{ProcessCompiler.CreatePath(solution.Variant.LaboratoryWorkId, solution.VariantId)}.exe");
-                var programFileModel =
-                    Path.Combine(Environment.CurrentDirectory,"executeModel", $"{ProcessCompiler.CreatePath(solution.Variant.LaboratoryWorkId, solution.VariantId)}.exe");
-                var compiler = new ProcessCompiler(sourceCodeFile, programFileUser);
-                var isCompile = await Task.Run(() =>  compiler.Execute(60000));
-                if (isCompile != true)
-                {
-                    return BadRequest(await compiler.Error.ReadToEndAsync());
-                }
-                System.IO.File.Delete(sourceCodeFile);
-                var gen = new GenFunctions();
-                var inputDatas = gen.GetTestsFromJson(solution.Variant.InputDataRuns);
-                var constrains = JsonConvert.DeserializeObject<CompareData>(solution.Variant.LaboratoryWork.Constraints, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Populate });
-                _db.TestRuns.RemoveRange(solution.TestRuns);
-                solution.IsSolved = true;
-                foreach (var elem in inputDatas)
-                {
-                    var cmp = new CompareModel(programFileModel, programFileUser, elem);
-                    var dataRun = await cmp.Compare(constrains.Time, constrains.Memory);
-                    var testRun = new TestRun {SolutionId = solution.SolutionId, InputData = elem.ToArray(), OutputData = cmp.UserOutput.ToArray(), ResultRun = JsonConvert.SerializeObject(dataRun)};
-                    await _db.TestRuns.AddAsync(testRun);
-                    if (dataRun.IsCorrect != true)
+                    solution = new Solution {SourceCode = sourceCode, VariantId = variantId, UserId = userId, IsSolved = true, SendDate = DateTime.Now};
+                    var sourceCodeFile = Path.Combine(Environment.CurrentDirectory, "sourceCodeUser",
+                        $"{ProcessCompiler.CreatePath(variant.LaboratoryWorkId, variantId)}.cpp");
+                    
+                    using (var fileWrite = new StreamWriter(sourceCodeFile))
                     {
-                        solution.IsSolved = false;
+                        await fileWrite.WriteAsync(sourceCode);
                     }
+
+                    var programFileUser =
+                        Path.Combine(Environment.CurrentDirectory, "executeUser",
+                            $"{ProcessCompiler.CreatePath(variant.LaboratoryWorkId, variantId)}.exe");
+                    
+                    var programFileModel =
+                        Path.Combine(Environment.CurrentDirectory, "executeModel",
+                            $"{ProcessCompiler.CreatePath(variant.LaboratoryWorkId, variantId)}.exe");
+                    
+                    var compiler = new ProcessCompiler(sourceCodeFile, programFileUser);
+                    var isCompile = await Task.Run(() => compiler.Execute(60000));
+                    
+                    if (isCompile != true)
+                    {
+                        return BadRequest(await compiler.Error.ReadToEndAsync());
+                    }
+
+                    System.IO.File.Delete(sourceCodeFile);
+                    
+                    var gen = new GenFunctions();
+                    
+                    var inputDatas = gen.GetTestsFromJson(variant.InputDataRuns);
+                    
+                    var constrains = JsonConvert.DeserializeObject<CompareData>(
+                        variant.LaboratoryWork.Constraints,
+                        new JsonSerializerSettings {DefaultValueHandling = DefaultValueHandling.Populate});
+                    await _db.Solutions.AddAsync(solution);
+                    await _db.SaveChangesAsync();
+                    foreach (var elem in inputDatas)
+                    {
+                        var cmp = new CompareModel(programFileModel, programFileUser, elem);
+                        var dataRun = await cmp.CompareAsync(constrains.Time, constrains.Memory);
+                        var testRun = new TestRun
+                        {
+                            InputData = elem.ToArray(),
+                            OutputData = cmp.UserOutput.ToArray(), 
+                            ResultRun = JsonConvert.SerializeObject(dataRun),
+                            SolutionId = solution.SolutionId
+                        };
+                        await _db.TestRuns.AddAsync(testRun);
+                        
+                        if (dataRun.IsCorrect != true)
+                        {
+                            solution.IsSolved = false;
+                        }
+                    }
+                    System.IO.File.Delete(programFileUser);
+                    
+                    await _db.SaveChangesAsync();
+                    return Ok();
                 }
-                System.IO.File.Delete(programFileUser);
-                _db.Solutions.Update(solution);
-                await _db.SaveChangesAsync();
-                return Ok();
+                return Ok("Solution is solved");
             }
+
             return BadRequest();
         }
     }

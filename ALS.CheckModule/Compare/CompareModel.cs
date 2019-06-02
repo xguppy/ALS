@@ -25,7 +25,7 @@ namespace ALS.CheckModule.Compare
         /// Пользовательский вывод
         /// </summary>
         public List<string> UserOutput => _userOutput;
-        public async Task<CompareData> Compare(int timeMilliseconds, long memory)
+        public async Task<CompareData> CompareAsync(int timeMilliseconds, long memory)
         {
             var okUserProg = false;
             var okModelProg = false;
