@@ -39,6 +39,7 @@ namespace ALS.Controllers
                 if (res == null) return BadRequest("Result of generation is null");
 
                 await _db.Variants.AddAsync(new Variant { LaboratoryWorkId = lrId, Description = res.Template, LinkToModel = res.Code, InputDataRuns = res.Tests });
+                await _db.SaveChangesAsync();
             }
             catch (Exception ex)
             {

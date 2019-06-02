@@ -1,20 +1,20 @@
 ﻿---
 ХРАНИЛИЩЕ_ОБЪЕКТОВ
-выражен1 : _genAE(5);
-код1 : _getAEcode();
+выражен1 : #genAE(5);
+код1 : #getAEcode();
 
-выражен2 : _genAE(5);
-код2 : _getAEcode();
+выражен2 : #genAE(5);
+код2 : #getAEcode();
 
-выражен3 : _genAE(5);
-код3 : _getAEcode();
+выражен3 : #genAE(5);
+код3 : #getAEcode();
 
-выражен4 : _genAE(5);
-код4 : _getAEcode();
+выражен4 : #genAE(5);
+код4 : #getAEcode();
 
-x1 : _rnd(0.0 | 5.0 | double);
-x2 : _rnd( 5.0 | 10.0 | double);
-x3 : _rnd( 10.0 | 15.0 | double);
+x1 : #rnd(0.0 | 5.0 | double);
+x2 : #rnd( 5.0 | 10.0 | double);
+x3 : #rnd( 10.0 | 15.0 | double);
 
 ---
 ШАБЛОННЫЙ_ВИД
@@ -56,7 +56,9 @@ int main()
         (код4);
     }
 
-    cout << var;
+    cout << var << "\n";
+
+    system("pause");
 
     return 0;
 
@@ -68,7 +70,7 @@ int main()
 
 ---
 ТЕСТОВЫЕ_ДАННЫЕ
-тест1 : _rnd((x1) | 20.0 | double | 10);
-тест2 : _rnd((x1) | 20.0 | double | 10);
+тест1 : #rnd((x1) | 20.0 | double | 10);
+тест2 : #rnd((x1) | 20.0 | double | 10);
 тест3 : 1,2,3,4,5,6,7,8,9,10;
 ---

@@ -24,7 +24,7 @@ namespace ALS.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetAll()
         {
             return Ok(await _db.TemplateLaboratoryWorks.Select(twl => new { twl.TemplateTask }).ToListAsync());
         }
@@ -38,7 +38,6 @@ namespace ALS.Controllers
                 return Ok(new { twl.TemplateTask });
             }
             return NotFound();
-            //return (twl != null) ? NotFound() : Ok(new { twl.TemplateTask} );
         }
 
 
@@ -47,7 +46,7 @@ namespace ALS.Controllers
         {
             if (!System.IO.File.Exists(new Uri(uriToTemplate).AbsolutePath))
             {
-                return BadRequest();
+                return NotFound($"File {uriToTemplate} Not Found");
             }
 
             try
@@ -72,6 +71,7 @@ namespace ALS.Controllers
                 try
                 {
                     _db.TemplateLaboratoryWorks.Remove(template);
+                    await _db.SaveChangesAsync();
                 }
                 catch (DbUpdateException ex)
                 {
@@ -86,6 +86,11 @@ namespace ALS.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(int templateId, string uriToTemplate)
         {
+            if (!System.IO.File.Exists(new Uri(uriToTemplate).AbsolutePath))
+            {
+                return NotFound($"File {uriToTemplate} Not Found");
+            }
+
             var template = await _db.TemplateLaboratoryWorks.FirstOrDefaultAsync(twl => twl.TemplateLaboratoryWorkId == templateId);
             if (template != null)
             {
