@@ -8,6 +8,7 @@ namespace ALS.EntityСontext
     {
         public int VariantId { get; set; }
         public int LaboratoryWorkId { get; set; }
+        public int VariantNumber { get; set; }
         [StringLength(1024 ,MinimumLength=5)]
         public string Description { get; set; }
         [Url]

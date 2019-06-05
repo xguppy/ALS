@@ -64,6 +64,11 @@ namespace ALS.Controllers
                     
                     if (isCompile != true)
                     {
+                        var lastSol = await _db.Solutions.OrderBy(sol => sol.SolutionId).LastOrDefaultAsync(sol => sol.UserId == userId) ??
+                                      solution;
+                        lastSol.CompilerFailsNumbers++;
+                        await _db.Solutions.AddAsync(solution);
+                        await _db.SaveChangesAsync();
                         return BadRequest(await compiler.Error.ReadToEndAsync());
                     }
 

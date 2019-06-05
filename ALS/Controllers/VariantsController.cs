@@ -32,7 +32,7 @@ namespace ALS.Controllers
             var userId = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
             if (await _db.LaboratoryWorks.Where(w => w.LaboratoryWorkId == labId && w.UserId == userId).FirstOrDefaultAsync() != null)
             {
-                return Ok(await Task.Run(() => _db.Variants.Where(v => v.LaboratoryWorkId == labId).Select(v => new { v.VariantId, v.LaboratoryWorkId, v.Description, v.Solutions, v.LinkToModel }).ToList()));
+                return Ok(await Task.Run(() => _db.Variants.Where(v => v.LaboratoryWorkId == labId).Select(v => new {v.VariantNumber, v.VariantId, v.LaboratoryWorkId, v.Description, v.Solutions, v.LinkToModel }).ToList()));
             }
 
             return BadRequest();
@@ -48,7 +48,7 @@ namespace ALS.Controllers
                 var variant = await _db.Variants.FirstOrDefaultAsync(v => v.VariantId == variantId);
                 if (variant != null)
                 {
-                    return Ok(await _db.Variants.Where(v => v.VariantId == variantId).Select(v => new { v.VariantId, v.LaboratoryWorkId, v.Description, v.Solutions, v.LinkToModel }).FirstAsync());
+                    return Ok(await _db.Variants.Where(v => v.VariantId == variantId).Select(v => new {v.VariantNumber, v.VariantId, v.LaboratoryWorkId, v.Description, v.Solutions, v.LinkToModel }).FirstAsync());
                 }
                 return NotFound();
             }
@@ -63,7 +63,7 @@ namespace ALS.Controllers
 
             if (await _db.Variants.Include(v => v.LaboratoryWork).Where(v => v.LaboratoryWork.UserId == userId && v.LaboratoryWorkId == model.LaboratoryWorkId).FirstOrDefaultAsync() != null)
             {
-                Variant variant = new Variant { VariantId = model.VariantId, LaboratoryWorkId = model.LaboratoryWorkId, Description = model.Description, LinkToModel = model.LinkToModel, InputDataRuns = model.InputDataRuns };
+                Variant variant = new Variant {VariantNumber = model.VariantNumber,VariantId = model.VariantId, LaboratoryWorkId = model.LaboratoryWorkId, Description = model.Description, LinkToModel = model.LinkToModel, InputDataRuns = model.InputDataRuns };
                 try
                 {
                     await _db.Variants.AddAsync(variant);
@@ -95,7 +95,7 @@ namespace ALS.Controllers
                         variantUpdate.LaboratoryWorkId = model.LaboratoryWorkId;
                         variantUpdate.InputDataRuns = model.InputDataRuns;
                         variantUpdate.LinkToModel = model.LinkToModel;
-
+                        variantUpdate.VariantNumber = model.VariantNumber;
                         _db.Variants.Update(variantUpdate);
                         await _db.SaveChangesAsync();
                     }
