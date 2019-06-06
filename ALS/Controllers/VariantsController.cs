@@ -32,10 +32,10 @@ namespace ALS.Controllers
             var userId = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
             if (await _db.LaboratoryWorks.Where(w => w.LaboratoryWorkId == labId && w.UserId == userId).FirstOrDefaultAsync() != null)
             {
-                return Ok(await Task.Run(() => _db.Variants.Where(v => v.LaboratoryWorkId == labId).Select(v => new {v.VariantNumber, v.VariantId, v.LaboratoryWorkId, v.Description, v.Solutions, v.LinkToModel }).ToList()));
+                return Ok(await Task.Run(() => _db.Variants.Where(v => v.LaboratoryWorkId == labId).Select(v => new {v.VariantNumber, v.LaboratoryWorkId, v.Description, v.LinkToModel }).ToList()));
             }
 
-            return BadRequest();
+            return BadRequest("Not Privilege");
         }
 
         [HttpGet]
@@ -48,12 +48,12 @@ namespace ALS.Controllers
                 var variant = await _db.Variants.FirstOrDefaultAsync(v => v.VariantId == variantId);
                 if (variant != null)
                 {
-                    return Ok(await _db.Variants.Where(v => v.VariantId == variantId).Select(v => new {v.VariantNumber, v.VariantId, v.LaboratoryWorkId, v.Description, v.Solutions, v.LinkToModel }).FirstAsync());
+                    return Ok(await _db.Variants.Where(v => v.VariantId == variantId).Select(v => new {v.VariantNumber, v.LaboratoryWorkId, v.Description, v.LinkToModel }).FirstAsync());
                 }
-                return NotFound();
+                return NotFound("Variant not found");
             }
 
-            return BadRequest();
+            return BadRequest("Not Privilege");
         }
 
         [HttpPost]
@@ -63,7 +63,7 @@ namespace ALS.Controllers
 
             if (await _db.Variants.Include(v => v.LaboratoryWork).Where(v => v.LaboratoryWork.UserId == userId && v.LaboratoryWorkId == model.LaboratoryWorkId).FirstOrDefaultAsync() != null)
             {
-                Variant variant = new Variant {VariantNumber = model.VariantNumber,VariantId = model.VariantId, LaboratoryWorkId = model.LaboratoryWorkId, Description = model.Description, LinkToModel = model.LinkToModel, InputDataRuns = model.InputDataRuns };
+                Variant variant = new Variant {VariantNumber = model.VariantNumber, LaboratoryWorkId = model.LaboratoryWorkId, Description = model.Description, LinkToModel = model.LinkToModel, InputDataRuns = model.InputDataRuns };
                 try
                 {
                     await _db.Variants.AddAsync(variant);
@@ -75,17 +75,17 @@ namespace ALS.Controllers
                 }
                 return Ok(model);
             }
-            return BadRequest();
+            return BadRequest("Not Privilege");
         }
 
         [HttpPost]
-        public async Task<IActionResult> Update([FromBody] VariantDTO model)
+        public async Task<IActionResult> Update([FromBody] VariantDTO model, [FromHeader] int varId)
         {
             var userId = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
 
             if (await _db.Variants.Include(v => v.LaboratoryWork).Where(v => v.LaboratoryWork.UserId == userId && v.LaboratoryWorkId == model.LaboratoryWorkId).FirstOrDefaultAsync() != null)
             {
-                var variantUpdate = await _db.Variants.FirstOrDefaultAsync(v => v.VariantId == model.VariantId);
+                var variantUpdate = await _db.Variants.FirstOrDefaultAsync(v => v.VariantId == varId);
 
                 if (variantUpdate != null)
                 {
@@ -105,10 +105,10 @@ namespace ALS.Controllers
                     }
                     return Ok();
                 }
-                return NotFound();
+                return NotFound("Variant not found");
             }
 
-            return BadRequest();
+            return BadRequest("Not Privilege");
         }
 
         [HttpPost]
@@ -132,10 +132,10 @@ namespace ALS.Controllers
                     }
                     return Ok();
                 }
-                return NotFound();
+                return NotFound("Variant not found");
             }
 
-            return BadRequest();
+            return BadRequest("Not Privilege");
         }
     }
 }

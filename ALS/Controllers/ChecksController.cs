@@ -109,7 +109,7 @@ namespace ALS.Controllers
                 return Ok("Solution is solved");
             }
 
-            return BadRequest();
+            return BadRequest("Not Privilege");
         }
     }
 }

@@ -39,7 +39,7 @@ namespace ALS.Controllers
             {
                 return Ok(await _db.Specialties.Where(s => s.Code == Code).Select(s => new { s.Code, s.Name }).FirstAsync());
             }
-            return NotFound();
+            return NotFound("Speciality not found");
         }
 
         [HttpPost]
@@ -77,7 +77,7 @@ namespace ALS.Controllers
                 }
                 return Ok();
             }
-            return NotFound();
+            return NotFound("Speciality not found");
         }
 
         [HttpPost]
@@ -97,7 +97,7 @@ namespace ALS.Controllers
                 }
                 return Ok();
             }
-            return NotFound();
+            return NotFound("Speciality not found");
         }
     }
 }

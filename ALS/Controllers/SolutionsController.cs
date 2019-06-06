@@ -31,7 +31,18 @@ namespace ALS.Controllers
                 return Ok(await Task.Run(() => _db.Solutions.Where(v => v.VariantId == varId).Select(v => new { v.SendDate, v.SourceCode, v.IsSolved  }).ToList()));
             }
 
-            return BadRequest();
+            return BadRequest("Not Privilege");
+        }
+        
+        [HttpGet]
+        public async Task<IActionResult> GetByUser(int varId, int userId)
+        {
+            if (await _db.Variants.Where(w => w.VariantId == varId).FirstOrDefaultAsync() != null && await _db.Users.Where(u => u.Id == userId).FirstOrDefaultAsync() != null)
+            {
+                return Ok(await Task.Run(() => _db.Solutions.Where(v => v.VariantId == varId && v.UserId == userId).Select(v => new { v.SendDate, v.SourceCode, v.IsSolved  }).ToList()));
+            }
+
+            return BadRequest("Not Privilege");
         }
         
         [HttpGet]
@@ -43,7 +54,7 @@ namespace ALS.Controllers
             {
                 return Ok(await _db.Solutions.Where(v => v.SolutionId == solutionId).Select(v => new { v.SendDate, v.SourceCode, v.IsSolved  }).FirstAsync());
             }
-            return NotFound();
+            return NotFound("Solution not found");
         }
         
         [HttpPost]
@@ -86,7 +97,7 @@ namespace ALS.Controllers
                 }
                 return Ok();
             }
-            return NotFound();
+            return NotFound("Solution not found");
         }
         
         [HttpPost]
@@ -106,7 +117,7 @@ namespace ALS.Controllers
                 }
                 return Ok();
             }
-            return NotFound();
+            return NotFound("Solution not found");
         }
     }
 }

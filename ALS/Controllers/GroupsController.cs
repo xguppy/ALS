@@ -26,7 +26,7 @@ namespace ALS.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            return Ok(await Task.Run(() => _db.Groups.Select(group => new { group.Name, group.Year, group.SpecialityId}).ToList()));
+            return Ok(await Task.Run(() => _db.Groups.Select(group => new { group.Name, group.Year, group.SpecialtyId}).ToList()));
         }
         
         [HttpGet]
@@ -34,19 +34,19 @@ namespace ALS.Controllers
         {
             var groups = await _db.Groups
                 .Where(group => group.GroupId == groupId)
-                .Select(group => new {group.Name, group.Year, group.SpecialityId})
+                .Select(group => new {group.Name, group.Year, group.SpecialtyId})
                 .FirstAsync();
             if (groups != null)
             {
                 return Ok(groups);
             }
-            return NotFound();
+            return NotFound("Group not found");
         }
         
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] GroupDTO model)
         {
-            var group = new Group { Name = model.Name, Year = model.Year, SpecialityId = model.SpecialityId};
+            var group = new Group { Name = model.Name, Year = model.Year, SpecialtyId = model.SpecialityId};
             try
             {
                 await _db.Groups.AddAsync(group);
@@ -71,7 +71,7 @@ namespace ALS.Controllers
                 {
                     groupUpdate.Name = model.Name;
                     groupUpdate.Year = model.Year;
-                    groupUpdate.SpecialityId = model.SpecialityId;
+                    groupUpdate.SpecialtyId = model.SpecialityId;
                     _db.Groups.Update(groupUpdate);
                     await _db.SaveChangesAsync();
                 }
@@ -81,7 +81,7 @@ namespace ALS.Controllers
                 }
                 return Ok();
             }
-            return NotFound();
+            return NotFound("Group not found");
         }
         
         [HttpPost]
@@ -101,7 +101,7 @@ namespace ALS.Controllers
                 }
                 return Ok();
             }
-            return NotFound();
+            return NotFound("Group not found");
         }
         
     }

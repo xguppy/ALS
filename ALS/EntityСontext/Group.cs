@@ -12,7 +12,7 @@ namespace ALS.EntityСontext
         [Required]
         [Range(2019, 2100)]
         public int Year { get; set; }
-        public string SpecialityId { get; set; }
+        public string SpecialtyId { get; set; }
         public List<User> Users { get; set; }
         public Specialty Specialty { get; set; }
     }
