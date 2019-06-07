@@ -29,13 +29,21 @@ rectangle ALS {
     ("Редактировать работу") as EditWork
     ("Удалить работу") as DeleteWork
     ("Управление вариантами") as VariantManage
+    ("Управление шаблонами") as TemplateManage
     ("Сгенерировать по шаблону") as GenerateVariant
     ("Создать вариант") as CreateVariant
     ("Редактировать вариант") as EditVariant
     ("Удалить вариант") as DeleteVariant
     ("Назнaчить вариант студенту") as SetVariantToStudent
+    ("Создать шаблон") as TemplateCreate
+    ("Редактировать шаблон") as TemplateUpdate
+    ("удалить шаблон") as TemplateDelete
 
     Teacher -> WorkManage
+    Teacher -> TemplateManage
+    TemplateManage <-- TemplateCreate
+    TemplateManage <-- TemplateUpdate
+    TemplateManage <-- TemplateDelete
     WorkManage <-- CreateWork
     WorkManage <-- EditWork
     WorkManage <-- DeleteWork
