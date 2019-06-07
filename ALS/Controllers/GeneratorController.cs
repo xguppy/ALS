@@ -38,7 +38,7 @@ namespace ALS.Controllers
                 var res = await _gen.Run(new Uri(tlwPath).AbsolutePath, lrId, var);
                 if (res == null) return BadRequest("Result of generation is null");
 
-                await _db.Variants.AddAsync(new Variant { LaboratoryWorkId = lrId, Description = res.Template, LinkToModel = res.Code, InputDataRuns = res.Tests });
+                await _db.Variants.AddAsync(new Variant { LaboratoryWorkId = lrId, VariantNumber = var, Description = res.Template, LinkToModel = res.Code, InputDataRuns = res.Tests });
                 await _db.SaveChangesAsync();
             }
             catch (Exception ex)
