@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using ALS.EntityСontext;
 using Generator.MainGen;
+using Generator.Parsing;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,12 +16,13 @@ namespace ALS.Controllers
     //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Student")]
     public class GeneratorController : Controller
     {
-        private Gen _gen = new Gen();
+        private Gen _gen;
         private ApplicationContext _db;
 
-        public GeneratorController(ApplicationContext db)
+        public GeneratorController(ApplicationContext db, IParser pr)
         {
             _db = db;
+            _gen = new Gen(pr);
         }
 
         // Подумать над вариантом - откуда брать
@@ -38,7 +40,7 @@ namespace ALS.Controllers
                 var res = await _gen.Run(new Uri(tlwPath).AbsolutePath, lrId, var);
                 if (res == null) return BadRequest("Result of generation is null");
 
-                await _db.Variants.AddAsync(new Variant { LaboratoryWorkId = lrId, VariantNumber = var, Description = res.Template, LinkToModel = res.Code, InputDataRuns = res.Tests });
+                _db.Variants.Add(new Variant { LaboratoryWorkId = lrId, VariantNumber = var, Description = res.Template, LinkToModel = res.Code, InputDataRuns = res.Tests });
                 await _db.SaveChangesAsync();
             }
             catch (Exception ex)

@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace Generator.Parsing
 {
-    class Parser
+    public class Parser : IParser
     {
         /*названия блоков*/
         private const string _storage = "ХРАНИЛИЩЕ_ОБЪЕКТОВ";

@@ -16,6 +16,7 @@ using System.Linq;
 using ALS.AntiPlagModule.Services;
 using ALS.AntiPlagModule.Services.LexerService;
 using ALS.AntiPlagModule.Services.LexerFactory;
+using Generator.Parsing;
 
 namespace ALS
 {
@@ -38,6 +39,8 @@ namespace ALS
 
             services.AddSingleton<IAuthService>(new AuthService(Configuration));
             services.AddSingleton<ILexer>(new CppLexer(new CppLexerFactory()));
+
+            services.AddScoped<IParser, Parser>();
             
             services
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

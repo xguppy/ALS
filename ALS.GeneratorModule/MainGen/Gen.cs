@@ -13,9 +13,14 @@ namespace Generator.MainGen
 {
     public class Gen
     {
-        private Parser _pr = new Parser();
+        private IParser _pr;
         private List<Pair<string, string>> _generated;
         private GenFunctions _genFunctions = new GenFunctions();
+
+        public Gen(IParser pr)
+        {
+            _pr = pr;
+        }
 
         // Выполнение необходимой функции (указаны в файле GenFunctions)
         private string CheckF(string str)
