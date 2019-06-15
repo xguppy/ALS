@@ -64,12 +64,12 @@ namespace ALS.Controllers
                     
                     if (isCompile != true)
                     {
-                        var lastSol = await _db.Solutions.OrderBy(sol => sol.SolutionId).LastOrDefaultAsync(sol => sol.UserId == userId) ??
+                        var lastSol = await _db.Solutions.OrderBy(sol => sol.SolutionId).LastOrDefaultAsync(sol => sol.UserId == userId && sol.VariantId == variantId) ??
                                       solution;
                         lastSol.CompilerFailsNumbers++;
-                        await _db.Solutions.AddAsync(solution);
+                        _db.Solutions.Update(lastSol);
                         await _db.SaveChangesAsync();
-                        return BadRequest(await compiler.Error.ReadToEndAsync());
+                        return BadRequest(compiler.CompileState);
                     }
 
                     System.IO.File.Delete(sourceCodeFile);
@@ -83,6 +83,7 @@ namespace ALS.Controllers
                         new JsonSerializerSettings {DefaultValueHandling = DefaultValueHandling.Populate});
                     await _db.Solutions.AddAsync(solution);
                     await _db.SaveChangesAsync();
+                    var errorsRuns = default(int);
                     foreach (var elem in inputDatas)
                     {
                         var cmp = new CompareModel(programFileModel, programFileUser, elem);
@@ -98,13 +99,14 @@ namespace ALS.Controllers
                         
                         if (dataRun.IsCorrect != true)
                         {
+                            ++errorsRuns;
                             solution.IsSolved = false;
                         }
                     }
                     System.IO.File.Delete(programFileUser);
-                    
                     await _db.SaveChangesAsync();
-                    return Ok();
+                    return Ok($"{inputDatas.Count - errorsRuns}/{inputDatas.Count} runs complete");
+
                 }
                 return Ok("Solution is solved");
             }

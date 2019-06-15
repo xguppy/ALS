@@ -30,6 +30,10 @@ namespace ALS.CheckModule.Processes
             => $"code_lr{lab}_var{var}";
         
         /// <summary>
+        /// Информация о компиляции
+        /// </summary>
+        public string CompileState { get; private set; }
+        /// <summary>
         /// Запуск компиляции
         /// </summary>
         /// <param name="timeMilliseconds">Время исполнения</param>
@@ -40,10 +44,10 @@ namespace ALS.CheckModule.Processes
             {
                 InitExecute();
                 result = AppProcess.WaitForExit(timeMilliseconds);
-                var err = Error.ReadToEnd();
-                if (!String.IsNullOrEmpty(err))
+                CompileState = Error.ReadToEnd();
+                if (!String.IsNullOrEmpty(CompileState))
                 {
-                    throw new Exception(err);
+                    result = false;
                 }
             }
             return result;
