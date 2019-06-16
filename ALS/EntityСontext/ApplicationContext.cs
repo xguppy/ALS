@@ -38,6 +38,9 @@ namespace ALS.EntityСontext
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email)
                 .IsUnique();
+            modelBuilder.Entity<Group>()
+                .HasIndex(g => new {g.Name, g.Year})
+                .IsUnique();
             modelBuilder.Entity<Variant>()
                 .HasIndex(var => new {var.VariantNumber, var.LaboratoryWorkId})
                 .IsUnique();

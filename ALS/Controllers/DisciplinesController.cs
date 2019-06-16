@@ -32,7 +32,7 @@ namespace ALS.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get(string cipher)
+        public async Task<IActionResult> Get([FromHeader] string cipher)
         {
             var discipline = await _db.Disciplines.FirstOrDefaultAsync(d => d.Cipher == cipher);
             if (discipline != null)
@@ -81,7 +81,7 @@ namespace ALS.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(string cipher)
+        public async Task<IActionResult> Delete([FromHeader] string cipher)
         {
             var discipline = await _db.Disciplines.FirstOrDefaultAsync(d => d.Cipher == cipher);
             if (discipline != null)

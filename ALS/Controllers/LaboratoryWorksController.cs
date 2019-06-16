@@ -26,19 +26,19 @@ namespace ALS.Controllers
         }
         
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetAll()
         {
             return Ok(await Task.Run(() => _db.LaboratoryWorks
                 .Select(laboratoryWork => new { laboratoryWork.TemplateLaboratoryWorkId, laboratoryWork.Name, laboratoryWork.Description, laboratoryWork.Evaluation, laboratoryWork.DisciplineCipher, laboratoryWork.UserId, laboratoryWork.Constraints}).ToList()));
         }
         
         [HttpGet]
-        public async Task<IActionResult> Get(int laboratoryWorkId)
+        public async Task<IActionResult> Get([FromHeader] int laboratoryWorkId)
         {
             var laboratoryWorks = await _db.LaboratoryWorks
                 .Where(laboratoryWork => laboratoryWork.LaboratoryWorkId == laboratoryWorkId)
                 .Select(laboratoryWork => new { laboratoryWork.TemplateLaboratoryWorkId, laboratoryWork.Name, laboratoryWork.Description, laboratoryWork.Evaluation, laboratoryWork.DisciplineCipher, laboratoryWork.UserId, laboratoryWork.Constraints})
-                .FirstAsync();
+                .FirstOrDefaultAsync();
             if (laboratoryWorks != null)
             {
                 return Ok(laboratoryWorks);
@@ -65,7 +65,7 @@ namespace ALS.Controllers
         
         
         [HttpPost]
-        public async Task<IActionResult> Update([FromBody] LaboratoryWorkDTO model, int laboratoryWorkId)
+        public async Task<IActionResult> Update([FromBody] LaboratoryWorkDTO model, [FromHeader] int laboratoryWorkId)
         {
             var laboratoryWorkUpdate = await _db.LaboratoryWorks.FirstOrDefaultAsync(laboratoryWork => laboratoryWork.LaboratoryWorkId == laboratoryWorkId);
             var curUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
@@ -97,7 +97,7 @@ namespace ALS.Controllers
         }
         
         [HttpPost]
-        public async Task<IActionResult> Delete(int laboratoryWorkId)
+        public async Task<IActionResult> Delete([FromHeader] int laboratoryWorkId)
         {
             var laboratoryWorkDelete = await _db.LaboratoryWorks.FirstOrDefaultAsync(laboratoryWork => laboratoryWork.LaboratoryWorkId == laboratoryWorkId);
             var curUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);

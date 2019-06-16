@@ -24,18 +24,18 @@ namespace ALS.Controllers
         }
         
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetAll()
         {
             return Ok(await Task.Run(() => _db.Groups.Select(group => new { group.Name, group.Year, group.SpecialtyId}).ToList()));
         }
         
         [HttpGet]
-        public async Task<IActionResult> Get(int groupId)
+        public async Task<IActionResult> Get([FromHeader] int groupId)
         {
             var groups = await _db.Groups
                 .Where(group => group.GroupId == groupId)
                 .Select(group => new {group.Name, group.Year, group.SpecialtyId})
-                .FirstAsync();
+                .FirstOrDefaultAsync();
             if (groups != null)
             {
                 return Ok(groups);
@@ -61,7 +61,7 @@ namespace ALS.Controllers
         
         
         [HttpPost]
-        public async Task<IActionResult> Update([FromBody] GroupDTO model, int groupId)
+        public async Task<IActionResult> Update([FromBody] GroupDTO model, [FromHeader] int groupId)
         {
             var groupUpdate = await _db.Groups.FirstOrDefaultAsync(group => group.GroupId == groupId);
 
@@ -85,7 +85,7 @@ namespace ALS.Controllers
         }
         
         [HttpPost]
-        public async Task<IActionResult> Delete(int groupId)
+        public async Task<IActionResult> Delete([FromHeader] int groupId)
         {
             var group = await _db.Groups.FirstOrDefaultAsync(g => g.GroupId == groupId);
             if (group != null)

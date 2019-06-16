@@ -169,6 +169,20 @@ namespace ALS
                 context.Disciplines.Add(new Discipline { Name = "Programming", Cipher = "pr1" });
                 context.SaveChanges();
             }
+
+            if (!context.Specialties.Any())
+            {
+                var softwareEngineering = new Specialty { Name = "Программная инженерия", Code = "09.03.04" };
+                var computerScienceAndComputing = new Specialty
+                    { Name = "Информатика и вычислительная техника", Code = "09.03.01" };
+                context.Specialties.Add(softwareEngineering);
+                context.Specialties.Add(computerScienceAndComputing);
+                
+                context.Groups.Add(new Group { GroupId = 1, Name = "ДИПР-31", Year = 2019, Specialty = softwareEngineering} );
+                context.Groups.Add(new Group
+                    { GroupId = 2, Name = "ДИНР-31", Year = 2019, Specialty = computerScienceAndComputing} );
+            }
+
             if (!context.TemplateLaboratoryWorks.Any())
             {
                 context.TemplateLaboratoryWorks.Add(new TemplateLaboratoryWork { TemplateTask = @"file:///C:/Users/kampukter/source/repos/ALS/ALS.GeneratorModule/Docs/Exp.txt" });

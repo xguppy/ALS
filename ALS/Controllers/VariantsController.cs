@@ -27,7 +27,7 @@ namespace ALS.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(int labId)
+        public async Task<IActionResult> GetAll([FromHeader] int labId)
         {
             var userId = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
             if (await _db.LaboratoryWorks.Where(w => w.LaboratoryWorkId == labId && w.UserId == userId).FirstOrDefaultAsync() != null)
@@ -39,7 +39,7 @@ namespace ALS.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get(int variantId)
+        public async Task<IActionResult> Get([FromHeader] int variantId)
         {
             var userId = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
 
@@ -112,7 +112,7 @@ namespace ALS.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(int variantId)
+        public async Task<IActionResult> Delete([FromHeader] int variantId)
         {
             var userId = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
 

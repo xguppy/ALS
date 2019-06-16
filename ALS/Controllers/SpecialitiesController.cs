@@ -26,13 +26,13 @@ namespace ALS.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetAll()
         {
             return Ok(await Task.Run(() => _db.Specialties.Select(s => new { s.Code, s.Name }).ToList()));
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get(string Code)
+        public async Task<IActionResult> Get([FromHeader] string Code)
         {
             var speciality = await _db.Specialties.FirstOrDefaultAsync(s => s.Code == Code);
             if (speciality != null)
@@ -81,7 +81,7 @@ namespace ALS.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(string Code)
+        public async Task<IActionResult> Delete([FromHeader] string Code)
         {
             var speciality = await _db.Specialties.FirstOrDefaultAsync(s => s.Code == Code);
             if (speciality != null)
