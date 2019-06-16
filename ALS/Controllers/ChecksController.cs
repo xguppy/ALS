@@ -66,6 +66,7 @@ namespace ALS.Controllers
                     {
                         var lastSol = await _db.Solutions.OrderBy(sol => sol.SolutionId).LastOrDefaultAsync(sol => sol.UserId == userId && sol.VariantId == variantId) ??
                                       solution;
+                        lastSol.IsSolved = false;
                         lastSol.CompilerFailsNumbers++;
                         _db.Solutions.Update(lastSol);
                         await _db.SaveChangesAsync();
