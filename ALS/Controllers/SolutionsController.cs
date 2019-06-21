@@ -24,11 +24,11 @@ namespace ALS.Controllers
         }
         
         [HttpGet]
-        public async Task<IActionResult> GetAll(int varId)
+        public async Task<IActionResult> GetAll([FromHeader] int varId)
         {
             if (await _db.Variants.Where(w => w.VariantId == varId).FirstOrDefaultAsync() != null)
             {
-                return Ok(await Task.Run(() => _db.Solutions.Where(v => v.VariantId == varId).Select(v => new { v.SendDate, v.SourceCode, v.IsSolved  }).ToList()));
+                return Ok(await Task.Run(() => _db.Solutions.Where(v => v.VariantId == varId).Select(v => new { v.SendDate, v.CompilerFailsNumbers, v.SourceCode, v.IsSolved  }).ToList()));
             }
 
             return BadRequest("Not Privilege");
@@ -39,7 +39,7 @@ namespace ALS.Controllers
         {
             if (await _db.Variants.Where(w => w.VariantId == varId).FirstOrDefaultAsync() != null && await _db.Users.Where(u => u.Id == userId).FirstOrDefaultAsync() != null)
             {
-                return Ok(await Task.Run(() => _db.Solutions.Where(v => v.VariantId == varId && v.UserId == userId).Select(v => new { v.SendDate, v.SourceCode, v.IsSolved  }).ToList()));
+                return Ok(await Task.Run(() => _db.Solutions.Where(v => v.VariantId == varId && v.UserId == userId).Select(v => new { v.SendDate, v.CompilerFailsNumbers, v.SourceCode, v.IsSolved  }).ToList()));
             }
 
             return BadRequest("Not Privilege");
@@ -52,7 +52,7 @@ namespace ALS.Controllers
             var variant = await _db.Solutions.FirstOrDefaultAsync(v => v.VariantId == solutionId);
             if (variant != null)
             {
-                return Ok(await _db.Solutions.Where(v => v.SolutionId == solutionId).Select(v => new { v.SendDate, v.SourceCode, v.IsSolved  }).FirstAsync());
+                return Ok(await _db.Solutions.Where(v => v.SolutionId == solutionId).Select(v => new { v.SendDate, v.CompilerFailsNumbers, v.SourceCode, v.IsSolved  }).FirstAsync());
             }
             return NotFound("Solution not found");
         }
