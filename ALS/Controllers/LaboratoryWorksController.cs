@@ -29,7 +29,7 @@ namespace ALS.Controllers
         public async Task<IActionResult> GetAll()
         {
             return Ok(await Task.Run(() => _db.LaboratoryWorks
-                .Select(laboratoryWork => new { laboratoryWork.TemplateLaboratoryWorkId, laboratoryWork.Name, laboratoryWork.Description, laboratoryWork.Evaluation, laboratoryWork.DisciplineCipher, laboratoryWork.UserId, laboratoryWork.Constraints}).ToList()));
+                .Select(laboratoryWork => new { laboratoryWork.TemplateLaboratoryWorkId, laboratoryWork.ThemeId, laboratoryWork.Name, laboratoryWork.Description, laboratoryWork.Evaluation, laboratoryWork.DisciplineCipher, laboratoryWork.UserId, laboratoryWork.Constraints}).ToList()));
         }
         
         [HttpGet]
@@ -37,7 +37,7 @@ namespace ALS.Controllers
         {
             var laboratoryWorks = await _db.LaboratoryWorks
                 .Where(laboratoryWork => laboratoryWork.LaboratoryWorkId == laboratoryWorkId)
-                .Select(laboratoryWork => new { laboratoryWork.TemplateLaboratoryWorkId, laboratoryWork.Name, laboratoryWork.Description, laboratoryWork.Evaluation, laboratoryWork.DisciplineCipher, laboratoryWork.UserId, laboratoryWork.Constraints})
+                .Select(laboratoryWork => new { laboratoryWork.TemplateLaboratoryWorkId, laboratoryWork.ThemeId, laboratoryWork.Name, laboratoryWork.Description, laboratoryWork.Evaluation, laboratoryWork.DisciplineCipher, laboratoryWork.UserId, laboratoryWork.Constraints})
                 .FirstOrDefaultAsync();
             if (laboratoryWorks != null)
             {
@@ -50,7 +50,14 @@ namespace ALS.Controllers
         public async Task<IActionResult> Create([FromBody] LaboratoryWorkDTO model)
         {
             var laboratoryWork = 
-                new LaboratoryWork { TemplateLaboratoryWorkId = model.TemplateLaboratoryWorkId, Name = model.Name, Description = model.Description, Evaluation = model.Evaluation, DisciplineCipher  = model.DisciplineCipher, UserId = model.UserId, Constraints = model.Constraints};
+                new LaboratoryWork { TemplateLaboratoryWorkId = model.TemplateLaboratoryWorkId, ThemeId = model.ThemeId, Name = model.Name, Description = model.Description, Evaluation = model.Evaluation, DisciplineCipher  = model.DisciplineCipher, UserId = model.UserId, Constraints = model.Constraints};
+
+            if (laboratoryWork.TemplateLaboratoryWorkId != null &&
+                laboratoryWork.ThemeId != _db.TemplateLaboratoryWorks.FirstOrDefault(x => x.TemplateLaboratoryWorkId == laboratoryWork.TemplateLaboratoryWorkId).ThemeId)
+            {
+                return BadRequest("Theme of laboratory work not equal theme TemplateLaboratoryWork");
+            }
+
             try
             {
                 await _db.LaboratoryWorks.AddAsync(laboratoryWork);
@@ -71,6 +78,12 @@ namespace ALS.Controllers
             var curUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             if (laboratoryWorkUpdate != null)
             {
+                if (model.TemplateLaboratoryWorkId != null &&
+                model.ThemeId != _db.TemplateLaboratoryWorks.FirstOrDefault(x => x.TemplateLaboratoryWorkId == model.TemplateLaboratoryWorkId).ThemeId)
+                {
+                    return BadRequest("Theme of laboratory work not equal theme TemplateLaboratoryWork");
+                }
+
                 try
                 {
                     if (curUserId != laboratoryWorkUpdate.UserId)
@@ -78,6 +91,7 @@ namespace ALS.Controllers
                         throw new Exception("No access to edit this lab");
                     }
                     laboratoryWorkUpdate.TemplateLaboratoryWorkId = model.TemplateLaboratoryWorkId;
+                    laboratoryWorkUpdate.ThemeId = model.ThemeId;
                     laboratoryWorkUpdate.Name = model.Name;
                     laboratoryWorkUpdate.DisciplineCipher = model.DisciplineCipher;
                     laboratoryWorkUpdate.Description = model.Description;

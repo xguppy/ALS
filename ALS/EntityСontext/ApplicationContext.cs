@@ -17,7 +17,7 @@ namespace ALS.EntityСontext
         public DbSet<Role> Roles { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<AntiplagiatStat> AntiplagiatStats { get; set; }
-
+        public DbSet<Theme> Themes { get; set; }
 
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)

@@ -7,7 +7,7 @@ using ALS.EntityСontext;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-
+using ALS.DTO;
 
 namespace ALS.Controllers
 {
@@ -26,7 +26,7 @@ namespace ALS.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _db.TemplateLaboratoryWorks.Select(twl => new { twl.TemplateTask }).ToListAsync());
+            return Ok(await _db.TemplateLaboratoryWorks.Select(twl => new TemplateLWDTO { TemplateTask = twl.TemplateTask, ThemeId = twl.ThemeId }).ToListAsync());
         }
 
         [HttpGet]
@@ -35,23 +35,23 @@ namespace ALS.Controllers
             var twl = await _db.TemplateLaboratoryWorks.FirstOrDefaultAsync(t => t.TemplateLaboratoryWorkId == templateId);
             if (twl != null)
             {
-                return Ok(new { twl.TemplateTask });
+                return Ok(new TemplateLWDTO { TemplateTask = twl.TemplateTask,ThemeId = twl.ThemeId });
             }
             return NotFound();
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> Create(string uriToTemplate)
+        public async Task<IActionResult> Create([FromBody] TemplateLWDTO model)
         {
-            if (!System.IO.File.Exists(new Uri(uriToTemplate).AbsolutePath))
+            if (!System.IO.File.Exists(new Uri(model.TemplateTask).AbsolutePath))
             {
-                return NotFound($"File {uriToTemplate} Not Found");
+                return NotFound($"File {model.TemplateTask} Not Found");
             }
 
             try
             {
-                await _db.TemplateLaboratoryWorks.AddAsync(new TemplateLaboratoryWork { TemplateTask = uriToTemplate });
+                await _db.TemplateLaboratoryWorks.AddAsync(new TemplateLaboratoryWork { TemplateTask = model.TemplateTask, ThemeId = model.ThemeId });
                 await _db.SaveChangesAsync();
             }
             catch (DbUpdateException ex)
@@ -84,11 +84,11 @@ namespace ALS.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Update(int templateId, string uriToTemplate)
+        public async Task<IActionResult> Update([FromBody] TemplateLWDTO model, int templateId)
         {
-            if (!System.IO.File.Exists(new Uri(uriToTemplate).AbsolutePath))
+            if (!System.IO.File.Exists(new Uri(model.TemplateTask).AbsolutePath))
             {
-                return NotFound($"File {uriToTemplate} Not Found");
+                return NotFound($"File {model.TemplateTask} Not Found");
             }
 
             var template = await _db.TemplateLaboratoryWorks.FirstOrDefaultAsync(twl => twl.TemplateLaboratoryWorkId == templateId);
@@ -96,7 +96,8 @@ namespace ALS.Controllers
             {
                 try
                 {
-                    template.TemplateTask = uriToTemplate;
+                    template.TemplateTask = model.TemplateTask;
+                    template.ThemeId = model.ThemeId;
                     _db.TemplateLaboratoryWorks.Update(template);
                     await _db.SaveChangesAsync();
                 }

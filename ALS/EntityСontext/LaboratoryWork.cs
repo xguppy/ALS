@@ -9,12 +9,14 @@ namespace ALS.EntityСontext
     {
         public int LaboratoryWorkId { get; set; }
         public int? TemplateLaboratoryWorkId { get; set; }
+        [Required]
+        public int ThemeId { get; set; }
+        [Required]
+        [StringLength(150, MinimumLength = 5)]
+        public string Name { get; set; }
         [ForeignKey(nameof(Discipline))]
         [Required]
         public string DisciplineCipher { get; set; }
-        [Required]
-        [StringLength(150, MinimumLength=5)]
-        public string Name { get; set; }
         [Required]
         [StringLength(256, MinimumLength=5)]
         public string Description { get; set; }
@@ -27,6 +29,7 @@ namespace ALS.EntityСontext
         public User User { get; set; }
         public Discipline Discipline { get; set; }
         public TemplateLaboratoryWork TemplateLaboratoryWork { get; set; }
+        public Theme Theme { get; set; }
         public List<Variant> Variants { get; set; }
     }
 }
