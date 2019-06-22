@@ -193,6 +193,8 @@ namespace ALS
             }
             if (!context.TemplateLaboratoryWorks.Any())
             {
+                context.TemplateLaboratoryWorks.Add(new TemplateLaboratoryWork { TemplateTask = @"file:///C:/Users/kampukter/source/repos/ALS/ALS.GeneratorModule/Docs/Exp.txt", ThemeId = 1 });
+                context.TemplateLaboratoryWorks.Add(new TemplateLaboratoryWork { TemplateTask = @"file:///C:/Users/kampukter/source/repos/ALS/ALS.GeneratorModule/Docs/Exp3.txt", ThemeId = 1 });
                 context.TemplateLaboratoryWorks.Add(new TemplateLaboratoryWork { TemplateTask = @"file:///C:/Users/kampukter/source/repos/ALS/ALS.GeneratorModule/Docs/Exp.txt", ThemeId = 2 });
                 context.TemplateLaboratoryWorks.Add(new TemplateLaboratoryWork { TemplateTask = @"file:///C:/Users/kampukter/source/repos/ALS/ALS.GeneratorModule/Docs/Exp2.txt", ThemeId = 2 });
                 context.SaveChanges();
@@ -202,7 +204,7 @@ namespace ALS
             {
                 context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 2, ThemeId = 1, Name = "lr1", Description = "lr1_description", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
                 context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 2, ThemeId = 1, Name = "lr2", Description = "Вывести четные элементы", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
-                context.LaboratoryWorks.Add(new LaboratoryWork { TemplateLaboratoryWorkId = 1, UserId = 2, ThemeId = 2, Name = "lr3", Description = "descrition", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1" });
+                context.LaboratoryWorks.Add(new LaboratoryWork { TemplateLaboratoryWorkId = 3, UserId = 2, ThemeId = 2, Name = "lr3", Description = "descrition", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1" });
                 context.SaveChanges();
             }
             if (!context.Variants.Any())

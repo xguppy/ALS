@@ -10,8 +10,8 @@ namespace ALS.EntityСontext
         public int ThemeId { get; set; }
         [Required]
         public string TemplateTask { get; set; }
-        public List<LaboratoryWork> LaboratoryWorks { get; set; }
-        public Theme Theme { get; set; }
 
+        public Theme Theme { get; set; }
+        public List<LaboratoryWork> LaboratoryWorks { get; set; }
     }
 }

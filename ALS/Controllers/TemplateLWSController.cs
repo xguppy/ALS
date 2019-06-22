@@ -75,7 +75,7 @@ namespace ALS.Controllers
                 }
                 catch (DbUpdateException ex)
                 {
-                    await Response.WriteAsync(ex.Message);
+                    await Response.WriteAsync(ex.InnerException.Message);
                     return BadRequest();
                 }
                 return Ok();
