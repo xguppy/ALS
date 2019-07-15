@@ -13,7 +13,7 @@ namespace ALS.Controllers
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Teacher")]
     public class GroupsController : Controller
     {
         private readonly ApplicationContext _db;

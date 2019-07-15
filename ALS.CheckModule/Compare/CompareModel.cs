@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using ALS.CheckModule.Processes;
 
@@ -29,6 +30,7 @@ namespace ALS.CheckModule.Compare
         {
             var okUserProg = false;
             var okModelProg = false;
+            
             //Начнём и подождём завершения
             await Task.Run(() => okModelProg = _model.Execute(timeMilliseconds));
             await Task.Run(() => okUserProg = _user.Execute(timeMilliseconds));
@@ -49,22 +51,19 @@ namespace ALS.CheckModule.Compare
             {
                 while (!fsModel.EndOfStream)
                 {
-                    modelOutput.Add(fsModel.ReadLine());
+                    modelOutput.Add(fsModel.ReadLine()?.Trim().ToLower());
                 }
             }
             using (var fsUser = _user.Output)
             {
                 while (!fsUser.EndOfStream)
                 {
-                    _userOutput.Add(fsUser.ReadLine());
+                    _userOutput.Add(fsUser.ReadLine()?.Trim().ToLower());
                 }
             }
 
-            if (String.Join(String.Empty, _userOutput) != String.Join(String.Empty, modelOutput))
-            {
-                return userCompare;
-            }
-            userCompare.IsCorrect = true;
+            
+            userCompare.IsCorrect = _userOutput.SequenceEqual(modelOutput);
             return userCompare;
         }
     }

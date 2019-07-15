@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+//using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -35,7 +35,7 @@ namespace ALS
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddEntityFrameworkNpgsql().AddDbContext<ApplicationContext>();
             // In production, the React files will be served from this directory
-            services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });
+            //services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });
 
             services.AddSingleton<IAuthService>(new AuthService(Configuration));
             services.AddSingleton<ILexer>(new CppLexer(new CppLexerFactory()));
@@ -86,21 +86,21 @@ namespace ALS
                 app.UseHsts();
             }
 
-            
+            app.UseDefaultFiles();
             app.UseStaticFiles();
-            app.UseSpaStaticFiles();
+            //app.UseSpaStaticFiles();
 
             app.UseAuthentication();
 
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
-                    name: "default",
-                    template: "{controller}/{action=Index}/{id?}");
+                    "default",
+                    "{controller}/{action=Index}/{id?}");
             });
 
             dbContext.Database.EnsureCreated();
-            app.UseSpa(spa =>
+            /*app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "ClientApp";
 
@@ -108,7 +108,7 @@ namespace ALS
                 {
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
-            });
+            });*/
             
             if (!System.IO.Directory.Exists("sourceCodeUser"))
             {

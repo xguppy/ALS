@@ -13,7 +13,7 @@ namespace ALS.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Student")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Teacher")]
     public class GeneratorController : Controller
     {
         private Gen _gen;
