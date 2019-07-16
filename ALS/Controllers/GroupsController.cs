@@ -79,7 +79,7 @@ namespace ALS.Controllers
                 {
                     await Response.WriteAsync(e.Message);
                 }
-                return Ok();
+                return Ok(groupUpdate);
             }
             return NotFound("Group not found");
         }
