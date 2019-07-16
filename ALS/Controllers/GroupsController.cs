@@ -26,7 +26,7 @@ namespace ALS.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await Task.Run(() => _db.Groups.Select(group => new { group.Name, group.Year, group.SpecialtyId}).ToList()));
+            return Ok(await Task.Run(() => _db.Groups.Select(group => new {group.GroupId, group.Name, group.Year, group.SpecialtyId}).ToList()));
         }
         
         [HttpGet]
@@ -34,7 +34,7 @@ namespace ALS.Controllers
         {
             var groups = await _db.Groups
                 .Where(group => group.GroupId == groupId)
-                .Select(group => new {group.Name, group.Year, group.SpecialtyId})
+                .Select(group => new {group.GroupId, group.Name, group.Year, group.SpecialtyId})
                 .FirstOrDefaultAsync();
             if (groups != null)
             {
