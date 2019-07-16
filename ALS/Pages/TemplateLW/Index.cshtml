@@ -1,0 +1,25 @@
+﻿@page
+@model ALS.Pages.TemplateLW.IndexModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Index";
+}
+
+<h1>ViewData["Title"]</h1>
+<div class="container">
+    <table class="table">
+        <tr>
+            <td>ThemeId</td>
+            <td>TemplateTask</td>
+        </tr>
+        @foreach (var item in Model.Templates)
+        {
+            <tr>
+                <td>@item.ThemeId</td>
+                <td>@item.TemplateTask</td>
+            </tr>
+        }
+    </table>
+    <a asp-page="Create">Создать новый шаблон</a>
+    @{/*<a asp-page="Create" asp-route-id="1">Создать новый шаблон</a>*/}
+</div>

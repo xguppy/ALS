@@ -39,7 +39,7 @@ namespace ALS
 
             services.AddSingleton<IAuthService>(new AuthService(Configuration));
             services.AddSingleton<ILexer>(new CppLexer(new CppLexerFactory()));
-
+            services.AddHttpClient();
             services.AddScoped<IParser, Parser>();
             
             services
@@ -114,7 +114,12 @@ namespace ALS
             {
                 System.IO.Directory.CreateDirectory("sourceCodeUser");
             }
-            
+
+            if (!System.IO.Directory.Exists("uploads"))
+            {
+                System.IO.Directory.CreateDirectory("uploads");
+            }
+
             if (!System.IO.Directory.Exists("sourceCodeModel"))
             {
                 System.IO.Directory.CreateDirectory("sourceCodeModel");
@@ -223,9 +228,9 @@ namespace ALS
 
             if (!context.LaboratoryWorks.Any())
             {
-                context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 8, Name = "lr1", Description = "lr1_description", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
-                context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 8, Name = "lr2", Description = "Вывести четные элементы", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
-                context.LaboratoryWorks.Add(new LaboratoryWork { TemplateLaboratoryWorkId = 1, UserId = 8, Name = "lr3", Description = "descrition", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1" });
+                context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 8, ThemeId = 2, Name = "lr1", Description = "lr1_description", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
+                context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 8, ThemeId = 1, Name = "lr2", Description = "Вывести четные элементы", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
+                context.LaboratoryWorks.Add(new LaboratoryWork { TemplateLaboratoryWorkId = 1, UserId = 8, ThemeId = 2, Name = "lr3", Description = "descrition", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1" });
                 context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 2, ThemeId = 1, Name = "lr1", Description = "lr1_description", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
                 context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 2, ThemeId = 1, Name = "lr2", Description = "Вывести четные элементы", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
                 context.LaboratoryWorks.Add(new LaboratoryWork { TemplateLaboratoryWorkId = 3, UserId = 2, ThemeId = 2, Name = "lr3", Description = "descrition", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1" });

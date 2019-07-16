@@ -29,6 +29,7 @@ bld/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
+[Uu]ploads/
 
 # Visual Studio 2015/2017 cache/options directory and Rider
 .vs/
