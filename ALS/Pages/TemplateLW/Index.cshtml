@@ -2,21 +2,23 @@
 @model ALS.Pages.TemplateLW.IndexModel
 @{
     Layout = "_Layout";
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Шаблоны лабораторных работ";
 }
 
-<h1>ViewData["Title"]</h1>
+<h1>@ViewData["Title"]</h1>
 <div class="container">
-    <table class="table">
+    <table class="table table-hover">
         <tr>
-            <td>ThemeId</td>
-            <td>TemplateTask</td>
+            <td>Тема</td>
+            <td>Путь до файла</td>
+            <td>Действия</td>
         </tr>
         @foreach (var item in Model.Templates)
         {
             <tr>
-                <td>@item.ThemeId</td>
+                <td>@item.Theme.Name</td>
                 <td>@item.TemplateTask</td>
+                <td> <a asp-page="Delete" asp-route-id="@item.TemplateLaboratoryWorkId">Удалить шаблон</a> | <a asp-page="Update" asp-route-id="@item.TemplateLaboratoryWorkId">Изменить</a> </td>
             </tr>
         }
     </table>

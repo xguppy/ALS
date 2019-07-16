@@ -45,7 +45,7 @@ namespace ALS.Pages.TemplateLW
 
         }
 
-        public async Task<IActionResult> OnPostCreating(int themeId, IFormFile upload)
+        public async Task<IActionResult> OnPostCreatingAsync(int themeId, IFormFile upload)
         {
             var file = Path.Combine(_environment.ContentRootPath, "uploads", upload.FileName);
 
@@ -68,15 +68,6 @@ namespace ALS.Pages.TemplateLW
                 return RedirectToPage("./Index");
             }
             return RedirectToPage("/Error");
-        }
-
-        public async Task OnPost1Async()
-        {
-            //var file = Path.Combine(_environment.ContentRootPath, "uploads", Upload.FileName);
-            /*using (var fileStream = new FileStream(file, FileMode.Create))
-            {
-                await Upload.CopyToAsync(fileStream);
-            }*/
         }
     }
 }

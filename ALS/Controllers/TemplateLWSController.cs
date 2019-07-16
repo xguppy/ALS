@@ -30,7 +30,7 @@ namespace ALS.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get(int templateId)
+        public async Task<IActionResult> Get([FromHeader]int templateId)
         {
             var twl = await _db.TemplateLaboratoryWorks.FirstOrDefaultAsync(t => t.TemplateLaboratoryWorkId == templateId);
             if (twl != null)
@@ -63,7 +63,7 @@ namespace ALS.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(int templateId)
+        public async Task<IActionResult> Delete([FromHeader]int templateId)
         {
             var template = await _db.TemplateLaboratoryWorks.FirstOrDefaultAsync(twl => twl.TemplateLaboratoryWorkId == templateId);
             if (template != null)
