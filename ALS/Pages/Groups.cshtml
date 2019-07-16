@@ -74,7 +74,35 @@
         }
     );
     
-    function createGroup(data) {
-              alert(data);
+    function createGroup() {
+              let group = {
+                           Name: $('#newName').val(),
+                           Year: $('#newYear').val(),
+                           SpecialityId: $('#newSpecialityId').val()
+                           };
+              console.log(group);
+              $.ajax(
+                  {
+                      type: 'POST',
+                      url: '/api/groups/create',
+                      contentType:  "application/json; charset=utf-8",
+                      dataType: "json",
+                      data: JSON.stringify(group),
+                      beforeSend: (xhr) =>
+                      {
+                           let token = sessionStorage.getItem(tokenKey);
+                           xhr.setRequestHeader("Authorization", "Bearer " + token);
+                      },
+                      success: (g) =>
+                      {
+                          document.location.reload(true);
+                      },
+                      error: (response) =>
+                      {
+                          console.log(response);
+                          alert('Не удалось добавить группу');
+                      }
+                  }
+                );
     }
 </script>

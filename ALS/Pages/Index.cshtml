@@ -64,7 +64,7 @@
                 // сохраняем в хранилище sessionStorage токен доступа и имя
                 sessionStorage.setItem(tokenKey, data.access_token);
                 sessionStorage.setItem(username, data.username);
-            }).fail(function (data) {
+            }).error(function (data) {
                 console.log(data);
             });
         });
