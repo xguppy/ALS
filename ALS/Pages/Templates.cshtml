@@ -1,0 +1,72 @@
+﻿@page
+@model ALS.Pages.TemplatesModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Шаблоны лабораторных работ";
+}
+
+<h1>@ViewData["Title"]</h1>
+<div class="container">
+    <table class="table table-hover">
+        <tr>
+            <td>Тема</td>
+            <td>Путь до файла</td>
+            <td>Действия</td>
+        </tr>
+        @foreach (var item in Model.Templates)
+        {
+            <tr>
+                <td>@item.Theme.Name</td>
+                <td>@item.TemplateTask</td>
+                <td><input id="buttonDelete" asp-page-handler="Deleting" type="button" value="Удалить" onclick="deleteTlw(@item.TemplateLaboratoryWorkId)"></td>
+            </tr>
+        }
+    </table>
+</div>
+
+<hr />
+<hr />
+
+<h4> Создание нового шаблона </h4>
+<div class="row">
+    <div class="col-md-5">
+        <form method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label class="control-label">Тема</label>
+                <select id="selectThemeId" name="themeId" asp-items="Model.Themes"></select>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Файл с шаблоном</label>
+                <input id="selectFile" type="file" name="upload" />
+            </div>
+            <div class="form-group">
+                <input id="submitCreating" asp-page-handler="Creating" type="submit" value="Create" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function deleteTlw(data) {
+        if (confirm("Уверены, что хотите удалить данный шаблон")) {
+            $.ajax(
+                {
+                    type: 'POST',
+                    url: '/api/TemplateLWS/Delete',
+                    beforeSend: (xhr) => {
+                        //let token = sessionStorage.getItem(tokenKey);
+                        //xhr.setRequestHeader("Authorization", "Bearer " + token);
+                        xhr.setRequestHeader('templateId', data);
+                    },
+                    success: () => {   
+                        document.location.reload(true);          
+                    },
+                    fail: () => {
+                        alarm('FAIL');
+                    }
+                }
+            );
+        }
+    }
+</script>
