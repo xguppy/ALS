@@ -5,13 +5,7 @@
     Layout = "_Layout";
     ViewData["Title"] = "ALS";
 }
-
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-</head>
-<body>
+    
     <div class="userInfo" style="display:none;">
         <p>Вы вошли как: <span class="userName"></span></p>
         <input type="button" value="Выйти" id="logOut" />
@@ -35,7 +29,17 @@
     </div>
     
     <script>
-        var tokenKey = "accessToken";
+        //Специальные секции в sessionStorage
+        let tokenKey = "accessToken";
+        let username = "userName";
+        
+        if(sessionStorage.getItem(tokenKey) != null)
+        {
+            $('.userInfo').css('display', 'block');
+            $('.loginForm').css('display', 'none');
+            $('.userName').text(sessionStorage.getItem(username));
+        }
+            
         $('#submitLogin').click(function (e) {
             e.preventDefault();
             var loginData = {
@@ -54,9 +58,9 @@
                 $('.userName').text(data.username);
                 $('.userInfo').css('display', 'block');
                 $('.loginForm').css('display', 'none');
-                // сохраняем в хранилище sessionStorage токен доступа
+                // сохраняем в хранилище sessionStorage токен доступа и имя
                 sessionStorage.setItem(tokenKey, data.access_token);
-                console.log(data);
+                sessionStorage.setItem(username, data.username);
             }).fail(function (data) {
                 console.log(data);
             });
@@ -67,6 +71,8 @@
             $('.loginForm').css('display', 'block');
             $('.userInfo').css('display', 'none');
             sessionStorage.removeItem(tokenKey);
+            sessionStorage.removeItem(username);
+            
         });
         $('#TestAdmin').click(function(e) {
             e.preventDefault();
@@ -80,7 +86,7 @@
                  success: function (data) {
                      alert(data);
                  },
-                 fail: function (data) {
+                 error: function (data) {
                      console.log(data);
                  }
              })
@@ -97,7 +103,7 @@
                          success: function (data) {
                              alert(data);
                          },
-                         fail: function (data) {
+                         error: function (data) {
                              console.log(data);
                          }
                      })
@@ -114,11 +120,9 @@
                          success: function (data) {
                              alert(data);
                          },
-                         fail: function (data) {
+                         error: function (data) {
                              console.log(data);
                          }
                      })
                 });
     </script>
-</body>
-</html>
