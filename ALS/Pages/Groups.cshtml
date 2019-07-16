@@ -1,0 +1,80 @@
+@page
+@using System.Xml.Schema
+@model ALS.Pages.Groups
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Groups";
+}
+<table style="width: 100%" border="1">
+    <thead>
+    <tr>
+    <td>Группа</td>
+    <td>Год начала обучения</td>    
+    <td>Код специальности</td>
+    </thead>
+    <tbody id="tbodyContent">
+</table>
+
+<button class="btn btn-info btn-lg" type="button" data-toggle="modal" data-target="#myModal">Добавить группу</button>
+<div id="myModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header"><h4 class="modal-title">Новая группа</h4><button class="close" type="button" data-dismiss="modal">×</button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("Create", "Groups", FormMethod.Post))
+                {
+                    @Html.Label("Наименование группы:\t")
+                    @Html.TextBox("Name", null, new {@id = "newName"})
+                    @Html.Label("Год начала обучения:\t")
+                    @Html.TextBox("Year", null, new {@id = "newYear"})
+                    @Html.Label("Специальность:\t")
+                    @Html.DropDownList("SpecialityId", Model.Specialities, new {@id = "newSpecialityId"})
+                    <p><input type="button" value="Отправить" onclick="createGroup()" /></p>
+                }
+            </div>
+            <div class="modal-footer"><button class="btn btn-default" type="button" data-dismiss="modal">Закрыть</button></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let tokenKey = "accessToken";
+    $.ajax(
+        {
+            type: 'GET',
+            url: '/api/groups/getall',
+            beforeSend: (xhr) => 
+            {
+                let token = sessionStorage.getItem(tokenKey);
+                xhr.setRequestHeader("Authorization", "Bearer " + token);
+            },
+            success: (groups) =>
+            {
+                var tbdy = document.getElementById('tbodyContent');
+                for (let group of groups)
+                {
+                    var tr = document.createElement('tr');
+                    for(let prop in group)
+                    {
+                        var td = document.createElement('td');
+                        td.appendChild(document.createTextNode(group[prop]));
+                        tr.appendChild(td);
+                    }
+                    tbdy.appendChild(tr);
+                }
+            },
+            error: (groupsFail) =>
+            {
+                document.body.innerHTML = '';
+                alert('Нет доступа');
+                history.go(-1);
+            }
+        }
+    );
+    
+    function createGroup(data) {
+              alert(data);
+    }
+</script>
