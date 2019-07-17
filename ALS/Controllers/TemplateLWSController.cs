@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using ALS.DTO;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using System.Text;
 
 namespace ALS.Controllers
 {
@@ -17,10 +20,12 @@ namespace ALS.Controllers
     public class TemplateLWSController : ControllerBase
     {
         private readonly ApplicationContext _db;
+        private IHostingEnvironment _environment;
 
-        public TemplateLWSController(ApplicationContext db)
+        public TemplateLWSController(ApplicationContext db, IHostingEnvironment env)
         {
             _db = db;
+            _environment = env;
         }
 
         [HttpGet]
@@ -75,16 +80,42 @@ namespace ALS.Controllers
                 }
                 catch (DbUpdateException ex)
                 {
-                    await Response.WriteAsync(ex.InnerException.Message);
-                    return BadRequest();
+                    throw ex.InnerException;
                 }
                 return Ok();
             }
             return NotFound();
         }
 
+        [HttpGet]
+        public async Task<IActionResult> ReadFile([FromHeader]string path)
+        {
+            string text;
+            using (StreamReader s = new StreamReader(new System.Uri(path).AbsolutePath))
+            {
+                text = await s.ReadToEndAsync();
+            }
+            return Ok(text);
+        }
+
+        public class TypaKlassDlyaEtogoMetodaYaShasSdohnu
+        {
+            public string pathToFile;
+            public string content;
+        }
+
         [HttpPost]
-        public async Task<IActionResult> Update([FromBody] TemplateLWDTO model, int templateId)
+        public async Task<IActionResult> WriteFile([FromBody] TypaKlassDlyaEtogoMetodaYaShasSdohnu data)
+        {
+            using (StreamWriter sw = new StreamWriter(new System.Uri(data.pathToFile).AbsolutePath, false, Encoding.UTF8))
+            {
+                await sw.WriteLineAsync(data.content);
+            }
+            return Ok(data);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Update([FromBody] TemplateLWDTO model, [FromHeader]int templateId)
         {
             if (!System.IO.File.Exists(new Uri(model.TemplateTask).AbsolutePath))
             {
@@ -106,7 +137,7 @@ namespace ALS.Controllers
                     await Response.WriteAsync(ex.Message);
                     return BadRequest();
                 }
-                return Ok();
+                return Ok(template);
             }
             return NotFound();
         }

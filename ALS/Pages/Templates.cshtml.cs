@@ -25,6 +25,7 @@ namespace ALS.Pages
         public List<SelectListItem> Themes;
         private IHostingEnvironment _environment;
         private IHttpClientFactory _clientFactory;
+        public int Id = -1;
 
         public TemplatesModel(ApplicationContext context, IHttpClientFactory clientFactory, IHostingEnvironment env)
         {
@@ -57,7 +58,7 @@ namespace ALS.Pages
             }
 
             var request = new HttpRequestMessage(HttpMethod.Post,
-                "https://localhost:44305/api/TemplateLWS/Create");
+                "http://localhost:5000/api/TemplateLWS/Create");
 
             request.Content = new StringContent(JsonConvert.SerializeObject(new TemplateLWDTO() { ThemeId = themeId, TemplateTask = new Uri(file).AbsoluteUri }), Encoding.UTF8, "application/json");
 
@@ -70,25 +71,7 @@ namespace ALS.Pages
                 return RedirectToPage("");
             }
             return RedirectToPage("/Error");
-        }
-
-        public async Task<IActionResult> OnPostDeletingAsync(int tlwId)
-        {
-            var request = new HttpRequestMessage(HttpMethod.Post,
-                "https://localhost:44305/api/TemplateLWS/Delete");
-
-            request.Headers.Add("templateId", tlwId.ToString());
-
-            var client = _clientFactory.CreateClient();
-
-            var response = await client.SendAsync(request);
-
-            if (response.IsSuccessStatusCode)
-            {
-                return RedirectToPage("./Index");
-            }
-            return RedirectToPage("/Error");
-        }
-
+        }   
+        
     }
 }
