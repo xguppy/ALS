@@ -32,7 +32,7 @@ namespace ALS.Controllers
             var userId = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
             if (await _db.LaboratoryWorks.Where(w => w.LaboratoryWorkId == labId && w.UserId == userId).FirstOrDefaultAsync() != null)
             {
-                return Ok(await Task.Run(() => _db.Variants.Where(v => v.LaboratoryWorkId == labId).Select(v => new {v.VariantNumber, v.LaboratoryWorkId, v.Description, v.LinkToModel }).ToList()));
+                return Ok(await Task.Run(() => _db.Variants.Where(v => v.LaboratoryWorkId == labId).Select(v => new {v.VariantId, v.VariantNumber, v.LaboratoryWorkId, v.Description, v.LinkToModel }).ToList()));
             }
 
             return BadRequest("Not Privilege");
@@ -48,7 +48,7 @@ namespace ALS.Controllers
                 var variant = await _db.Variants.FirstOrDefaultAsync(v => v.VariantId == variantId);
                 if (variant != null)
                 {
-                    return Ok(await _db.Variants.Where(v => v.VariantId == variantId).Select(v => new {v.VariantNumber, v.LaboratoryWorkId, v.Description, v.LinkToModel }).FirstAsync());
+                    return Ok(await _db.Variants.Where(v => v.VariantId == variantId).Select(v => new {v.VariantId, v.VariantNumber, v.LaboratoryWorkId, v.Description, v.LinkToModel }).FirstAsync());
                 }
                 return NotFound("Variant not found");
             }
