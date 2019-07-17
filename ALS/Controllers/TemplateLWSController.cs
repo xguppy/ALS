@@ -98,18 +98,18 @@ namespace ALS.Controllers
             return Ok(text);
         }
 
-        public class TypaKlassDlyaEtogoMetodaYaShasSdohnu
+        /*public class TypaKlassDlyaEtogoMetodaYaShasSdohnu
         {
             public string pathToFile;
             public string content;
-        }
+        }*/
 
         [HttpPost]
-        public async Task<IActionResult> WriteFile([FromBody] TypaKlassDlyaEtogoMetodaYaShasSdohnu data)
+        public async Task<IActionResult> WriteFile([FromBody] Tuple<string, string> data)
         {
-            using (StreamWriter sw = new StreamWriter(new System.Uri(data.pathToFile).AbsolutePath, false, Encoding.UTF8))
+            using (StreamWriter sw = new StreamWriter(new System.Uri(data.Item1).AbsolutePath, false, Encoding.UTF8))
             {
-                await sw.WriteLineAsync(data.content);
+                await sw.WriteLineAsync(data.Item2);
             }
             return Ok(data);
         }

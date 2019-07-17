@@ -79,6 +79,7 @@
 
 <script>
     function updateTlw(tlwId, themeid, pathFile) {
+        $("#myModal").find("textarea[id='textAreaModel']").val('');
         $.ajax(
             {
                 type: 'GET',
@@ -111,8 +112,10 @@
         let themeId = $("#myModal").find("select[id='newThemeId']").val();
         let path = $("#myModal").find("input[id='path']").val();
         let datas = {
-            content: text,
-            pathToFile : path
+            //content: text,
+            //pathToFile : path
+            Item1: path,
+            Item2 : text
         }
         $.ajax(
             {

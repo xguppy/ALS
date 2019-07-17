@@ -1,0 +1,233 @@
+﻿@page
+@model ALS.Pages.LaboratoryWorksModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "LaboratoryWorks";
+}
+
+<h1>LaboratoryWorks</h1>
+
+<div class="container">
+    <table class="table table-hover">
+        <tr>
+            <td>Id</td>
+            <td>Название</td>
+            <td>Тема</td>
+            <td>Номер шаблона</td>
+            <td>Описание</td>
+            <td>Кто добавил</td>
+        </tr>
+        @foreach (var item in Model.LaboratoryWorks)
+        {
+            <tr>
+                <td>@item.LaboratoryWorkId</td>
+                <td>@item.Name</td>
+                <td>@item.Theme.Name</td>
+                @{
+                    string s = item.TemplateLaboratoryWorkId?.ToString() ?? "-";
+                    int templateId = item.TemplateLaboratoryWorkId ?? -1;
+                    <td>@s</td>
+                }
+                <td>@item.Description</td>
+                <td>@item.User.Name @item.User.Surname</td>
+                <td>
+                    <input type="button" id="buttonDelete" value="Удалить" onclick="deleteLw(@item.LaboratoryWorkId)" /> |
+                    @{  /*<input type="button" id="buttonUpdate" value="Изменить" onclick="openModalUpdate(@item.TemplateLaboratoryWorkId, @item.ThemeId,'@item.DisciplineCipher', '@item.Name', '@item.Description', '@item.Constraints')" />*/
+                    }<input type="button" id="buttonUpdate" value="Изменить" onclick="openModalUpdate(@templateId, @item.ThemeId, '@item.DisciplineCipher',
+                            '@item.Name', '@item.Description', '@item.Constraints')" />
+                </td>
+            </tr>
+        }
+    </table>
+    <input id="buttonCreate" type="submit" value="Создать" onclick="openModalCreate()" />
+</div>
+
+<div id="myModalCreate" class="modal fade bd-example-modal-lg">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Создание лабораторной работы</h4><button class="close" type="button" data-dismiss="modal">×</button>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    <p>
+                        <label>ID Шаблон : </label>
+                        @Html.DropDownList("TemplateId", Model.TemplateLWs, new { @id = "s1TemplateId" })
+                    </p>
+                    <p>
+                        <label>Тема : </label>
+                        @Html.DropDownList("ThemeId", Model.Themes, new { @id = "s1ThemeId" })
+                    </p>
+                    <p>
+                        <label>Дисциплина : </label>
+                        @Html.DropDownList("DisciplineCipher", Model.Disciplines, new { @id = "s1DisciplineCipher" })
+                    </p>
+                    @{/*<p>
+                              <label>Оценка : </label>
+                              @Html.DropDownList("Evaluation", Model.Evaluations, new { @id = "s1Evaluation" })
+                          </p>*/
+                    }
+                    <p>
+                        <label>Название : </label>
+                        @Html.TextBox("Name", null, new { @id = "i1Name" })
+                    </p>
+                    <p>
+                        <label>Описание : </label>
+                        <textarea id="i1Description" name="i1Description" cols="50" rows="10"></textarea>
+                    </p>
+                    <p>
+                        <label>Ограничения (JSON) : </label>
+                        @{string primer = "{\n\t\"Memory\": 4096000, \n\t\"Time\": 60000\n}";}
+                        <textarea id="i1Constraints" name="i1Constraints" cols="50"> @primer </textarea>
+                    </p>
+                    <p><input type="button" value="Отправить" id="submitCreate" onclick="create()" /></p>
+                </form>
+            </div>
+            <div class="modal-footer"><button class="btn btn-default" type="button" data-dismiss="modal">Закрыть</button></div>
+        </div>
+    </div>
+</div>
+
+<div id="myModalUpdate" class="modal fade bd-example-modal-lg">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Обновление лабораторной работы</h4><button class="close" type="button" data-dismiss="modal">×</button>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    <p>
+                        <label>ID Шаблон : </label>
+                        @Html.DropDownList("TemplateId", Model.TemplateLWs, new { @id = "s2TemplateId" })
+                    </p>
+                    <p>
+                        <label>Тема : </label>
+                        @Html.DropDownList("ThemeId", Model.Themes, new { @id = "s2ThemeId" })
+                    </p>
+                    <p>
+                        <label>Дисциплина : </label>
+                        @Html.DropDownList("DisciplineCipher", Model.Disciplines, new { @id = "s2DisciplineCipher" })
+                    </p>
+                    <p>
+                        <label>Название : </label>
+                        @Html.TextBox("Name", null, new { @id = "i2Name" })
+                    </p>
+                    <p>
+                        <label>Описание : </label>
+                        <textarea id="i2Description" name="i2Description" cols="50" rows="10"></textarea>
+                    </p>
+                    <p>
+                        <label>Ограничения (JSON) : </label>
+                        <textarea id="i2Constraints" name="i2Constraints" cols="50"></textarea>
+                    </p>
+                    <p><input type="button" value="Отправить" id="submitUpdate" onclick="updateLw()" /></p>
+                </form>
+            </div>
+            <div class="modal-footer"><button class="btn btn-default" type="button" data-dismiss="modal">Закрыть</button></div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    let tokenKey = "accessToken";
+    let username = "userName";
+    let userId = "userId";
+
+    // проверка доступа и все
+    $.ajax(
+        {
+            type: 'GET',
+            url: '/api/LaboratoryWorks/CheckAuth',
+            beforeSend: (xhr) => {
+                let token = sessionStorage.getItem(tokenKey);
+                xhr.setRequestHeader("Authorization", "Bearer " + token);
+            },
+            success: () => {
+                // :)
+            },
+            error: (fail) => {
+                document.body.innerHTML = '';
+                alert('Нет доступа');
+                history.go(-1);
+            }
+        });
+
+    function openModalCreate() {
+        $('#myModalCreate').modal('show');
+    }
+
+    //function openModalUpdate(tmpId, themeId, cipher, name, descr, constr) {
+    function openModalUpdate(tmpId, themeId, cipher, name, descr, constr) {
+
+        // дроп даун шаблон
+        $("#myModalUpdate").find("select[id='s2TemplateId']").val(tmpId);
+        $("#myModalUpdate").find("select[id='s2ThemeId']").val(themeId);
+        $("#myModalUpdate").find("select[id='s2DisciplineCipher']").val(cipher);
+        //------------------
+        $("#myModalUpdate").find("input[id='i2Name']").val(name);
+        $("#myModalUpdate").find("textarea[id='i2Description']").val(descr);
+        $("#myModalUpdate").find("textarea[id='i2Constraints']").val(constr);
+        
+        $('#myModalUpdate').modal('show');
+    }
+
+    function create() {
+
+        let lwDto = {
+            TemplateLaboratoryWorkId: $('#s1TemplateId').val(),
+            ThemeId: $('#s1ThemeId').val(),
+            Name: $('#i1Name').val(),
+            Description: $('#i1Description').val(),
+            //Evaluation: $('#s1Evaluation').val(),
+            Evaluation: 1,
+            DisciplineCipher: $('#s1DisciplineCipher').val(),
+            UserId: sessionStorage.getItem(userId),
+            Constraints: $('#i1Constraints').val(),
+        }
+
+        $.ajax(
+            {
+                type: 'POST',
+                url: '/api/LaboratoryWorks/Create',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: JSON.stringify(lwDto),
+                beforeSend: (xhr) => {
+                    let token = sessionStorage.getItem(tokenKey);
+                    xhr.setRequestHeader("Authorization", "Bearer " + token);
+                },
+                success: (response) => {
+                    document.location.reload(true);
+                },
+                error: (response) => {
+                    alert('something goes wrong');
+                }
+            }
+        );
+    }
+
+    function deleteLw(lwId) {
+        if (confirm("Уверены, что хотите удалить данную лабораторную работу")) {
+            $.ajax(
+                {
+                    type: 'POST',
+                    url: '/api/LaboratoryWorks/Delete',
+                    beforeSend: (xhr) => {
+                        let token = sessionStorage.getItem(tokenKey);
+                        xhr.setRequestHeader("Authorization", "Bearer " + token);
+                        xhr.setRequestHeader('laboratoryWorkId', lwId);
+                    },
+                    success: (t) => {
+                        document.location.reload(true);
+                    },
+                    error: (response) => {
+                        alert('Удаление невозможно! Данная лабораторная работа еще имеет связи');
+                    }
+                }
+            );
+        }
+    }
+
+</script>

@@ -53,7 +53,8 @@ namespace ALS.Controllers
             var response = new
             {
                 access_token = _authService.GetAuthData(email, appUser),
-                username = $"{appUser.Name} {appUser.Surname} {appUser.Patronymic}"
+                username = $"{appUser.Name} {appUser.Surname} {appUser.Patronymic}",
+                userId = appUser.Id
             };
 
             // сериализация ответа
