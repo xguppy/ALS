@@ -16,7 +16,7 @@ namespace ALS.Controllers
     [Route("api/[controller]/[action]")]
     [ApiController]
     // мб здеcь Theacher
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Student")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Teacher")]
     public class LaboratoryWorksController : Controller
     {
         private readonly ApplicationContext _db;

@@ -27,12 +27,12 @@ namespace ALS.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromHeader] int labId)
+        public async Task<IActionResult> GetAll()
         {
             var userId = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
-            if (await _db.LaboratoryWorks.Where(w => w.LaboratoryWorkId == labId && w.UserId == userId).FirstOrDefaultAsync() != null)
+            if (await _db.LaboratoryWorks.Where(w =>  w.UserId == userId).FirstOrDefaultAsync() != null)
             {
-                return Ok(await Task.Run(() => _db.Variants.Where(v => v.LaboratoryWorkId == labId).Select(v => new {v.VariantId, v.VariantNumber, v.LaboratoryWorkId, v.Description, v.LinkToModel }).ToList()));
+                return Ok(await Task.Run(() => _db.Variants.Include(variant => variant.LaboratoryWork).Select(v => new {v.VariantId, v.LaboratoryWorkId, v.LaboratoryWork.Name, v.VariantNumber, v.Description, v.LinkToModel, v.InputDataRuns }).ToList()));
             }
 
             return BadRequest("Not Privilege");
@@ -61,7 +61,7 @@ namespace ALS.Controllers
         {
             var userId = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
 
-            if (await _db.Variants.Include(v => v.LaboratoryWork).Where(v => v.LaboratoryWork.UserId == userId && v.LaboratoryWorkId == model.LaboratoryWorkId).FirstOrDefaultAsync() != null)
+            if (await _db.LaboratoryWorks.Where(lw => lw.UserId == userId && lw.LaboratoryWorkId == model.LaboratoryWorkId).FirstOrDefaultAsync() != null)
             {
                 Variant variant = new Variant {VariantNumber = model.VariantNumber, LaboratoryWorkId = model.LaboratoryWorkId, Description = model.Description, LinkToModel = model.LinkToModel, InputDataRuns = model.InputDataRuns };
                 try

@@ -26,21 +26,16 @@
             <div class="modal-body">
                 @using (Html.BeginForm("Create", "Variants", FormMethod.Post))
                 {
-                    @Html.Label("Лабораторная работа:\t")
-                    <select name="LaboratoryWorkId" id="newLaboratoryWork">
-                        @foreach (var lw in Model.LaboratoryWorks)
-                        {
-                            <option data-id="@lw.LaboratoryWorkId">@lw.Name</option>
-                        }
-                    </select>
+                    <p>@Html.Label("Лабораторная работа:\t")
+                    <select name="LaboratoryWorkId" id="newLaboratoryWork"></select></p>
                     @Html.Label("Номер варианта:\t")
-                    @Html.TextBox("Number", null, new {@id = "newNumber"})
+                    @Html.TextBox("Number", "1", new {@id = "newNumber"})
                     @Html.Label("Описание варианта:\t")
-                    @Html.TextArea("Description", null, new {@id = "newDescription"})
+                    @Html.TextArea("Description", "desc", new {@id = "newDescription"})
                     @Html.Label("Ссылка на модель:\t")
-                    @Html.TextArea("Link", null, new {@id = "newLink"})
+                    @Html.TextArea("Link", @"file:///C:/Users/kampukter/source/repos/ALS/ALS.GeneratorModule/Docs/Exp.txt", new {@id = "newLink"})
                     @Html.Label("Входные данные:\t")
-                    @Html.TextArea("InputData", null, new {@id = "newInputData"})
+                    @Html.TextArea("InputData", "[{\"Data\": [\"#rnd(1 | 20 | int | 10)\"], \"Name\": \"тест1\"}, {\"Data\": [\"#rnd(1 | 20 | int | 10)\"], \"Name\": \"тест2\"}, {\"Data\": [\"1\", \"2\", \"3\", \"4\", \"5\", \"6\", \"7\", \"8\", \"9\", \"10\"], \"Name\": \"тест3\"}]", new {@id = "newInputData"})
                     <p><input type="button" class="btn btn-dark" value="Отправить" onclick="createVariant()" /></p>
                 }
             </div>
@@ -57,15 +52,19 @@
             <div class="modal-body">
                 @using (Html.BeginForm("Update", "Variants", FormMethod.Post))
                 {
+                    <p>
                     @Html.Label("Лабораторная работа:\t")
+                    <select name="LaboratoryWorkId" id="EditLaboratoryWork"></select>
+                    </p>
                     @Html.Label("Номер варианта:\t")
-                    @Html.TextBox("Number", null, new {@id = "newNumber"})
+                    @Html.TextBox("Number", null, new {@id = "EditNumber"})
                     @Html.Label("Описание варианта:\t")
-                    @Html.TextArea("Description", null, new {@id = "newDescription"})
+                    @Html.TextArea("Description", null, new {@id = "EditDescription"})
                     @Html.Label("Ссылка на модель:\t")
-                    @Html.TextArea("Link", null, new {@id = "newLink"})
+                    @Html.TextArea("Link", null, new {@id = "EditLink"})
                     @Html.Label("Входные данные:\t")
-                    @Html.TextArea("InputData", null, new {@id = "newInputData"})
+                    @Html.TextArea("InputData", null, new {@id = "EditInputData"})
+                    @Html.Hidden("variantId", null, new {@id = "EditVariantId"})
                     <p><input type="button" class="btn btn-dark" value="Отправить" onclick="editVariant()" /></p>
                 }
             </div>
@@ -86,30 +85,33 @@
                 let token = sessionStorage.getItem(tokenKey);
                 xhr.setRequestHeader("Authorization", "Bearer " + token);
             },
-            success: (groups) =>
+            success: (variants) =>
             {
                 let tbdy = document.getElementById('tbodyContent');
-                for (let group of groups)
+                for (let variant of variants)
                 {
                     let tr = document.createElement('tr');
-                    for(let prop in group)
+                    for(let prop in variant)
                     {
-                        if(prop !== 'groupId')
+                        if(prop !== 'variantId' && prop !== 'laboratoryWorkId')
                         {
                             let td = document.createElement('td');
-                            td.appendChild(document.createTextNode(group[prop]));
+                            if(variant[prop] != null)
+                                td.appendChild(document.createTextNode(variant[prop]));
+                            if(prop === 'name')
+                                td.dataset.id = variant.laboratoryWorkId;
                             tr.appendChild(td);
                         }
                     }
                     let td = document.createElement('td');
-                    td.dataset.id = group.groupId;
-                    td.innerHTML = '<button style="margin-right: 5%" data-toggle="modal" onclick="editPrepareGroup(this)" data-target="#edit" class="btn btn-primary edit-item">Редактировать</button>' +
-                     '<button onclick="removeGroup('+ group.groupId +')" class="btn btn-danger remove-item">Удалить</button>';
+                    td.dataset.id = variant.variantId;
+                    td.innerHTML = '<button style="margin-right: 5%" data-toggle="modal" onclick="editPrepareVariant(this)" data-target="#edit" class="btn btn-primary edit-item">Редактировать</button>' +
+                     '<button onclick="removeVariant('+ variant.variantId +')" class="btn btn-danger remove-item">Удалить</button>';
                     tr.appendChild(td);
                     tbdy.appendChild(tr);
                 }
             },
-            error: (groupsFail) =>
+            error: (varFail) =>
             {
                 document.body.innerHTML = '';
                 alert('Нет доступа');
@@ -118,19 +120,53 @@
         }
     );
     
-    function createGroup() {
-              let group = {
-                           Name: $('#newName').val(),
-                           Year: $('#newYear').val(),
-                           SpecialityId: $('#newSpecialityId').val()
+    $.ajax(
+            {
+                type: 'GET',
+                url: '/api/laboratoryworks/getall',
+                beforeSend: (xhr) => 
+                {
+                    let token = sessionStorage.getItem(tokenKey);
+                    xhr.setRequestHeader("Authorization", "Bearer " + token);
+                },
+                success: (lws) =>
+                {
+                    let selectCreate = document.getElementById('newLaboratoryWork');
+                    let selectUpdate = document.getElementById('EditLaboratoryWork');
+                    for (let lw of lws)
+                    {
+                        let opt = document.createElement('option');
+                        opt.dataset.id = lw.laboratoryWorkId;
+                        opt.innerText = lw.name;
+                        selectCreate.appendChild(opt.cloneNode(true));
+                        selectUpdate.appendChild(opt);
+                    }
+                },
+                error: (labFail) =>
+                {
+                    console.log(labFail);
+                    document.body.innerHTML = '';
+                    alert('Нет доступа');
+                    history.go(-1);
+                }
+            }
+        );
+    
+    function createVariant() {
+              let variant = {
+                           LaboratoryWorkId: $('#newLaboratoryWork option:selected')[0].dataset.id,
+                           VariantNumber: $('#newNumber').val(),
+                           Description: $('#newDescription').val(),
+                           LinkToModel: $('#newLink').val(),
+                           InputDataRuns: $('#newInputData').val()
                            };
               $.ajax(
                   {
                       type: 'POST',
-                      url: '/api/groups/create',
+                      url: '/api/variants/create',
                       contentType:  "application/json; charset=utf-8",
                       dataType: "json",
-                      data: JSON.stringify(group),
+                      data: JSON.stringify(variant),
                       beforeSend: (xhr) =>
                       {
                            let token = sessionStorage.getItem(tokenKey);
@@ -143,23 +179,23 @@
                       error: (response) =>
                       {
                           console.log(response);
-                          alert('Не удалось добавить группу');
+                          alert('Не удалось добавить вариант');
                       }
                   }
                 );
     }
-      function removeGroup(groupId) {
-                    if(confirm("Вы точно хотите удалить эту группу?"))
+      function removeVariant(variantId) {
+                    if(confirm("Вы точно хотите удалить этот вариант?"))
                     {
                         $.ajax(
                             {
                                 type: 'POST',
-                                url: '/api/groups/delete',
+                                url: '/api/variants/delete',
                                 beforeSend: (xhr) =>
                                 {
                                      let token = sessionStorage.getItem(tokenKey);
                                      xhr.setRequestHeader("Authorization", "Bearer " + token);
-                                     xhr.setRequestHeader("groupId", groupId)
+                                     xhr.setRequestHeader("variantId", variantId)
                                 },
                                 success: (g) =>
                                 {
@@ -168,46 +204,54 @@
                                 error: (response) =>
                                 {
                                     console.log(response);
-                                    alert('В группе есть ещё студенты');
+                                    alert('Вариант решают студенты =)');
                                 }
                             }
                           );
                     }
       }
       
-      function editPrepareGroup(obj) {
+      function editPrepareVariant(obj) {
                 let id = $(obj).parent("td").data('id');
             
-                let code = $(obj).parent("td").prev("td").text();
+                let inputData = $(obj).parent("td").prev("td").text();
                 
-                let year = $(obj).parent("td").prev("td").prev("td").text();
+                let link = $(obj).parent("td").prev("td").prev("td").text();
                 
-                let group = $(obj).parent("td").prev("td").prev("td").prev("td").text();
+                let description = $(obj).parent("td").prev("td").prev("td").prev("td").text();
                 
-                $("#edit").find("input[id='EditName']").val(group);
-                $("#edit").find("input[id='EditYear']").val(year);
+                let numberVar = $(obj).parent("td").prev("td").prev("td").prev("td").prev("td").text();
+                
+                let name = $(obj).parent("td").prev("td").prev("td").prev("td").prev("td").prev("td").text();
+                
+                $("#edit").find("input[id='EditNumber']").val(numberVar);
+                $("#EditDescription").val(description);
+                $("#EditLink").val(link);
+                $("#EditInputData").val(inputData);
                 $("#edit").find("input[type='hidden']").val(id);
-                $("#edit").find("select[id='EditSpecialityId']").val(code);
+                $("#edit").find("select[id='EditLaboratoryWork']").val(name);
       }
       
-      function editGroup() {
-             let group = {
-                        Name: $('#EditName').val(),
-                        Year: $('#EditYear').val(),
-                        SpecialityId: $('#EditSpecialityId').val()
-                        };
+      function editVariant() {
+             let variant = {
+                            LaboratoryWorkId: $('#EditLaboratoryWork option:selected')[0].dataset.id,
+                            VariantNumber: $('#EditNumber').val(),
+                            Description: $('#EditDescription').val(),
+                            LinkToModel: $('#EditLink').val(),
+                            InputDataRuns: $('#EditInputData').val()
+                            };
                    $.ajax(
                        {
                            type: 'POST',
-                           url: '/api/groups/update',
+                           url: '/api/variants/update',
                            contentType:  "application/json; charset=utf-8",
                            dataType: "json",
-                           data: JSON.stringify(group),
+                           data: JSON.stringify(variant),
                            beforeSend: (xhr) =>
                            {
                                 let token = sessionStorage.getItem(tokenKey);
                                 xhr.setRequestHeader("Authorization", "Bearer " + token);
-                                xhr.setRequestHeader("groupId", $('#EditGroupId').val());
+                                xhr.setRequestHeader("varId", $('#EditVariantId').val());
                            },
                            success: (g) =>
                            {
