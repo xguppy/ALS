@@ -1,5 +1,4 @@
 @page
-@using System.Xml.Schema
 @model ALS.Pages.Groups
 @{
     Layout = "_Layout";
@@ -45,7 +44,7 @@
             <div class="modal-header"><h4 class="modal-title">Редактирование группы</h4><button class="close" type="button" data-dismiss="modal">×</button>
             </div>
             <div class="modal-body">
-                @using (Html.BeginForm("Create", "Groups", FormMethod.Post))
+                @using (Html.BeginForm("Update", "Groups", FormMethod.Post))
                 {
                     @Html.Label("Наименование группы:\t")
                     @Html.TextBox("Name", null, new {@id = "EditName"})
@@ -61,7 +60,6 @@
         </div>
     </div>
 </div>
-
 
 <script>
     let tokenKey = "accessToken";

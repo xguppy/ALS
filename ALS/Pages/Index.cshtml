@@ -8,7 +8,7 @@
     
     <div class="userInfo" style="display:none;">
         <p>Вы вошли как: <span class="userName"></span></p>
-        <input type="button" value="Выйти" id="logOut" />
+        <input type="button" class="btn btn-dark" value="Выйти" id="logOut" />
     </div>
     <div class="loginForm">
         <h3>Вход на сайт</h3>
@@ -16,16 +16,16 @@
         <input type="email" id="emailLogin" /> <br /><br />
         <label>Введите пароль</label><br />
         <input type="password" id="passwordLogin" /><br /><br />
-        <input type="submit" id="submitLogin" value="Логин" />
+        <input type="button" class="btn btn-success" id="submitLogin" value="Логин" />
     </div>
-    <div>
-        <input type="submit" id="TestAdmin" value="Тест админа" />
+    <div style="margin-top: 1%">
+        <input type="button" class="btn btn-secondary" id="TestAdmin" value="Тест админа" />
     </div>
-    <div>
-        <input type="submit" id="TestTeacher" value="Тест препода" />
+    <div style="margin-top: 1%">
+        <input type="button" class="btn btn-secondary" id="TestTeacher" value="Тест препода" />
     </div>
-    <div>
-        <input type="submit" id="TestStudent" value="Тест студента" />
+    <div style="margin-top: 1%">
+        <input type="button" class="btn btn-secondary" id="TestStudent" value="Тест студента" />
     </div>
     
     <script>
@@ -43,7 +43,7 @@
             
         $('#submitLogin').click(function (e) {
             e.preventDefault();
-            var loginData = {
+            let loginData = {
                 grant_type: 'Password',
                 Email: $('#emailLogin').val(),
                 Password: $('#passwordLogin').val()
@@ -82,7 +82,7 @@
                  type: 'GET',
                  url: '/api/users/testadmin',
                  beforeSend: function (xhr) {
-                     var token = sessionStorage.getItem(tokenKey);
+                     let token = sessionStorage.getItem(tokenKey);
                      xhr.setRequestHeader("Authorization", "Bearer " + token);
                  },
                  success: function (data) {
@@ -99,7 +99,7 @@
                          type: 'GET',
                          url: '/api/users/testteacher',
                          beforeSend: function (xhr) {
-                             var token = sessionStorage.getItem(tokenKey);
+                             let token = sessionStorage.getItem(tokenKey);
                              xhr.setRequestHeader("Authorization", "Bearer " + token);
                          },
                          success: function (data) {

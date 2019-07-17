@@ -55,9 +55,7 @@ namespace ALS.Controllers
                         Path.Combine(Environment.CurrentDirectory, "executeUser",
                             $"{ProcessCompiler.CreatePath(variant.LaboratoryWorkId, variantId)}.exe");
                     
-                    var programFileModel =
-                        Path.Combine(Environment.CurrentDirectory, "executeModel",
-                            $"{ProcessCompiler.CreatePath(variant.LaboratoryWorkId, variantId)}.exe");
+                    var programFileModel = new Uri((await _db.Variants.FirstOrDefaultAsync(var => var.VariantId == variantId)).LinkToModel).AbsolutePath;
                     
                     var compiler = new ProcessCompiler(sourceCodeFile, programFileUser);
                     var isCompile = await Task.Run(() => compiler.Execute(60000));
