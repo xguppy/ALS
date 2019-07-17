@@ -32,6 +32,7 @@
         //Специальные секции в sessionStorage
         let tokenKey = "accessToken";
         let username = "userName";
+        let userId   = "userId";
         
         if(sessionStorage.getItem(tokenKey) != null)
         {
@@ -61,6 +62,7 @@
                 // сохраняем в хранилище sessionStorage токен доступа и имя
                 sessionStorage.setItem(tokenKey, data.access_token);
                 sessionStorage.setItem(username, data.username);
+                sessionStorage.setItem(userId,   data.userId);
             }).error(function (data) {
                 console.log(data);
             });

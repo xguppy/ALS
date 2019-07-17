@@ -15,6 +15,7 @@ namespace ALS.Controllers
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
     [ApiController]
+    // мб здеcь Theacher
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Student")]
     public class LaboratoryWorksController : Controller
     {
@@ -24,7 +25,14 @@ namespace ALS.Controllers
         {
             _db = db;
         }
-        
+
+        // проверка аута
+        [HttpGet]
+        public IActionResult CheckAuth()
+        {
+            return Ok(new string("Auth is done!"));
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
