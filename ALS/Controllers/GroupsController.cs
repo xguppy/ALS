@@ -13,7 +13,7 @@ namespace ALS.Controllers
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Teacher")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin, Teacher")]
     public class GroupsController : Controller
     {
         private readonly ApplicationContext _db;
@@ -79,7 +79,7 @@ namespace ALS.Controllers
                 {
                     await Response.WriteAsync(e.Message);
                 }
-                return Ok(groupUpdate);
+                return Ok(groupId);
             }
             return NotFound("Group not found");
         }

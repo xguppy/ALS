@@ -75,7 +75,7 @@ namespace ALS.Controllers
                 {
                     await Response.WriteAsync(e.Message);
                 }
-                return Ok();
+                return Ok(model);
             }
             return NotFound("Speciality not found");
         }

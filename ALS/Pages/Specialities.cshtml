@@ -1,37 +1,34 @@
 @page
-@using System.Xml.Schema
-@model ALS.Pages.Groups
+@model ALS.Pages.Specialities
+
 @{
     Layout = "_Layout";
-    ViewData["Title"] = "Группы";
+    ViewData["Title"] = "Специальности";
 }
 <table style="width: 100%" border="1">
     <thead>
     <tr>
-    <td>Группа</td>
-    <td>Год начала обучения</td>    
-    <td>Код специальности</td>
+    <td>Код</td>
+    <td>Наименование специальности</td>
     <td>Действие</td>
     </thead>
     <tbody id="tbodyContent">
 </table>
 
-<button class="btn btn-info btn-lg" type="button" data-toggle="modal" data-target="#myModal">Добавить группу</button>
+<button class="btn btn-info btn-lg" type="button" data-toggle="modal" data-target="#myModal">Добавить специальность</button>
 <div id="myModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header"><h4 class="modal-title">Новая группа</h4><button class="close" type="button" data-dismiss="modal">×</button>
+            <div class="modal-header"><h4 class="modal-title">Новая специальность</h4><button class="close" type="button" data-dismiss="modal">×</button>
             </div>
             <div class="modal-body">
                 @using (Html.BeginForm("Create", "Groups", FormMethod.Post))
                 {
-                    @Html.Label("Наименование группы:\t")
+                    @Html.Label("Код:\t")
+                    @Html.TextBox("Code", null, new {@id = "newCode"})
+                    @Html.Label("Наименование специальности:\t")
                     @Html.TextBox("Name", null, new {@id = "newName"})
-                    @Html.Label("Год начала обучения:\t")
-                    @Html.TextBox("Year", null, new {@id = "newYear"})
-                    @Html.Label("Специальность:\t")
-                    @Html.DropDownList("SpecialityId", Model.Specialities, new {@id = "newSpecialityId"})
-                    <p><input type="button" class="btn btn-dark" value="Отправить" onclick="createGroup()" /></p>
+                    <p><input type="button" class="btn btn-dark" value="Отправить" onclick="createSpec()" /></p>
                 }
             </div>
             <div class="modal-footer"><button class="btn btn-default" type="button" data-dismiss="modal">Закрыть</button></div>
@@ -42,18 +39,15 @@
 <div id="edit" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header"><h4 class="modal-title">Редактирование группы</h4><button class="close" type="button" data-dismiss="modal">×</button>
+            <div class="modal-header"><h4 class="modal-title">Редактирование специальности</h4><button class="close" type="button" data-dismiss="modal">×</button>
             </div>
             <div class="modal-body">
                 @using (Html.BeginForm("Create", "Groups", FormMethod.Post))
                 {
-                    @Html.Label("Наименование группы:\t")
+                    @Html.Label("Код:\t")
+                    @Html.TextBox("Code", null, new {@id = "EditCode"})
+                    @Html.Label("Наименование специальности:\t")
                     @Html.TextBox("Name", null, new {@id = "EditName"})
-                    @Html.Label("Год начала обучения:\t")
-                    @Html.TextBox("Year", null, new {@id = "EditYear"})
-                    @Html.Label("Специальность:\t")
-                    @Html.DropDownList("SpecialityId", Model.Specialities, new {@id = "EditSpecialityId"})
-                    @Html.Hidden("groupId", null, new {@id = "EditGroupId"});
                     <p><input type="button" class="btn btn-dark" value="Отправить" onclick="editGroup()" /></p>
                 }
             </div>
@@ -68,36 +62,32 @@
     $.ajax(
         {
             type: 'GET',
-            url: '/api/groups/getall',
+            url: '/api/specialities/getall',
             beforeSend: (xhr) => 
             {
                 let token = sessionStorage.getItem(tokenKey);
                 xhr.setRequestHeader("Authorization", "Bearer " + token);
             },
-            success: (groups) =>
+            success: (specialities) =>
             {
                 let tbdy = document.getElementById('tbodyContent');
-                for (let group of groups)
+                for (let spec of specialities)
                 {
                     let tr = document.createElement('tr');
-                    for(let prop in group)
+                    for(let prop in spec)
                     {
-                        if(prop !== 'groupId')
-                        {
-                            let td = document.createElement('td');
-                            td.appendChild(document.createTextNode(group[prop]));
-                            tr.appendChild(td);
-                        }
+                        let td = document.createElement('td');
+                        td.appendChild(document.createTextNode(spec[prop]));
+                        tr.appendChild(td);
                     }
                     let td = document.createElement('td');
-                    td.dataset.id = group.groupId;
-                    td.innerHTML = '<button style="margin-right: 5%" data-toggle="modal" onclick="editPrepareGroup(this)" data-target="#edit" class="btn btn-primary edit-item">Редактировать</button>' +
-                     '<button onclick="removeGroup('+ group.groupId +')" class="btn btn-danger remove-item">Удалить</button>';
+                    td.innerHTML = '<button style="margin-right: 5%" data-toggle="modal" onclick="editPrepareSpec(this)" data-target="#edit" class="btn btn-primary edit-item">Редактировать</button>' +
+                     '<button onclick="removeSpec(this)" class="btn btn-danger remove-item">Удалить</button>';
                     tr.appendChild(td);
                     tbdy.appendChild(tr);
                 }
             },
-            error: (groupsFail) =>
+            error: (specialitiesFail) =>
             {
                 document.body.innerHTML = '';
                 alert('Нет доступа');
@@ -106,48 +96,48 @@
         }
     );
     
-    function createGroup() {
-              let group = {
-                           Name: $('#newName').val(),
-                           Year: $('#newYear').val(),
-                           SpecialityId: $('#newSpecialityId').val()
+    function createSpec() {
+              let spec = {
+                           Code: $('#newCode').val(),
+                           Name: $('#newName').val()
                            };
               $.ajax(
                   {
                       type: 'POST',
-                      url: '/api/groups/create',
+                      url: '/api/specialities/create',
                       contentType:  "application/json; charset=utf-8",
                       dataType: "json",
-                      data: JSON.stringify(group),
+                      data: JSON.stringify(spec),
                       beforeSend: (xhr) =>
                       {
                            let token = sessionStorage.getItem(tokenKey);
                            xhr.setRequestHeader("Authorization", "Bearer " + token);
                       },
-                      success: (g) =>
+                      success: (s) =>
                       {
                           document.location.reload(true);
                       },
                       error: (response) =>
                       {
                           console.log(response);
-                          alert('Не удалось добавить группу');
+                          alert('Не удалось добавить специальность');
                       }
                   }
                 );
     }
-      function removeGroup(groupId) {
-                    if(confirm("Вы точно хотите удалить эту группу?"))
+      function removeSpec(obj) {
+                    let code = $(obj).parent("td").prev("td").prev("td").text();
+                    if(confirm("Вы точно хотите удалить эту специальность?"))
                     {
                         $.ajax(
                             {
                                 type: 'POST',
-                                url: '/api/groups/delete',
+                                url: '/api/specialities/delete',
                                 beforeSend: (xhr) =>
                                 {
                                      let token = sessionStorage.getItem(tokenKey);
                                      xhr.setRequestHeader("Authorization", "Bearer " + token);
-                                     xhr.setRequestHeader("groupId", groupId)
+                                     xhr.setRequestHeader("code", code)
                                 },
                                 success: (g) =>
                                 {
@@ -156,55 +146,49 @@
                                 error: (response) =>
                                 {
                                     console.log(response);
-                                    alert('В группе есть ещё студенты');
+                                    alert('У данной специальности ещё есть учебные группы');
                                 }
                             }
                           );
                     }
       }
       
-      function editPrepareGroup(obj) {
-                let id = $(obj).parent("td").data('id');
-            
-                let code = $(obj).parent("td").prev("td").text();
+      function editPrepareSpec(obj) {
                 
-                let year = $(obj).parent("td").prev("td").prev("td").text();
+                let code = $(obj).parent("td").prev("td").prev("td").text();
                 
-                let group = $(obj).parent("td").prev("td").prev("td").prev("td").text();
+                let name = $(obj).parent("td").prev("td").text();
                 
-                $("#edit").find("input[id='EditName']").val(group);
-                $("#edit").find("input[id='EditYear']").val(year);
-                $("#edit").find("input[type='hidden']").val(id);
-                $("#edit").find("select[id='EditSpecialityId']").val(code);
+                $("#edit").find("input[id='EditName']").val(name);
+                $("#edit").find("input[id='EditCode']").val(code);
       }
       
       function editGroup() {
-             let group = {
-                        Name: $('#EditName').val(),
-                        Year: $('#EditYear').val(),
-                        SpecialityId: $('#EditSpecialityId').val()
+             let spec = {
+                        Code: $('#EditCode').val(),
+                        Name: $('#EditName').val()
                         };
                    $.ajax(
                        {
                            type: 'POST',
-                           url: '/api/groups/update',
+                           url: '/api/specialities/update',
                            contentType:  "application/json; charset=utf-8",
                            dataType: "json",
-                           data: JSON.stringify(group),
+                           data: JSON.stringify(spec),
                            beforeSend: (xhr) =>
                            {
                                 let token = sessionStorage.getItem(tokenKey);
                                 xhr.setRequestHeader("Authorization", "Bearer " + token);
-                                xhr.setRequestHeader("groupId", $('#EditGroupId').val());
+                                xhr.setRequestHeader("code", spec.Code);
                            },
-                           success: (g) =>
+                           success: (s) =>
                            {
                                document.location.reload(true);
                            },
                            error: (response) =>
                            {
                                console.log(response);
-                               alert('Не удалось обновить группу');
+                               alert('Не удалось обновить специальности (возможно за ней числятся учебные группы?)');
                            }
                        }
                      );   
