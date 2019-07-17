@@ -15,7 +15,6 @@ namespace ALS.Controllers
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
     [ApiController]
-    // мб здеcь Theacher
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Teacher")]
     public class LaboratoryWorksController : Controller
     {
@@ -83,6 +82,7 @@ namespace ALS.Controllers
         [HttpPost]
         public async Task<IActionResult> Update([FromBody] LaboratoryWorkDTO model, [FromHeader] int laboratoryWorkId)
         {
+            if (model.TemplateLaboratoryWorkId == -1) model.TemplateLaboratoryWorkId = null; // надо что-то сделать с этим
             var laboratoryWorkUpdate = await _db.LaboratoryWorks.FirstOrDefaultAsync(laboratoryWork => laboratoryWork.LaboratoryWorkId == laboratoryWorkId);
             var curUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             if (laboratoryWorkUpdate != null)
@@ -114,7 +114,7 @@ namespace ALS.Controllers
                 {
                     await Response.WriteAsync(e.Message);
                 }
-                return Ok();
+                return Ok(new string("LW successfully updated"));
             }
             return NotFound();
         }
