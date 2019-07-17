@@ -18,10 +18,39 @@
             <tr>
                 <td>@item.Theme.Name</td>
                 <td>@item.TemplateTask</td>
-                <td><input id="buttonDelete" asp-page-handler="Deleting" type="button" value="Удалить" onclick="deleteTlw(@item.TemplateLaboratoryWorkId)"></td>
+                <td>
+                    <input type="button" id="buttonDelete" value="Удалить" onclick="deleteTlw(@item.TemplateLaboratoryWorkId)" /> |
+                    <input type="button" id="buttonUpdate" value="Изменить" onclick="updateTlw(@item.TemplateLaboratoryWorkId, @item.ThemeId, '@item.TemplateTask')" />
+                </td>
             </tr>
         }
     </table>
+</div>
+
+<div id="myModal" class="modal fade bd-example-modal-lg">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Редактирование шаблона</h4><button class="close" type="button" data-dismiss="modal">×</button>
+            </div>
+            <div class="modal-body">
+                    <form method="post">
+                        <label>Тема : </label>
+                        @Html.DropDownList("ThemeId", Model.Themes, new { @id = "newThemeId" })
+                        <input id="hiddenId" name="hiddenId" value="1" hidden>
+                        <p>
+                            <label>Путь до файла : </label>
+                            <input id="path" name="path" value="1">
+                        </p>
+                        <p>
+                            <textarea id="textAreaModel" name="textAreaModel" cols="80" rows="30"></textarea>
+                        </p>
+                        <p><input type="button" value="Отправить" id="submitUpdate" onclick="update()" /></p>
+                    </form>
+            </div>
+            <div class="modal-footer"><button class="btn btn-default" type="button" data-dismiss="modal">Закрыть</button></div>
+        </div>
+    </div>
 </div>
 
 <hr />
@@ -29,6 +58,7 @@
 
 <h4> Создание нового шаблона </h4>
 <div class="row">
+
     <div class="col-md-5">
         <form method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -41,13 +71,98 @@
                 <input id="selectFile" type="file" name="upload" />
             </div>
             <div class="form-group">
-                <input id="submitCreating" asp-page-handler="Creating" type="submit" value="Create" />
+                <input id="submitCreating" asp-page-handler="Creating" type="submit" value="Создать" />
             </div>
         </form>
     </div>
 </div>
 
 <script>
+    function updateTlw(tlwId, themeid, pathFile) {
+        $.ajax(
+            {
+                type: 'GET',
+                url: '/api/TemplateLWS/ReadFile',
+                beforeSend: (xhr) => {
+                    xhr.setRequestHeader('path', pathFile);
+                },
+                success: (response) => {
+                    $("#myModal").find("textarea[id='textAreaModel']").val(response);
+                },
+                error: (response) => {
+                    alert('Ошибка при чтении файла : ' + pathFile);
+                }
+            }
+        );
+
+        $("#myModal").find("input[name='hiddenId']").val(tlwId);
+        $("#myModal").find("input[id='path']").val(pathFile);
+        
+        $('#newThemeId option:selected').each(function () {
+            this.selected = false;
+        });
+        $("#newThemeId option[value='" + themeid + "']").attr("selected", "selected");
+        $('#myModal').modal('show');
+    }
+
+    function update() {
+        let text = $("#myModal").find("textarea[id='textAreaModel']").val();
+        let twlId = $("#myModal").find("input[id='hiddenId']").val();
+        let themeId = $("#myModal").find("select[id='newThemeId']").val();
+        let path = $("#myModal").find("input[id='path']").val();
+        let datas = {
+            content: text,
+            pathToFile : path
+        }
+        $.ajax(
+            {
+                type: 'POST',
+                url: '/api/TemplateLWS/WriteFile',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: JSON.stringify(datas),
+                beforeSend: (xhr) => {
+                },
+                success: (data) => {
+                    //document.location.reload(true);
+                },
+                error: (response) => {
+                    console.log(response);
+                    alert('Не удалось обновить шаблон');
+                    return;
+                }
+            }
+        );
+        
+        let tdto = {
+            TemplateTask: path,
+            ThemeId: themeId,
+        };
+        $.ajax(
+            {
+                type: 'POST',
+                url: '/api/TemplateLWS/Update',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: JSON.stringify(tdto),
+                beforeSend: (xhr) => {
+                    //let token = sessionStorage.getItem(tokenKey);
+                    //xhr.setRequestHeader("Authorization", "Bearer " + token);
+                    //xhr.setRequestHeader("groupId", $('#EditGroupId').val());
+                    xhr.setRequestHeader("templateId", twlId);
+                },
+                success: (d) => {
+                    document.location.reload(true);
+                },
+                error: (response) => {
+                    console.log(response);
+                    alert('Не удалось обновить шаблон');
+                }
+            }
+        );   
+
+    }
+
     function deleteTlw(data) {
         if (confirm("Уверены, что хотите удалить данный шаблон")) {
             $.ajax(
@@ -59,11 +174,11 @@
                         //xhr.setRequestHeader("Authorization", "Bearer " + token);
                         xhr.setRequestHeader('templateId', data);
                     },
-                    success: () => {   
+                    success: (t) => {
                         document.location.reload(true);          
                     },
-                    fail: () => {
-                        alarm('FAIL');
+                    error: (response) => {
+                        alert('Удаление невозможно! Данный шаблон еще связан с лабораторными работами');
                     }
                 }
             );
