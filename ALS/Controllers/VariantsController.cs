@@ -103,7 +103,7 @@ namespace ALS.Controllers
                     {
                         await Response.WriteAsync(e.Message);
                     }
-                    return Ok();
+                    return Ok(varId);
                 }
                 return NotFound("Variant not found");
             }
