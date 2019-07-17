@@ -28,8 +28,9 @@ namespace ALS.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await Task.Run(() => _db.LaboratoryWorks
-                .Select(laboratoryWork => new { laboratoryWork.TemplateLaboratoryWorkId, laboratoryWork.ThemeId, laboratoryWork.Name, laboratoryWork.Description, laboratoryWork.Evaluation, laboratoryWork.DisciplineCipher, laboratoryWork.UserId, laboratoryWork.Constraints}).ToList()));
+            var curUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            return Ok(await Task.Run(() => _db.LaboratoryWorks.Where(lw => lw.UserId == curUserId)
+                .Select(laboratoryWork => new { laboratoryWork.LaboratoryWorkId, laboratoryWork.TemplateLaboratoryWorkId, laboratoryWork.ThemeId, laboratoryWork.Name, laboratoryWork.Description, laboratoryWork.Evaluation, laboratoryWork.DisciplineCipher, laboratoryWork.UserId, laboratoryWork.Constraints}).ToList()));
         }
         
         [HttpGet]

@@ -22,9 +22,9 @@
             <div class="modal-header"><h4 class="modal-title">Новая специальность</h4><button class="close" type="button" data-dismiss="modal">×</button>
             </div>
             <div class="modal-body">
-                @using (Html.BeginForm("Create", "Groups", FormMethod.Post))
+                @using (Html.BeginForm("Create", "Specialities", FormMethod.Post))
                 {
-                    @Html.Label("Код:\t")
+                    @Html.Label("Код специальности:\t")
                     @Html.TextBox("Code", null, new {@id = "newCode"})
                     @Html.Label("Наименование специальности:\t")
                     @Html.TextBox("Name", null, new {@id = "newName"})
@@ -42,9 +42,9 @@
             <div class="modal-header"><h4 class="modal-title">Редактирование специальности</h4><button class="close" type="button" data-dismiss="modal">×</button>
             </div>
             <div class="modal-body">
-                @using (Html.BeginForm("Create", "Groups", FormMethod.Post))
+                @using (Html.BeginForm("Update", "Specialities", FormMethod.Post))
                 {
-                    @Html.Label("Код:\t")
+                    @Html.Label("Код специальности:\t")
                     @Html.TextBox("Code", null, new {@id = "EditCode"})
                     @Html.Label("Наименование специальности:\t")
                     @Html.TextBox("Name", null, new {@id = "EditName"})
@@ -188,7 +188,7 @@
                            error: (response) =>
                            {
                                console.log(response);
-                               alert('Не удалось обновить специальности (возможно за ней числятся учебные группы?)');
+                               alert('Не удалось обновить специальность (возможно за ней числятся учебные группы?)');
                            }
                        }
                      );   
