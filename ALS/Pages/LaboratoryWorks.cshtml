@@ -33,8 +33,8 @@
                 <td>
                     <input type="button" id="buttonDelete" value="Удалить" onclick="deleteLw(@item.LaboratoryWorkId)" /> |
                     @{  /*<input type="button" id="buttonUpdate" value="Изменить" onclick="openModalUpdate(@item.TemplateLaboratoryWorkId, @item.ThemeId,'@item.DisciplineCipher', '@item.Name', '@item.Description', '@item.Constraints')" />*/
-                    }<input type="button" id="buttonUpdate" value="Изменить" onclick="openModalUpdate(@templateId, @item.ThemeId, '@item.DisciplineCipher',
-                            '@item.Name', '@item.Description', '@item.Constraints')" />
+                    }<input type="button" id="buttonUpdate" value="Изменить" onclick="openModalUpdate(@item.LaboratoryWorkId, @item.UserId, @templateId,
+                            @item.ThemeId, '@item.DisciplineCipher','@item.Name', '@item.Description', '@item.Constraints')" />
                 </td>
             </tr>
         }
@@ -120,6 +120,8 @@
                         <label>Ограничения (JSON) : </label>
                         <textarea id="i2Constraints" name="i2Constraints" cols="50"></textarea>
                     </p>
+                    <input id="hiddenId" name="hiddenId" hidden>
+                    <input id="hiddenUserId" name="hiddenUserId" hidden>
                     <p><input type="button" value="Отправить" id="submitUpdate" onclick="updateLw()" /></p>
                 </form>
             </div>
@@ -159,7 +161,7 @@
     }
 
     //function openModalUpdate(tmpId, themeId, cipher, name, descr, constr) {
-    function openModalUpdate(tmpId, themeId, cipher, name, descr, constr) {
+    function openModalUpdate(lwId,userIdent,tmpId, themeId, cipher, name, descr, constr) {
 
         // дроп даун шаблон
         $("#myModalUpdate").find("select[id='s2TemplateId']").val(tmpId);
@@ -169,6 +171,8 @@
         $("#myModalUpdate").find("input[id='i2Name']").val(name);
         $("#myModalUpdate").find("textarea[id='i2Description']").val(descr);
         $("#myModalUpdate").find("textarea[id='i2Constraints']").val(constr);
+        $("#myModalUpdate").find("input[id='hiddenId']").val(lwId);
+        $("#myModalUpdate").find("input[id='hiddenUserId']").val(userIdent);
         
         $('#myModalUpdate').modal('show');
     }
@@ -206,6 +210,42 @@
                 }
             }
         );
+    }
+
+
+    function updateLw() {
+        let lwDto = {
+            TemplateLaboratoryWorkId: $('#s2TemplateId').val(),
+            ThemeId: $('#s2ThemeId').val(),
+            Name: $('#i2Name').val(),
+            Description: $('#i2Description').val(),
+            Evaluation: 1,
+            DisciplineCipher: $('#s2DisciplineCipher').val(),
+            UserId: $('#hiddenUserId').val(), 
+            Constraints: $('#i2Constraints').val(),
+        }
+
+        $.ajax(
+            {
+                type: 'POST',
+                url: '/api/LaboratoryWorks/Update',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: JSON.stringify(lwDto),
+                beforeSend: (xhr) => {
+                    let token = sessionStorage.getItem(tokenKey);
+                    xhr.setRequestHeader("Authorization", "Bearer " + token);
+                    xhr.setRequestHeader("laboratoryWorkId", $("#myModalUpdate").find("input[id='hiddenId']").val());
+                },
+                success: (d) => {
+                    document.location.reload(true);
+                },
+                error: (response) => {
+                    alert('Не удалось обновить лабораторную работу');
+                }
+            }
+        );
+
     }
 
     function deleteLw(lwId) {
