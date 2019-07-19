@@ -29,13 +29,13 @@
                     <p>@Html.Label("Лабораторная работа:\t")
                     <select name="LaboratoryWorkId" id="newLaboratoryWork"></select></p>
                     @Html.Label("Номер варианта:\t")
-                    @Html.TextBox("Number", "1", new {@id = "newNumber"})
+                    @Html.TextBox("Number", "1", new {id = "newNumber"})
                     @Html.Label("Описание варианта:\t")
-                    @Html.TextArea("Description", "desc", new {@id = "newDescription"})
+                    @Html.TextArea("Description", "desc", new {id = "newDescription"})
                     @Html.Label("Ссылка на модель:\t")
-                    @Html.TextArea("Link", @"file:///C:/Users/kampukter/source/repos/ALS/ALS.GeneratorModule/Docs/Exp.txt", new {@id = "newLink"})
+                    @Html.TextArea("Link", @"file:///C:/Users/kampukter/source/repos/ALS/ALS.GeneratorModule/Docs/Exp.txt", new {id = "newLink"})
                     @Html.Label("Входные данные:\t")
-                    @Html.TextArea("InputData", "[{\"Data\": [\"#rnd(1 | 20 | int | 10)\"], \"Name\": \"тест1\"}, {\"Data\": [\"#rnd(1 | 20 | int | 10)\"], \"Name\": \"тест2\"}, {\"Data\": [\"1\", \"2\", \"3\", \"4\", \"5\", \"6\", \"7\", \"8\", \"9\", \"10\"], \"Name\": \"тест3\"}]", new {@id = "newInputData"})
+                    @Html.TextArea("InputData", "[{\"Data\": [\"#rnd(1 | 20 | int | 10)\"], \"Name\": \"тест1\"}, {\"Data\": [\"#rnd(1 | 20 | int | 10)\"], \"Name\": \"тест2\"}, {\"Data\": [\"1\", \"2\", \"3\", \"4\", \"5\", \"6\", \"7\", \"8\", \"9\", \"10\"], \"Name\": \"тест3\"}]", new {id = "newInputData"})
                     <p><input type="button" class="btn btn-dark" value="Отправить" onclick="createVariant()" /></p>
                 }
             </div>
@@ -57,14 +57,14 @@
                     <select name="LaboratoryWorkId" id="EditLaboratoryWork"></select>
                     </p>
                     @Html.Label("Номер варианта:\t")
-                    @Html.TextBox("Number", null, new {@id = "EditNumber"})
+                    @Html.TextBox("Number", null, new {id = "EditNumber"})
                     @Html.Label("Описание варианта:\t")
-                    @Html.TextArea("Description", null, new {@id = "EditDescription"})
+                    @Html.TextArea("Description", null, new {id = "EditDescription"})
                     @Html.Label("Ссылка на модель:\t")
-                    @Html.TextArea("Link", null, new {@id = "EditLink"})
+                    @Html.TextArea("Link", null, new {id = "EditLink"})
                     @Html.Label("Входные данные:\t")
-                    @Html.TextArea("InputData", null, new {@id = "EditInputData"})
-                    @Html.Hidden("variantId", null, new {@id = "EditVariantId"})
+                    @Html.TextArea("InputData", null, new {id = "EditInputData"})
+                    @Html.Hidden("variantId", null, new {id = "EditVariantId"})
                     <p><input type="button" class="btn btn-dark" value="Отправить" onclick="editVariant()" /></p>
                 }
             </div>

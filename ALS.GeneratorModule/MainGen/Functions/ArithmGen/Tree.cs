@@ -11,7 +11,7 @@ namespace Generator
         public string Value { get; set; }
         public Tree Left { get; set; } = null;
         public Tree Right { get; set; } = null;
-        public Tree Parent { get; set; } = null;
+        public Tree Parent { get; set; }
         public State State = State.Var;
         
 

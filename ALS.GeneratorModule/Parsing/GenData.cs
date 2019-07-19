@@ -22,12 +22,12 @@ namespace Generator.Parsing
             string res = $"Template = {Template}   Code = {Code}\nSD:";
             foreach (var s in Sd)
             {
-                res += $"\t{s.ToString()}\n";
+                res += $"\t{s}\n";
             }
 
             foreach (var s in TestsD)
             {
-                res += $"\t{s.ToString()}\n";
+                res += $"\t{s}\n";
             }
             return res;
         }

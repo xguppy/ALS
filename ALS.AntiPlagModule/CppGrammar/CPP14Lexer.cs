@@ -11,6 +11,13 @@
 // Generated from CPP14.g4 by ANTLR 4.6.5
 
 // Unreachable code detected
+
+using System;
+using System.CodeDom.Compiler;
+using Antlr4.Runtime;
+using Antlr4.Runtime.Atn;
+using Antlr4.Runtime.Misc;
+
 #pragma warning disable 0162
 // The variable '...' is assigned but its value is never used
 #pragma warning disable 0219
@@ -20,13 +27,8 @@
 #pragma warning disable 419
 
 namespace CppGrammar {
-using Antlr4.Runtime;
-using Antlr4.Runtime.Atn;
-using Antlr4.Runtime.Misc;
-using DFA = Antlr4.Runtime.Dfa.DFA;
-
-[System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.6.5")]
-[System.CLSCompliant(false)]
+	[GeneratedCode("ANTLR", "4.6.5")]
+[CLSCompliant(false)]
 public partial class CPP14Lexer : Lexer {
 	public const int
 		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, MultiLineMacro=7, Directive=8, 
@@ -146,7 +148,7 @@ public partial class CPP14Lexer : Lexer {
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
-	[System.Obsolete("Use Vocabulary instead.")]
+	[Obsolete("Use Vocabulary instead.")]
 	public static readonly string[] tokenNames = GenerateTokenNames(DefaultVocabulary, _SymbolicNames.Length);
 
 	private static string[] GenerateTokenNames(IVocabulary vocabulary, int length) {
@@ -165,7 +167,7 @@ public partial class CPP14Lexer : Lexer {
 		return tokenNames;
 	}
 
-	[System.Obsolete("Use IRecognizer.Vocabulary instead.")]
+	[Obsolete("Use IRecognizer.Vocabulary instead.")]
 	public override string[] TokenNames
 	{
 		get

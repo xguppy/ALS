@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using ALS.AntiPlagModule.Services;
+using ALS.AntiPlagModule.Services.CompareModels;
+using ALS.DTO;
 using ALS.EntityСontext;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ALS.DTO;
 using Microsoft.EntityFrameworkCore;
-using ALS.AntiPlagModule.Services.CompareModels;
-using ALS.AntiPlagModule.Services;
-using System.Security.Claims;
 using Newtonsoft.Json;
 
 namespace ALS.Controllers

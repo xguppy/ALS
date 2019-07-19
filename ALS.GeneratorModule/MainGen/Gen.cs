@@ -1,13 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Collections.Generic;
-using Generator.Parsing;
-using Generator.MainGen.Structs;
 using System.Threading.Tasks;
 using ALS.CheckModule.Processes;
+using Generator.MainGen.Structs;
+using Generator.Parsing;
 using Newtonsoft.Json;
-using Generator.MainGen;
 
 namespace Generator.MainGen
 {
@@ -102,9 +101,10 @@ namespace Generator.MainGen
             }        
             
 
-            return new ResultData() {
+            return new ResultData
+            {
                 Template = d.Template, /* шаблон задания */
-                Code = new System.Uri(Path.Combine(Environment.CurrentDirectory, "executeModel", $"{lrPath}.exe")).AbsoluteUri, /* путь до бинарника */
+                Code = new Uri(Path.Combine(Environment.CurrentDirectory, "executeModel", $"{lrPath}.exe")).AbsoluteUri, /* путь до бинарника */
                 Tests = JsonConvert.SerializeObject(d.TestsD) /* тестовые данные */
             };
         }

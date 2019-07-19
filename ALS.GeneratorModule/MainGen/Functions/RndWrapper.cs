@@ -39,7 +39,7 @@ namespace Generator
 
         public static string NextDStr(double a, double b, Random r, int finesse = 3)
         {
-            var res = RndWrapper.NextD(a, b, r).ToString();
+            var res = NextD(a, b, r).ToString();
             return res.Substring(0, res.IndexOf(',') + finesse).Replace(',', '.');
         }
 
