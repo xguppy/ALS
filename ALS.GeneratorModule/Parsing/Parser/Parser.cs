@@ -85,10 +85,6 @@ namespace Generator.Parsing
                 case _tests:
                     GetTestsD(body);
                     break;
-                default:
-                    //throw new Exception("Блок не имеет обозначения");
-                    break;
-                    
             }
         }
 
@@ -146,8 +142,6 @@ namespace Generator.Parsing
                         break;
                     case _arithmSigns:
                         Elems.SetSigns(d.Data);
-                        break;
-                    default:
                         break;
                 }
             }

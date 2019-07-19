@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ALS.AntiPlagModule.Constants
+﻿namespace ALS.AntiPlagModule.Constants
 {
     public static class LexerConstants
     {

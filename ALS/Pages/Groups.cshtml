@@ -25,11 +25,11 @@
                 @using (Html.BeginForm("Create", "Groups", FormMethod.Post))
                 {
                     @Html.Label("Наименование группы:\t")
-                    @Html.TextBox("Name", null, new {@id = "newName"})
+                    @Html.TextBox("Name", null, new {id = "newName"})
                     @Html.Label("Год начала обучения:\t")
-                    @Html.TextBox("Year", null, new {@id = "newYear"})
+                    @Html.TextBox("Year", null, new {id = "newYear"})
                     @Html.Label("Специальность:\t")
-                    @Html.DropDownList("SpecialityId", Model.Specialities, new {@id = "newSpecialityId"})
+                    @Html.DropDownList("SpecialityId", Model.Specialities, new {id = "newSpecialityId"})
                     <p><input type="button" class="btn btn-dark" value="Отправить" onclick="createGroup()" /></p>
                 }
             </div>
@@ -47,12 +47,12 @@
                 @using (Html.BeginForm("Update", "Groups", FormMethod.Post))
                 {
                     @Html.Label("Наименование группы:\t")
-                    @Html.TextBox("Name", null, new {@id = "EditName"})
+                    @Html.TextBox("Name", null, new {id = "EditName"})
                     @Html.Label("Год начала обучения:\t")
-                    @Html.TextBox("Year", null, new {@id = "EditYear"})
+                    @Html.TextBox("Year", null, new {id = "EditYear"})
                     @Html.Label("Специальность:\t")
-                    @Html.DropDownList("SpecialityId", Model.Specialities, new {@id = "EditSpecialityId"})
-                    @Html.Hidden("groupId", null, new {@id = "EditGroupId"});
+                    @Html.DropDownList("SpecialityId", Model.Specialities, new {id = "EditSpecialityId"})
+                    @Html.Hidden("groupId", null, new {id = "EditGroupId"});
                     <p><input type="button" class="btn btn-dark" value="Отправить" onclick="editGroup()" /></p>
                 }
             </div>

@@ -60,7 +60,7 @@ namespace ALS.Pages
             var request = new HttpRequestMessage(HttpMethod.Post,
                 "http://localhost:5000/api/TemplateLWS/Create");
 
-            request.Content = new StringContent(JsonConvert.SerializeObject(new TemplateLWDTO() { ThemeId = themeId, TemplateTask = new Uri(file).AbsoluteUri }), Encoding.UTF8, "application/json");
+            request.Content = new StringContent(JsonConvert.SerializeObject(new TemplateLWDTO { ThemeId = themeId, TemplateTask = new Uri(file).AbsoluteUri }), Encoding.UTF8, "application/json");
 
             var client = _clientFactory.CreateClient();
 

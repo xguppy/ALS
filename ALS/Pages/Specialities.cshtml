@@ -25,9 +25,9 @@
                 @using (Html.BeginForm("Create", "Specialities", FormMethod.Post))
                 {
                     @Html.Label("Код специальности:\t")
-                    @Html.TextBox("Code", null, new {@id = "newCode"})
+                    @Html.TextBox("Code", null, new {id = "newCode"})
                     @Html.Label("Наименование специальности:\t")
-                    @Html.TextArea("Name", null, new {@id = "newName"})
+                    @Html.TextArea("Name", null, new {id = "newName"})
                     <p><input type="button" class="btn btn-dark" value="Отправить" onclick="createSpec()" /></p>
                 }
             </div>
@@ -45,9 +45,9 @@
                 @using (Html.BeginForm("Update", "Specialities", FormMethod.Post))
                 {
                     @Html.Label("Код специальности:\t")
-                    @Html.TextBox("Code", null, new {@id = "EditCode"})
+                    @Html.TextBox("Code", null, new {id = "EditCode"})
                     @Html.Label("Наименование специальности:\t")
-                    @Html.TextArea("Name", null, new {@id = "EditName"})
+                    @Html.TextArea("Name", null, new {id = "EditName"})
                     <p><input type="button" class="btn btn-dark" value="Отправить" onclick="editGroup()" /></p>
                 }
             </div>

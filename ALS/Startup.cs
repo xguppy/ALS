@@ -1,24 +1,24 @@
+using System;
+using System.IO;
+using System.Linq;
+using System.Text;
+using ALS.AntiPlagModule.Services;
+using ALS.AntiPlagModule.Services.LexerFactory;
+using ALS.AntiPlagModule.Services.LexerService;
+using ALS.CheckModule.Processes;
 using ALS.EntityСontext;
 using ALS.Services;
 using ALS.Services.AuthService;
+using Generator.Parsing;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-//using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.IO;
-using System.Text;
-using System.Linq;
-using ALS.AntiPlagModule.Services;
-using ALS.AntiPlagModule.Services.LexerService;
-using ALS.AntiPlagModule.Services.LexerFactory;
-using ALS.CheckModule.Processes;
-using Generator.Parsing;
+//using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 
 namespace ALS
 {
@@ -112,29 +112,29 @@ namespace ALS
                 }
             });*/
             
-            if (!System.IO.Directory.Exists("sourceCodeUser"))
+            if (!Directory.Exists("sourceCodeUser"))
             {
-                System.IO.Directory.CreateDirectory("sourceCodeUser");
+                Directory.CreateDirectory("sourceCodeUser");
             }
 
-            if (!System.IO.Directory.Exists("uploads"))
+            if (!Directory.Exists("uploads"))
             {
-                System.IO.Directory.CreateDirectory("uploads");
+                Directory.CreateDirectory("uploads");
             }
 
-            if (!System.IO.Directory.Exists("sourceCodeModel"))
+            if (!Directory.Exists("sourceCodeModel"))
             {
-                System.IO.Directory.CreateDirectory("sourceCodeModel");
+                Directory.CreateDirectory("sourceCodeModel");
             }
             
-            if (!System.IO.Directory.Exists("executeUser"))
+            if (!Directory.Exists("executeUser"))
             {
-                System.IO.Directory.CreateDirectory("executeUser");
+                Directory.CreateDirectory("executeUser");
             }
             
-            if (!System.IO.Directory.Exists("executeModel"))
+            if (!Directory.Exists("executeModel"))
             {
-                System.IO.Directory.CreateDirectory("executeModel");
+                Directory.CreateDirectory("executeModel");
             }
             
             SetupDatabase(dbContext);

@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Antlr4.Runtime.Misc;
 
 namespace ALS.EntityСontext
 {

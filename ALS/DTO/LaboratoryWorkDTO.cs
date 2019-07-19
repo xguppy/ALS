@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using ALS.EntityСontext;
 
 namespace ALS.DTO

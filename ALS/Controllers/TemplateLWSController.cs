@@ -1,16 +1,14 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using ALS.DTO;
+using ALS.EntityСontext;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ALS.EntityСontext;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using ALS.DTO;
-using Microsoft.AspNetCore.Hosting;
-using System.IO;
-using System.Text;
 
 namespace ALS.Controllers
 {
@@ -91,7 +89,7 @@ namespace ALS.Controllers
         public async Task<IActionResult> ReadFile([FromHeader]string path)
         {
             string text;
-            using (StreamReader s = new StreamReader(new System.Uri(path).AbsolutePath))
+            using (StreamReader s = new StreamReader(new Uri(path).AbsolutePath))
             {
                 text = await s.ReadToEndAsync();
             }
@@ -107,7 +105,7 @@ namespace ALS.Controllers
         [HttpPost]
         public async Task<IActionResult> WriteFile([FromBody] Tuple<string, string> data)
         {
-            using (StreamWriter sw = new StreamWriter(new System.Uri(data.Item1).AbsolutePath, false, Encoding.UTF8))
+            using (StreamWriter sw = new StreamWriter(new Uri(data.Item1).AbsolutePath, false, Encoding.UTF8))
             {
                 await sw.WriteLineAsync(data.Item2);
             }

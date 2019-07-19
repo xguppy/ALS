@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Antlr4.Runtime;
+﻿using Antlr4.Runtime;
 
 namespace ALS.AntiPlagModule.Services
 {

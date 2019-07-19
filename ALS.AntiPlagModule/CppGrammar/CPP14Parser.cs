@@ -11,6 +11,14 @@
 // Generated from CPP14.g4 by ANTLR 4.6.5
 
 // Unreachable code detected
+
+using System;
+using System.CodeDom.Compiler;
+using Antlr4.Runtime;
+using Antlr4.Runtime.Atn;
+using Antlr4.Runtime.Misc;
+using Antlr4.Runtime.Tree;
+
 #pragma warning disable 0162
 // The variable '...' is assigned but its value is never used
 #pragma warning disable 0219
@@ -20,15 +28,8 @@
 #pragma warning disable 419
 
 namespace CppGrammar {
-using Antlr4.Runtime;
-using Antlr4.Runtime.Atn;
-using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
-using System.Collections.Generic;
-using DFA = Antlr4.Runtime.Dfa.DFA;
-
-[System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.6.5")]
-[System.CLSCompliant(false)]
+	[GeneratedCode("ANTLR", "4.6.5")]
+[CLSCompliant(false)]
 public partial class CPP14Parser : Parser {
 	public const int
 		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, MultiLineMacro=7, Directive=8, 
@@ -227,7 +228,7 @@ public partial class CPP14Parser : Parser {
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
-	[System.Obsolete("Use Vocabulary instead.")]
+	[Obsolete("Use Vocabulary instead.")]
 	public static readonly string[] tokenNames = GenerateTokenNames(DefaultVocabulary, _SymbolicNames.Length);
 
 	private static string[] GenerateTokenNames(IVocabulary vocabulary, int length) {
@@ -246,7 +247,7 @@ public partial class CPP14Parser : Parser {
 		return tokenNames;
 	}
 
-	[System.Obsolete("Use IRecognizer.Vocabulary instead.")]
+	[Obsolete("Use IRecognizer.Vocabulary instead.")]
 	public override string[] TokenNames
 	{
 		get
@@ -755,7 +756,7 @@ public partial class CPP14Parser : Parser {
 			State = 461;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,8,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -1114,7 +1115,7 @@ public partial class CPP14Parser : Parser {
 			State = 499;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,14,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -1641,7 +1642,7 @@ public partial class CPP14Parser : Parser {
 			State = 640;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,29,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -2629,7 +2630,7 @@ public partial class CPP14Parser : Parser {
 			State = 762;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,46,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -2992,7 +2993,7 @@ public partial class CPP14Parser : Parser {
 			State = 811;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,54,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -3091,7 +3092,7 @@ public partial class CPP14Parser : Parser {
 			State = 828;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,56,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -3201,7 +3202,7 @@ public partial class CPP14Parser : Parser {
 			State = 842;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,58,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -3303,7 +3304,7 @@ public partial class CPP14Parser : Parser {
 			State = 854;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,59,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -3441,7 +3442,7 @@ public partial class CPP14Parser : Parser {
 			State = 876;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,61,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -3562,7 +3563,7 @@ public partial class CPP14Parser : Parser {
 			State = 890;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,63,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -3661,7 +3662,7 @@ public partial class CPP14Parser : Parser {
 			State = 901;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,64,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -3743,7 +3744,7 @@ public partial class CPP14Parser : Parser {
 			State = 912;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,65,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -3825,7 +3826,7 @@ public partial class CPP14Parser : Parser {
 			State = 923;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,66,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -3907,7 +3908,7 @@ public partial class CPP14Parser : Parser {
 			State = 937;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,68,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -4006,7 +4007,7 @@ public partial class CPP14Parser : Parser {
 			State = 951;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,70,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -4308,7 +4309,7 @@ public partial class CPP14Parser : Parser {
 			State = 981;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,73,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -4834,7 +4835,7 @@ public partial class CPP14Parser : Parser {
 			State = 1054;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,87,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -5624,7 +5625,7 @@ public partial class CPP14Parser : Parser {
 			State = 1175;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,100,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -7866,7 +7867,7 @@ public partial class CPP14Parser : Parser {
 			State = 1423;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,137,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -8951,7 +8952,7 @@ public partial class CPP14Parser : Parser {
 			State = 1542;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,153,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -9206,7 +9207,7 @@ public partial class CPP14Parser : Parser {
 			State = 1593;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,162,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -9576,7 +9577,7 @@ public partial class CPP14Parser : Parser {
 			State = 1622;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,166,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -9728,7 +9729,7 @@ public partial class CPP14Parser : Parser {
 			State = 1647;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,168,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -10043,7 +10044,7 @@ public partial class CPP14Parser : Parser {
 			State = 1691;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,177,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -10941,7 +10942,7 @@ public partial class CPP14Parser : Parser {
 			State = 1802;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,203,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -11135,7 +11136,7 @@ public partial class CPP14Parser : Parser {
 			State = 1827;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,208,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -11329,7 +11330,7 @@ public partial class CPP14Parser : Parser {
 			State = 1850;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,212,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -11988,7 +11989,7 @@ public partial class CPP14Parser : Parser {
 			State = 1940;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,230,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -12823,7 +12824,7 @@ public partial class CPP14Parser : Parser {
 			State = 2031;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,249,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -13033,7 +13034,7 @@ public partial class CPP14Parser : Parser {
 			State = 2062;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,256,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -13272,7 +13273,7 @@ public partial class CPP14Parser : Parser {
 			State = 2087;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,259,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -14245,7 +14246,7 @@ public partial class CPP14Parser : Parser {
 			State = 2191;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,277,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -14789,7 +14790,7 @@ public partial class CPP14Parser : Parser {
 			State = 2287;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,295,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
@@ -15648,7 +15649,7 @@ public partial class CPP14Parser : Parser {
 			State = 2384;
 			_errHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(_input,311,_ctx);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
