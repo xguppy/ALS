@@ -38,7 +38,7 @@ namespace ALS.Pages
 
         public async Task OnGet()
         {
-            Templates = await Task.Run(() => _context.TemplateLaboratoryWorks.Include(x => x.Theme).Select(x => x).ToList());
+            Templates = await Task.Run(() => _context.TemplateLaboratoryWorks.Include(x => x.Theme).Select(x => x).OrderBy(x => x.TemplateLaboratoryWorkId).ToList());
             Themes = await Task.Run(() => _context.Themes.Select(x =>
                      new SelectListItem
                      {
@@ -50,6 +50,11 @@ namespace ALS.Pages
 
         public async Task<IActionResult> OnPostCreatingAsync(int themeId, IFormFile upload)
         {
+            if (upload == null)
+            {
+                return RedirectToPage("");
+            }
+
             var file = Path.Combine(_environment.ContentRootPath, "uploads", upload.FileName);
 
             using (var fileStream = new FileStream(file, FileMode.Create))

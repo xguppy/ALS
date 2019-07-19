@@ -5,10 +5,11 @@
     ViewData["Title"] = "Шаблоны лабораторных работ";
 }
 
-<h1>@ViewData["Title"]</h1>
+<h4>@ViewData["Title"]</h4>
 <div class="container">
     <table class="table table-hover">
         <tr>
+            <td>#</td>
             <td>Тема</td>
             <td>Путь до файла</td>
             <td>Действия</td>
@@ -16,6 +17,7 @@
         @foreach (var item in Model.Templates)
         {
             <tr>
+                <td>@item.TemplateLaboratoryWorkId</td>
                 <td>@item.Theme.Name</td>
                 <td>@item.TemplateTask</td>
                 <td>
@@ -34,19 +36,19 @@
                 <h4 class="modal-title">Редактирование шаблона</h4><button class="close" type="button" data-dismiss="modal">×</button>
             </div>
             <div class="modal-body">
-                    <form method="post">
-                        <label>Тема : </label>
-                        @Html.DropDownList("ThemeId", Model.Themes, new { @id = "newThemeId" })
-                        <input id="hiddenId" name="hiddenId" value="1" hidden>
-                        <p>
-                            <label>Путь до файла : </label>
-                            <input id="path" name="path" value="1">
-                        </p>
-                        <p>
-                            <textarea id="textAreaModel" name="textAreaModel" cols="80" rows="30"></textarea>
-                        </p>
-                        <p><input type="button" value="Отправить" id="submitUpdate" onclick="update()" /></p>
-                    </form>
+                <form method="post">
+                    <label>Тема : </label>
+                    @Html.DropDownList("ThemeId", Model.Themes, new { @id = "newThemeId" })
+                    <input id="hiddenId" name="hiddenId" value="1" hidden>
+                    <p>
+                        <label>Путь до файла : </label>
+                        <input id="path" name="path" value="1">
+                    </p>
+                    <p>
+                        <textarea id="textAreaModel" name="textAreaModel" cols="80" rows="30"></textarea>
+                    </p>
+                    <p><input type="button" value="Отправить" id="submitUpdate" onclick="update()" /></p>
+                </form>
             </div>
             <div class="modal-footer"><button class="btn btn-default" type="button" data-dismiss="modal">Закрыть</button></div>
         </div>
@@ -78,6 +80,13 @@
 </div>
 
 <script>
+    /*let tokenKey = "accessToken";
+    let username = "userName";
+    let userId = "userId";
+    window.onload = function () {
+        $('#hiddenUserId').val(sessionStorage.getItem(userId));
+    };*/
+
     function updateTlw(tlwId, themeid, pathFile) {
         $("#myModal").find("textarea[id='textAreaModel']").val('');
         $.ajax(
@@ -92,6 +101,7 @@
                 },
                 error: (response) => {
                     alert('Ошибка при чтении файла : ' + pathFile);
+                    $('#myModal').modal('hide');
                 }
             }
         );
