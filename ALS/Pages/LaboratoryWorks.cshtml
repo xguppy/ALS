@@ -163,6 +163,12 @@
     //function openModalUpdate(tmpId, themeId, cipher, name, descr, constr) {
     function openModalUpdate(lwId,userIdent,tmpId, themeId, cipher, name, descr, constr) {
 
+
+        if (userIdent != sessionStorage.getItem(userId)) {
+            alert('У вас нет доступа к данной лабораторной работе!');
+            return;
+        }
+
         // дроп даун шаблон
         $("#myModalUpdate").find("select[id='s2TemplateId']").val(tmpId);
         $("#myModalUpdate").find("select[id='s2ThemeId']").val(themeId);
@@ -224,6 +230,7 @@
             UserId: $('#hiddenUserId').val(), 
             Constraints: $('#i2Constraints').val(),
         }
+
 
         $.ajax(
             {
