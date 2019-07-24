@@ -15,7 +15,7 @@ namespace ALS.EntityСontext
         public string LinkToModel { get; set; }
         [Column(TypeName = "jsonb")]
         public string InputDataRuns { get; set; }
-        public List<Solution> Solutions { get; set; }
+        public List<AssignedVariant> AssignedVariants { get; set; }
         public LaboratoryWork LaboratoryWork { get; set; }
     }
 }

@@ -35,13 +35,13 @@ namespace ALS.Controllers
         public async Task<IActionResult> Check([FromBody] AntiplagSettingsDTO settings)
         {
             // get values from database
-            var solutions = _db.Solutions.Where(s => s.IsSolved && s.SolutionId != settings.SolutionId);
+            var solutions = _db.Solutions.Include(s => s.AssignedVariant).Where(s => s.IsSolved && s.SolutionId != settings.SolutionId);
             string solutionCode = default(string);
 
             if (!settings.CheckUserWork && settings.SolutionId != null) 
             {
-                var solution = await _db.Solutions.Where(s => s.SolutionId == settings.SolutionId).FirstOrDefaultAsync();
-                solutions = solutions.Where(s => s.UserId != solution.UserId);
+                var solution = await _db.Solutions.Include(s => s.AssignedVariant).Where(s => s.SolutionId == settings.SolutionId).FirstOrDefaultAsync();
+                solutions = solutions.Where(s => s.AssignedVariant.UserId != solution.AssignedVariant.UserId);
                 solutionCode = solution.SourceCode;
             }
             if (settings.CheckTime)

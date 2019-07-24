@@ -28,7 +28,7 @@ namespace ALS.Controllers
         {
             if (await _db.Variants.Where(w => w.VariantId == varId).FirstOrDefaultAsync() != null)
             {
-                return Ok(await Task.Run(() => _db.Solutions.Where(v => v.VariantId == varId).Select(v => new { v.SendDate, v.CompilerFailsNumbers, v.SourceCode, v.IsSolved  }).ToList()));
+                return Ok(await Task.Run(() => _db.Solutions.Include(sol => sol.AssignedVariant).Where(sol => sol.AssignedVariant.VariantId == varId).Select(v => new { v.SendDate, v.CompilerFailsNumbers, v.SourceCode, v.IsSolved  }).ToList()));
             }
 
             return BadRequest("Not Privilege");
@@ -39,7 +39,7 @@ namespace ALS.Controllers
         {
             if (await _db.Variants.Where(w => w.VariantId == varId).FirstOrDefaultAsync() != null && await _db.Users.Where(u => u.Id == userId).FirstOrDefaultAsync() != null)
             {
-                return Ok(await Task.Run(() => _db.Solutions.Where(v => v.VariantId == varId && v.UserId == userId).Select(v => new { v.SendDate, v.CompilerFailsNumbers, v.SourceCode, v.IsSolved  }).ToList()));
+                return Ok(await Task.Run(() => _db.Solutions.Include(sol => sol.AssignedVariant).Where(sol => sol.AssignedVariant.VariantId == varId && sol.AssignedVariant.UserId == userId).Select(v => new { v.SendDate, v.CompilerFailsNumbers, v.SourceCode, v.IsSolved  }).ToList()));
             }
 
             return BadRequest("Not Privilege");
@@ -49,7 +49,7 @@ namespace ALS.Controllers
         public async Task<IActionResult> Get(int solutionId)
         {
             
-            var variant = await _db.Solutions.FirstOrDefaultAsync(v => v.VariantId == solutionId);
+            var variant = await _db.Solutions.FirstOrDefaultAsync(sol => sol.SolutionId == solutionId);
             if (variant != null)
             {
                 return Ok(await _db.Solutions.Where(v => v.SolutionId == solutionId).Select(v => new { v.SendDate, v.CompilerFailsNumbers, v.SourceCode, v.IsSolved  }).FirstAsync());
@@ -61,7 +61,7 @@ namespace ALS.Controllers
         public async Task<IActionResult> Create([FromBody] SolutionDTO model)
         {
             var solution = 
-                new Solution { SendDate = model.SendDate, SourceCode = model.SourceCode,  IsSolved = model.IsSolved, UserId = model.UserId, VariantId = model.VariantId};
+                new Solution { SendDate = model.SendDate, SourceCode = model.SourceCode,  IsSolved = model.IsSolved, AssignedVariantId = model.AssignedVariantId};
             try
             {
                 await _db.Solutions.AddAsync(solution);
@@ -86,8 +86,7 @@ namespace ALS.Controllers
                     solutionUpdate.SendDate = model.SendDate;
                     solutionUpdate.SourceCode = model.SourceCode;
                     solutionUpdate.IsSolved = model.IsSolved;
-                    solutionUpdate.UserId = model.UserId;
-                    solutionUpdate.VariantId = model.VariantId;
+                    solutionUpdate.AssignedVariantId = model.AssignedVariantId;
                     _db.Solutions.Update(solutionUpdate);
                     await _db.SaveChangesAsync();
                 }

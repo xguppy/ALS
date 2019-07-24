@@ -29,20 +29,28 @@ namespace ALS.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Check([FromHeader] string sourceCode, [FromHeader] int variantId, [FromHeader] int userId)
+        public async Task<IActionResult> Check([FromHeader] string sourceCode, [FromHeader] int variantId)
         {
+            //Получим идентификатор юзера из его сессии
             var userIdentifier = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
-            var variant = await _db.Variants.Include(var => var.LaboratoryWork).FirstOrDefaultAsync(var => var.VariantId == variantId);
-            if (userIdentifier == userId && variant != null)
+            //Проверим что вариант назначен пользователю
+            var assignedVar =
+                await _db.AssignedVariants.Include(aw => aw.Variant).FirstOrDefaultAsync(av =>
+                    av.UserId == userIdentifier && av.VariantId == variantId);
+            if (assignedVar != null)
             {
+                //Возможно пользователь уже решил вариант
                 var solution =
-                    await _db.Solutions.FirstOrDefaultAsync(sol => sol.VariantId == variantId && sol.UserId == userId && sol.IsSolved);
-                sourceCode = HttpUtility.UrlDecode(sourceCode);
+                    await _db.Solutions.FirstOrDefaultAsync(sol => sol.AssignedVariant == assignedVar && sol.IsSolved);
+
                 if (solution == null)
                 {
-                    solution = new Solution {SourceCode = sourceCode, VariantId = variantId, UserId = userId, IsSolved = true, SendDate = DateTime.Now};
+                    //Если не решил, то декодируем его код
+                    sourceCode = HttpUtility.UrlDecode(sourceCode);
+                    
+                    solution = new Solution {SourceCode = sourceCode, AssignedVariant = assignedVar, IsSolved = true, SendDate = DateTime.Now};
                     var sourceCodeFile = Path.Combine(Environment.CurrentDirectory, "sourceCodeUser",
-                        $"{ProcessCompiler.CreatePath(variant.LaboratoryWorkId, variantId)}.cpp");
+                        $"{ProcessCompiler.CreatePath(assignedVar.Variant.LaboratoryWorkId, variantId)}.cpp");
                     
                     using (var fileWrite = new StreamWriter(sourceCodeFile))
                     {
@@ -51,7 +59,7 @@ namespace ALS.Controllers
 
                     var programFileUser =
                         Path.Combine(Environment.CurrentDirectory, "executeUser",
-                            $"{ProcessCompiler.CreatePath(variant.LaboratoryWorkId, variantId)}.exe");
+                            $"{ProcessCompiler.CreatePath(assignedVar.Variant.LaboratoryWorkId, variantId)}.exe");
                     
                     var programFileModel = new Uri((await _db.Variants.FirstOrDefaultAsync(var => var.VariantId == variantId)).LinkToModel).AbsolutePath;
                     
@@ -60,7 +68,7 @@ namespace ALS.Controllers
                     
                     if (isCompile != true)
                     {
-                        var lastSol = await _db.Solutions.OrderBy(sol => sol.SolutionId).LastOrDefaultAsync(sol => sol.UserId == userId && sol.VariantId == variantId) ??
+                        var lastSol = await _db.Solutions.OrderBy(sol => sol.SolutionId).LastOrDefaultAsync(sol => sol.AssignedVariant == assignedVar) ??
                                       solution;
                         lastSol.IsSolved = false;
                         lastSol.CompilerFailsNumbers++;
@@ -73,10 +81,10 @@ namespace ALS.Controllers
                     
                     var gen = new GenFunctions();
                     
-                    var inputDatas = gen.GetTestsFromJson(variant.InputDataRuns);
+                    var inputDatas = gen.GetTestsFromJson(assignedVar.Variant.InputDataRuns);
                     
                     var constrains = JsonConvert.DeserializeObject<CompareData>(
-                        variant.LaboratoryWork.Constraints,
+                        assignedVar.Variant.LaboratoryWork.Constraints,
                         new JsonSerializerSettings {DefaultValueHandling = DefaultValueHandling.Populate});
                     await _db.Solutions.AddAsync(solution);
                     await _db.SaveChangesAsync();
