@@ -31,6 +31,9 @@ bld/
 [Ll]og/
 [Uu]ploads/
 
+# Diagram
+Diagram/**
+
 # Visual Studio 2015/2017 cache/options directory and Rider
 .vs/
 .idea
