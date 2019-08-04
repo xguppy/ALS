@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ALS.CheckModule.Processes
 {
@@ -35,20 +36,24 @@ namespace ALS.CheckModule.Processes
         /// </summary>
         /// <param name="timeMilliseconds">Время исполнения</param>
         /// <returns></returns>
-        public bool Execute(int timeMilliseconds)
+        public async Task<bool> Execute(int timeMilliseconds)
         {
-            bool result;
-            using (AppProcess)
+            var result = false;
+            await Task.Run(() =>
             {
-                InitExecute();
-                foreach (var elem in _inputData)
+                using (AppProcess)
                 {
-                    Input = elem;
+                    InitExecute();
+                    foreach (var elem in _inputData)
+                    {
+                        Input = elem;
+                    }
+
+                    Memory = AppProcess.WorkingSet64;
+                    result = AppProcess.WaitForExit(timeMilliseconds);
+                    Time = AppProcess.TotalProcessorTime.Milliseconds;
                 }
-                Memory = AppProcess.WorkingSet64;
-                result = AppProcess.WaitForExit(timeMilliseconds);
-                Time = AppProcess.TotalProcessorTime.Milliseconds;
-            }
+            });
             return result;
         }
     }

@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 namespace ALS.CheckModule.Processes
 {
     public interface IExecutable
@@ -6,6 +8,7 @@ namespace ALS.CheckModule.Processes
         /// Запуск процесса
         /// </summary>
         /// <param name="timeMilliseconds">Время исполнения</param>
-        bool Execute(int timeMilliseconds);
+        /// <returns>Если не удачно завершился или занял больше времени, чем было задано</returns>
+        Task<bool> Execute(int timeMilliseconds);
     }
 }

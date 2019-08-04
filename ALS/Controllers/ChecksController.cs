@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using ALS.CheckModule.Compare;
+using ALS.CheckModule.Compare.DataStructures;
 using ALS.CheckModule.Processes;
 using ALS.EntityСontext;
 using Generator.MainGen;
@@ -35,7 +36,7 @@ namespace ALS.Controllers
             var userIdentifier = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
             //Проверим что вариант назначен пользователю
             var assignedVar =
-                await _db.AssignedVariants.Include(aw => aw.Variant).FirstOrDefaultAsync(av =>
+                await _db.AssignedVariants.Include(aw => aw.Variant).ThenInclude(var => var.LaboratoryWork).FirstOrDefaultAsync(av =>
                     av.UserId == userIdentifier && av.VariantId == variantId);
             if (assignedVar != null)
             {
@@ -49,6 +50,8 @@ namespace ALS.Controllers
                     sourceCode = HttpUtility.UrlDecode(sourceCode);
                     
                     solution = new Solution {SourceCode = sourceCode, AssignedVariant = assignedVar, IsSolved = true, SendDate = DateTime.Now};
+                    
+                    //Сохраним его код
                     var sourceCodeFile = Path.Combine(Environment.CurrentDirectory, "sourceCodeUser",
                         $"{ProcessCompiler.CreatePath(assignedVar.Variant.LaboratoryWorkId, variantId)}.cpp");
                     
@@ -63,9 +66,14 @@ namespace ALS.Controllers
                     
                     var programFileModel = new Uri((await _db.Variants.FirstOrDefaultAsync(var => var.VariantId == variantId)).LinkToModel).AbsolutePath;
                     
+                    //Скомпилируем программу пользователя
                     var compiler = new ProcessCompiler(sourceCodeFile, programFileUser);
-                    var isCompile = await Task.Run(() => compiler.Execute(60000));
+                    var isCompile = await compiler.Execute(60000);
                     
+                    //Удалим ненужный файл исходного кода пользоватля
+                    System.IO.File.Delete(sourceCodeFile);
+
+                    //Если не скомпилировалась заносим, то в последнее решение добавим информацию что программа пользователя не была скомпилированна
                     if (isCompile != true)
                     {
                         var lastSol = await _db.Solutions.OrderBy(sol => sol.SolutionId).LastOrDefaultAsync(sol => sol.AssignedVariant == assignedVar) ??
@@ -76,41 +84,39 @@ namespace ALS.Controllers
                         await _db.SaveChangesAsync();
                         return BadRequest(compiler.CompileState);
                     }
-
-                    System.IO.File.Delete(sourceCodeFile);
-                    
+                    //Получи входные данные для задачи
                     var gen = new GenFunctions();
-                    
                     var inputDatas = gen.GetTestsFromJson(assignedVar.Variant.InputDataRuns);
-                    
-                    var constrains = JsonConvert.DeserializeObject<CompareData>(
+                    //Получим её ограничения
+                    var constrains = JsonConvert.DeserializeObject<Constrains>(
                         assignedVar.Variant.LaboratoryWork.Constraints,
                         new JsonSerializerSettings {DefaultValueHandling = DefaultValueHandling.Populate});
+                    //Прогоним по тестам
+                    var verification = new Verification(programFileUser, programFileModel, constrains);
+                    var resultTests = await verification.RunTests(inputDatas);
+                    
                     await _db.Solutions.AddAsync(solution);
                     await _db.SaveChangesAsync();
-                    var errorsRuns = default(int);
-                    foreach (var elem in inputDatas)
+                    foreach (var result in resultTests)
                     {
-                        var cmp = new CompareModel(programFileModel, programFileUser, elem);
-                        var dataRun = await cmp.CompareAsync(constrains.Time, constrains.Memory);
+                        
                         var testRun = new TestRun
                         {
-                            InputData = elem.ToArray(),
-                            OutputData = cmp.UserOutput.ToArray(), 
-                            ResultRun = JsonConvert.SerializeObject(dataRun),
+                            InputData = result.Input.ToArray(),
+                            OutputData = result.Output.ToArray(), 
+                            ResultRun = JsonConvert.SerializeObject(new { result.Time, result.Memory, result.IsCorrect, result.Comment }),
                             SolutionId = solution.SolutionId
                         };
                         await _db.TestRuns.AddAsync(testRun);
                         
-                        if (dataRun.IsCorrect != true)
+                        if (result.IsCorrect != true)
                         {
-                            ++errorsRuns;
                             solution.IsSolved = false;
                         }
                     }
                     System.IO.File.Delete(programFileUser);
                     await _db.SaveChangesAsync();
-                    return Ok($"{inputDatas.Count - errorsRuns}/{inputDatas.Count} runs complete");
+                    return Ok($"{resultTests.Count(rt => rt.IsCorrect)} / {resultTests.Count} runs complete");
 
                 }
                 return Ok("Solution is solved");

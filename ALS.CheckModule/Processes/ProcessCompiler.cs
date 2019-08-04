@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 
 namespace ALS.CheckModule.Processes
 {
@@ -37,19 +38,22 @@ namespace ALS.CheckModule.Processes
         /// Запуск компиляции
         /// </summary>
         /// <param name="timeMilliseconds">Время исполнения</param>
-        public bool Execute(int timeMilliseconds)
+        public async Task<bool> Execute(int timeMilliseconds)
         {
-            bool result;
-            using (AppProcess)
+            var result = false;
+            await Task.Run(() =>
             {
-                InitExecute();
-                result = AppProcess.WaitForExit(timeMilliseconds);
-                CompileState = Error.ReadToEnd();
-                if (!String.IsNullOrEmpty(CompileState))
+                using (AppProcess)
                 {
-                    result = false;
+                    InitExecute();
+                    result = AppProcess.WaitForExit(timeMilliseconds);
+                    CompileState = Error.ReadToEnd();
+                    if (!String.IsNullOrEmpty(CompileState))
+                    {
+                        result = false;
+                    }
                 }
-            }
+            });
             return result;
 
         }

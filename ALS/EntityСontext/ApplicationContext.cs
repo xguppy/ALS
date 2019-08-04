@@ -48,6 +48,9 @@ namespace ALS.EntityСontext
             modelBuilder.Entity<AntiplagiatData>()
                 .HasIndex(antiplagiatData => new {antiplagiatData.SolutionFirstId, antiplagiatData.SolutionSecondId})
                 .IsUnique();
+            modelBuilder.Entity<AssignedVariant>()
+                .HasIndex(av => new {av.UserId, av.VariantId})
+                .IsUnique();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
