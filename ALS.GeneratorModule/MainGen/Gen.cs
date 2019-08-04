@@ -55,7 +55,7 @@ namespace Generator.MainGen
         {
             string lrPath = ProcessCompiler.CreatePath(lr, var);
             ProcessCompiler pc = new ProcessCompiler(Path.Combine("sourceCodeModel", $"{lrPath}.cpp"), Path.Combine("executeModel", $"{lrPath}.exe"));
-            return await Task.Run (() => pc.Execute(60000));
+            return await pc.Execute(60000);
         }
 
         public async Task<ResultData> Run(string fileName,int lr = 1, int var = 1)

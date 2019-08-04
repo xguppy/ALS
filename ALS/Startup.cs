@@ -253,13 +253,10 @@ namespace ALS
                 context.AssignedVariants.Add(new AssignedVariant {UserId = 1, VariantId = 1});
                 
                 context.AssignedVariants.Add(new AssignedVariant {UserId = 4, VariantId = 1});
-                context.AssignedVariants.Add(new AssignedVariant {UserId = 4, VariantId = 1});
-                
-                context.AssignedVariants.Add(new AssignedVariant {UserId = 5, VariantId = 1});
+
                 context.AssignedVariants.Add(new AssignedVariant {UserId = 5, VariantId = 1});
                 context.AssignedVariants.Add(new AssignedVariant {UserId = 5, VariantId = 2});
-                context.AssignedVariants.Add(new AssignedVariant {UserId = 5, VariantId = 2});
-                
+
                 context.AssignedVariants.Add(new AssignedVariant {UserId = 6, VariantId = 1});
                 context.AssignedVariants.Add(new AssignedVariant {UserId = 6, VariantId = 2});
             }
@@ -273,15 +270,15 @@ namespace ALS
                 
                 
                 context.Solutions.Add(new Solution { IsSolved = false, CompilerFailsNumbers = 1, SendDate = DateTime.Now.AddHours(2), AssignedVariantId = 5});
-                context.Solutions.Add(new Solution { IsSolved = false, CompilerFailsNumbers = 2, SendDate = DateTime.Now.AddHours(12), AssignedVariantId = 6});
+                context.Solutions.Add(new Solution { IsSolved = false, CompilerFailsNumbers = 2, SendDate = DateTime.Now.AddHours(12), AssignedVariantId = 5});
                 
-                context.Solutions.Add(new Solution { IsSolved = false, CompilerFailsNumbers = 0, SendDate = DateTime.Now.AddHours(10), AssignedVariantId = 7});
-                context.Solutions.Add(new Solution { IsSolved = true, CompilerFailsNumbers = 0, SendDate = DateTime.Now.AddHours(9), AssignedVariantId = 8});
-                context.Solutions.Add(new Solution { IsSolved = false, CompilerFailsNumbers = 0, SendDate = DateTime.Now.AddHours(5), AssignedVariantId = 9});
-                context.Solutions.Add(new Solution { IsSolved = true, CompilerFailsNumbers = 0, SendDate = DateTime.Now.AddHours(17), AssignedVariantId = 10});
+                context.Solutions.Add(new Solution { IsSolved = false, CompilerFailsNumbers = 0, SendDate = DateTime.Now.AddHours(10), AssignedVariantId = 6});
+                context.Solutions.Add(new Solution { IsSolved = true, CompilerFailsNumbers = 0, SendDate = DateTime.Now.AddHours(9), AssignedVariantId = 6});
+                context.Solutions.Add(new Solution { IsSolved = false, CompilerFailsNumbers = 0, SendDate = DateTime.Now.AddHours(5), AssignedVariantId = 7});
+                context.Solutions.Add(new Solution { IsSolved = true, CompilerFailsNumbers = 0, SendDate = DateTime.Now.AddHours(17), AssignedVariantId = 7});
                 
-                context.Solutions.Add(new Solution { IsSolved = true, CompilerFailsNumbers = 5, SendDate = DateTime.Now.AddHours(15), AssignedVariantId = 11});
-                context.Solutions.Add(new Solution { IsSolved = true, CompilerFailsNumbers = 5,SendDate = DateTime.Now.AddHours(6), AssignedVariantId = 12});
+                context.Solutions.Add(new Solution { IsSolved = true, CompilerFailsNumbers = 5, SendDate = DateTime.Now.AddHours(15), AssignedVariantId = 8});
+                context.Solutions.Add(new Solution { IsSolved = true, CompilerFailsNumbers = 5,SendDate = DateTime.Now.AddHours(6), AssignedVariantId = 9});
                 
                 context.SaveChanges();
             }
