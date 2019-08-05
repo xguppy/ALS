@@ -5,11 +5,11 @@ namespace ALS.CheckModule.Compare.Checker
 {
     public class AbsoluteChecker: IChecker
     {
-        public void Check(List<string> userOutput, List<string> modeOutput, ref ResultRun result)
+        public void Check(List<string> modeOutput, ref ResultRun result)
         {
             var counter = 0;
             
-            foreach (var userElem in userOutput)
+            foreach (var userElem in result.Output)
             {
                 if (userElem != modeOutput[counter])
                 {

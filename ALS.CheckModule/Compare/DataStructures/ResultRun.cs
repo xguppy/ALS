@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace ALS.CheckModule.Compare.DataStructures
 {
     /// <summary>
-    /// Результаты тестового прогона
+    /// Результаты тестового прогона пользовательской программы
     /// </summary>
     [Serializable]
     public struct ResultRun
