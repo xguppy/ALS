@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
@@ -49,21 +50,21 @@ namespace ALS.Controllers
                     //Если не решил, то декодируем его код
                     sourceCode = HttpUtility.UrlDecode(sourceCode);
                     
+                    //Создаём новое решение
                     solution = new Solution {SourceCode = sourceCode, AssignedVariant = assignedVar, IsSolved = true, SendDate = DateTime.Now};
                     
                     //Сохраним его код
                     var sourceCodeFile = Path.Combine(Environment.CurrentDirectory, "sourceCodeUser",
                         $"{ProcessCompiler.CreatePath(assignedVar.Variant.LaboratoryWorkId, variantId)}.cpp");
-                    
                     using (var fileWrite = new StreamWriter(sourceCodeFile))
                     {
                         await fileWrite.WriteAsync(sourceCode);
                     }
-
+                    
+                    //Возьмём пути для исполняемых файлов
                     var programFileUser =
                         Path.Combine(Environment.CurrentDirectory, "executeUser",
                             $"{ProcessCompiler.CreatePath(assignedVar.Variant.LaboratoryWorkId, variantId)}.exe");
-                    
                     var programFileModel = new Uri((await _db.Variants.FirstOrDefaultAsync(var => var.VariantId == variantId)).LinkToModel).AbsolutePath;
                     
                     //Скомпилируем программу пользователя
@@ -84,19 +85,37 @@ namespace ALS.Controllers
                         await _db.SaveChangesAsync();
                         return BadRequest(compiler.CompileState);
                     }
-                    //Получи входные данные для задачи
+                    
+                    //Получим входные данные для задачи
                     var gen = new GenFunctions();
                     var inputDatas = gen.GetTestsFromJson(assignedVar.Variant.InputDataRuns);
+                    
                     //Получим её ограничения
                     var constrains = JsonConvert.DeserializeObject<Constrains>(
                         assignedVar.Variant.LaboratoryWork.Constraints,
                         new JsonSerializerSettings {DefaultValueHandling = DefaultValueHandling.Populate});
-                    //Прогоним по тестам
-                    var verification = new Verification(programFileUser, programFileModel, constrains);
-                    var resultTests = await verification.RunTests(inputDatas);
                     
+                    //Прогоним по тестам
+                    List<ResultRun> resultTests;
+                    try
+                    {
+                        var verification = new Verification(programFileUser, programFileModel, constrains);
+                        resultTests = await verification.RunTests(inputDatas);
+                    }
+                    catch (Exception e)
+                    {
+                        return BadRequest(e.Message);
+                    }
+                    finally
+                    {
+                        //В любом случае удалим ненужный исполняемый файл
+                        System.IO.File.Delete(programFileUser);
+                    }
+
+                    //Сохраним сейчас чтобы добавить тестовые прогоны в БД
                     await _db.Solutions.AddAsync(solution);
                     await _db.SaveChangesAsync();
+                    
                     foreach (var result in resultTests)
                     {
                         
@@ -109,19 +128,16 @@ namespace ALS.Controllers
                         };
                         await _db.TestRuns.AddAsync(testRun);
                         
-                        if (result.IsCorrect != true)
+                        if (solution.IsSolved && result.IsCorrect != true)
                         {
                             solution.IsSolved = false;
                         }
                     }
-                    System.IO.File.Delete(programFileUser);
                     await _db.SaveChangesAsync();
                     return Ok($"{resultTests.Count(rt => rt.IsCorrect)} / {resultTests.Count} runs complete");
-
                 }
                 return Ok("Solution is solved");
             }
-
             return BadRequest("Not Privilege");
         }
     }

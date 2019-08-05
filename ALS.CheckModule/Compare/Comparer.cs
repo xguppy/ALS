@@ -16,7 +16,7 @@ namespace ALS.CheckModule.Compare
         
         private ResultRun _userResult;
         
-        private static Dictionary<string ,IChecker> _checkers = new Dictionary<string ,IChecker>();
+        private static readonly Dictionary<string ,IChecker> Checkers = new Dictionary<string ,IChecker>();
         /// <summary>
         /// 
         /// </summary>
@@ -41,7 +41,7 @@ namespace ALS.CheckModule.Compare
             //Соберем словарь чекеров
             foreach (var checker in checkers)
             {
-                _checkers.Add(checker.Name, (IChecker)Activator.CreateInstance(checker));
+                Checkers.Add(checker.Name, (IChecker)Activator.CreateInstance(checker));
             }
         }
         /// <summary>
@@ -69,12 +69,14 @@ namespace ALS.CheckModule.Compare
             
             _userResult.Output = GetOutput(_user);
             var modelOutput = GetOutput(_model);
+            
             //Если чекер не задан применим дефолтный
             if (constrains.Checker == null) constrains.Checker = "AbsoluteChecker";
+            
             //Если чекера нет в словаре бросим исключение
-            if(!_checkers.ContainsKey(constrains.Checker)) throw new Exception("There is no such checker");
+            if(!Checkers.ContainsKey(constrains.Checker)) throw new Exception("There is no such checker");
 
-            _checkers[constrains.Checker].Check(modelOutput, ref _userResult);
+            Checkers[constrains.Checker].Check(modelOutput, ref _userResult);
             
             return _userResult;
         }

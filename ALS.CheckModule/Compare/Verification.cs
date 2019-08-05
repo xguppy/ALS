@@ -6,9 +6,9 @@ namespace ALS.CheckModule.Compare
 {
     public class Verification
     {
-        private string _userProg;
-        private string _modelProg;
-        private Constrains _constrains;
+        private readonly string _userProg;
+        private readonly string _modelProg;
+        private readonly Constrains _constrains;
 
         public Verification(string userProg, string modelProg, Constrains constrains)
         {
