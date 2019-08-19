@@ -32,7 +32,18 @@ namespace ALS.Controllers
             {
                 return Ok(await Task.Run(() => _db.Variants.Include(variant => variant.LaboratoryWork).Select(v => new {v.VariantId, v.LaboratoryWorkId, v.LaboratoryWork.Name, v.VariantNumber, v.Description, v.LinkToModel, v.InputDataRuns }).ToList()));
             }
-
+            
+            return BadRequest("Not Privilege");
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAllByLaboratoryId([FromHeader] int laboratoryWorkId)
+        {
+            var userId = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
+            if (await _db.LaboratoryWorks.Where(w =>  w.UserId == userId && w.LaboratoryWorkId == laboratoryWorkId).FirstOrDefaultAsync() != null)
+            {
+                return Ok(await Task.Run(() => _db.Variants.Include(variant => variant.LaboratoryWork).Where(v => v.LaboratoryWork.LaboratoryWorkId == laboratoryWorkId).Select(v => new {v.VariantId, v.LaboratoryWorkId, v.LaboratoryWork.Name, v.VariantNumber, v.Description, v.LinkToModel, v.InputDataRuns }).ToList()));
+            }
+            
             return BadRequest("Not Privilege");
         }
 

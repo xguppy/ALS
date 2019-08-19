@@ -17,6 +17,7 @@ namespace ALS.EntityСontext
         public List<AssignedVariant> Solutions { get; set; }
         public List<UserRole> UserRoles { get; set; }
         public List<AntiplagiatStat> AntiplagiatStats { get; set; }
+        public List<Plan> Plans { get; set; }
         public Group Group { get; set; }
     }
 }

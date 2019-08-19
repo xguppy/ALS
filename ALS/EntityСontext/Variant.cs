@@ -11,7 +11,6 @@ namespace ALS.EntityСontext
         public int VariantNumber { get; set; }
         [StringLength(1024 ,MinimumLength=5)]
         public string Description { get; set; }
-        [Url]
         public string LinkToModel { get; set; }
         [Column(TypeName = "jsonb")]
         public string InputDataRuns { get; set; }

@@ -19,6 +19,7 @@ namespace ALS.EntityСontext
         public DbSet<AntiplagiatStat> AntiplagiatStats { get; set; }
         public DbSet<Theme> Themes { get; set; }
         public DbSet<AssignedVariant> AssignedVariants { get; set; }
+        public DbSet<Plan> Plans { get; set; }
         
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)

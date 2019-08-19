@@ -28,6 +28,12 @@ namespace ALS.Controllers
         {
             return Ok(await Task.Run(() => _db.Groups.Select(group => new {group.GroupId, group.Name, group.Year, group.SpecialtyId}).ToList()));
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllByDisciplineId([FromHeader] int disciplineId)
+        {
+            return Ok(await Task.Run(() => _db.Plans.Where(plan => plan.DisciplineId == disciplineId).Select(plan => plan.Group)));
+        }
         
         [HttpGet]
         public async Task<IActionResult> Get([FromHeader] int groupId)

@@ -14,6 +14,7 @@ namespace ALS.EntityСontext
         public int Year { get; set; }
         public string SpecialtyId { get; set; }
         public List<User> Users { get; set; }
+        public List<Plan> Plans { get; set; }
         public Specialty Specialty { get; set; }
     }
 }

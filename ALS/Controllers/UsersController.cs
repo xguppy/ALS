@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace ALS.Controllers
@@ -80,6 +81,18 @@ namespace ALS.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetUsersByGroup([FromHeader] int groupId)
+        {
+            if (await _db.Groups.Include(group => group.Users).FirstOrDefaultAsync(group => group.GroupId == groupId) !=
+                null)
+            {
+                return Ok(_db.Users.Where(user => user.GroupId == groupId).Select(user => new {user.Id, user.Name, user.Surname, user.Patronymic}));
+            }
+
+            return BadRequest("There are no students in this group");
+        }
+        
         [HttpGet]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task Test()

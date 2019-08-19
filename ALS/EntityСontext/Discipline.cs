@@ -12,5 +12,6 @@ namespace ALS.EntityСontext
         public string Name { get; set; }
 
         public List<LaboratoryWork> LaboratoryWorks { get; set; }
+        public List<Plan> Plans { get; set; }
     }
 }
