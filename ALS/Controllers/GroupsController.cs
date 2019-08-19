@@ -30,9 +30,9 @@ namespace ALS.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllByDisciplineId([FromHeader] int disciplineId)
+        public async Task<IActionResult> GetAllByDisciplineId([FromHeader] string disciplineCipher)
         {
-            return Ok(await Task.Run(() => _db.Plans.Where(plan => plan.DisciplineId == disciplineId).Select(plan => plan.Group)));
+            return Ok(await Task.Run(() => _db.Plans.Where(plan => plan.DisciplineCipher == disciplineCipher).Select(plan => plan.Group)));
         }
         
         [HttpGet]
