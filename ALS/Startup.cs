@@ -221,17 +221,17 @@ namespace ALS
             }
             if (!context.TemplateLaboratoryWorks.Any())
             {
-                context.TemplateLaboratoryWorks.Add(new TemplateLaboratoryWork { TemplateTask = @"file:///C:/Users/kampukter/source/repos/ALS/ALS.GeneratorModule/Docs/Exp.txt", ThemeId = 1 });
-                context.TemplateLaboratoryWorks.Add(new TemplateLaboratoryWork { TemplateTask = @"file:///C:/Users/kampukter/source/repos/ALS/ALS.GeneratorModule/Docs/Exp3.txt", ThemeId = 1 });
-                context.TemplateLaboratoryWorks.Add(new TemplateLaboratoryWork { TemplateTask = @"file:///C:/Users/kampukter/source/repos/ALS/ALS.GeneratorModule/Docs/Exp.txt", ThemeId = 2 });
-                context.TemplateLaboratoryWorks.Add(new TemplateLaboratoryWork { TemplateTask = @"file:///C:/Users/kampukter/source/repos/ALS/ALS.GeneratorModule/Docs/Exp2.txt", ThemeId = 2 });
+                context.TemplateLaboratoryWorks.Add(new TemplateLaboratoryWork { TemplateTask = @"C:/Users/kampukter/source/repos/ALS/ALS.GeneratorModule/Docs/Exp.txt", ThemeId = 1 });
+                context.TemplateLaboratoryWorks.Add(new TemplateLaboratoryWork { TemplateTask = @"C:/Users/kampukter/source/repos/ALS/ALS.GeneratorModule/Docs/Exp3.txt", ThemeId = 1 });
+                context.TemplateLaboratoryWorks.Add(new TemplateLaboratoryWork { TemplateTask = @"C:/Users/kampukter/source/repos/ALS/ALS.GeneratorModule/Docs/Exp.txt", ThemeId = 2 });
+                context.TemplateLaboratoryWorks.Add(new TemplateLaboratoryWork { TemplateTask = @"C:/Users/kampukter/source/repos/ALS/ALS.GeneratorModule/Docs/Exp2.txt", ThemeId = 2 });
                 context.SaveChanges();
             }
 
             if (!context.LaboratoryWorks.Any())
             {
-                context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 8, ThemeId = 2, Name = "lr1", Description = "lr1_description", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
-                context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 8, ThemeId = 1, Name = "lr2", Description = "Вывести четные элементы", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
+                context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 9, ThemeId = 2, Name = "lr1", Description = "lr1_description", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
+                context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 9, ThemeId = 1, Name = "lr2", Description = "Вывести четные элементы", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
                 context.LaboratoryWorks.Add(new LaboratoryWork { TemplateLaboratoryWorkId = 1, UserId = 8, ThemeId = 2, Name = "lr3", Description = "descrition", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1" });
                 context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 2, ThemeId = 1, Name = "lr1", Description = "lr1_description", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
                 context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 2, ThemeId = 1, Name = "lr2", Description = "Вывести четные элементы", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
@@ -279,6 +279,14 @@ namespace ALS
                 
                 context.Solutions.Add(new Solution { IsSolved = true, CompilerFailsNumbers = 5, SendDate = DateTime.Now.AddHours(15), AssignedVariantId = 8});
                 context.Solutions.Add(new Solution { IsSolved = true, CompilerFailsNumbers = 5,SendDate = DateTime.Now.AddHours(6), AssignedVariantId = 9});
+                
+                context.SaveChanges();
+            }
+
+            if (!context.Plans.Any())
+            {
+                context.Plans.Add(new Plan {DisciplineId = 1, GroupId = 1, UserId = 8 });
+                context.Plans.Add(new Plan {DisciplineId = 1, GroupId = 2, UserId = 8 });
                 
                 context.SaveChanges();
             }
