@@ -259,6 +259,8 @@ namespace ALS
 
                 context.AssignedVariants.Add(new AssignedVariant {UserId = 6, VariantId = 1});
                 context.AssignedVariants.Add(new AssignedVariant {UserId = 6, VariantId = 2});
+                
+                context.SaveChanges();
             }
             
             if (!context.Solutions.Any())
@@ -285,8 +287,8 @@ namespace ALS
 
             if (!context.Plans.Any())
             {
-                context.Plans.Add(new Plan {DisciplineId = 1, GroupId = 1, UserId = 8 });
-                context.Plans.Add(new Plan {DisciplineId = 1, GroupId = 2, UserId = 8 });
+                context.Plans.Add(new Plan {DisciplineCipher = "pr1", GroupId = 1, UserId = 8 });
+                context.Plans.Add(new Plan {DisciplineCipher = "pr1", GroupId = 2, UserId = 8 });
                 
                 context.SaveChanges();
             }
