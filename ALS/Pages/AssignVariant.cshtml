@@ -1,0 +1,238 @@
+@page
+@model ALS.Pages.AssignVariant
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Назначить вариант";
+}
+<div style="margin-bottom: 1%">
+    <span>Дисциплина: </span><select onchange="DisciplineSel()" id="disciplineSelect"></select>
+    <span>Группа: </span><select onchange="CreateTable()" id="groupSelect"></select>
+    <span>Лабораторная работа: </span><select onchange="CreateTable()" id="laboratoryWorkSelect"></select>
+    <button id="randomAssign" class="btn btn-primary edit-item">Назначить случайно</button>
+</div>
+<table style="width: 100%" border="1">
+    <thead>
+    <tr>
+    <td>ФИО</td>
+    <td>Назначенный вариант</td>
+    </thead>
+    <tbody id="tbodyContent">
+</table>
+
+<script>
+    let tokenKey = "accessToken";
+    getComboBoxData();
+    CreateTable();
+    
+    
+    function DisciplineSel() {
+      let groupSelect = $('#groupSelect');
+      let labSelect = $('#specialitySelect');
+      
+    }
+    
+    
+    function CreateTable() {
+        let data = getData();
+        
+        let assignedVariants;
+        $.ajax(
+                    {
+                        type: 'GET',
+                        url: '/api/assignedvariants/getall',
+                        beforeSend: (xhr) => 
+                        {
+                            let token = sessionStorage.getItem(tokenKey);
+                            xhr.setRequestHeader("Authorization", "Bearer " + token);
+                            xhr.setRequestHeader("groupId", data.idGroup);
+                            xhr.setRequestHeader("laboratoryWorkId", data.idLw);
+                        },
+                        success: (aw) =>
+                        {
+                            assignedVariants = aw;
+                        },
+                        error: (awFail) =>
+                        {
+                            document.body.innerHTML = '';
+                            alert('Нет доступа');
+                            history.go(-1);
+                        }
+                    }
+            );
+                    
+        $.ajax(
+              {
+                  type: 'GET',
+                  url: '/api/users/getusersbygroup',
+                  beforeSend: (xhr) => 
+                  {
+                      let token = sessionStorage.getItem(tokenKey);
+                      xhr.setRequestHeader("Authorization", "Bearer " + token);
+                      xhr.setRequestHeader("groupId", data.idGroup);
+                  },
+                  success: (users) =>
+                  {
+                      $.ajax(
+                            {
+                                type: 'GET',
+                                url: '/api/variants/getallbylaboratoryid',
+                                beforeSend: (xhr) => 
+                                {
+                                    let token = sessionStorage.getItem(tokenKey);
+                                    xhr.setRequestHeader("Authorization", "Bearer " + token);
+                                    xhr.setRequestHeader("laboratoryWorkId", data.idLw);
+                                },
+                                success: (variants) =>
+                                {
+                                    let tbdy = document.getElementById('tbodyContent');
+                                    tbdy.innerHTML = ""; //Удалим все дочерние узлы
+                                    for (let user of users)
+                                    {
+                                        let tr = document.createElement('tr');
+                                        tbdy.appendChild(tr);
+                                        let tdUser = document.createElement('td');
+                                        tr.appendChild(tdUser);
+                                        tdUser.appendChild(document.createTextNode(user.name + " " + user.surname + " " + user.patronymic));
+                                        tdUser.dataset.id = user.id;
+                                        let tdVar = document.createElement('td');
+                                        tr.appendChild(tdVar);
+                                        let select = document.createElement('select');
+                                        tdVar.appendChild(select);
+                                        var previous;
+                                        $(select).on('focus', (obj) => 
+                                        {
+                                            previous = obj.currentTarget.value;
+                                            console.log(obj.currentTarget);
+                                        }).change((obj) => 
+                                        {
+                                            if (previous === 'Не назначено')
+                                            {
+                                                console.log(getAssignedVariantData(obj.currentTarget));
+                                                console.log("No");
+                                            }
+                                            else
+                                            {
+                                                console.log(getAssignedVariantData(obj.currentTarget));
+                                                console.log("Yes");
+                                            }
+                                        });
+                                        let isAssigned = false;
+                                        for (let variant of variants)
+                                        {
+                                           let find = assignedVariants.find(x => x.variantId === variant.variantId && x.id === user.id);
+                                           let opt = document.createElement('option');
+                                           select.append(opt);
+                                           opt.value = opt.innerText = variant.variantNumber;
+                                           opt.dataset.id = variant.variantId;
+                                           if(find !== undefined)
+                                           {
+                                               isAssigned = true;
+                                               opt.setAttribute("selected", "selected");
+                                           }
+                                        }
+                                        if(variants.length !== 0 && isAssigned === false)
+                                        {
+                                            let optDef = document.createElement('option');
+                                            select.append(optDef);
+                                            optDef.value = optDef.innerText = "Не назначено";
+                                            optDef.setAttribute("selected", "selected");
+                                        }
+                                    }
+                                },
+                                error: (groupsFail) =>
+                                {
+                                    document.body.innerHTML = '';
+                                    alert('Нет доступа');
+                                    history.go(-1);
+                                }
+                            }
+                        );
+                  },
+                  error: (groupsFail) =>
+                  {
+                      document.body.innerHTML = '';
+                      alert('Нет доступа');
+                      history.go(-1);
+                  }
+              }
+          );
+          
+          
+    }
+    
+    function getData() 
+    {
+      return { idGroup: $('#groupSelect option:selected')[0].dataset.id, idLw: $('#laboratoryWorkSelect option:selected')[0].dataset.id }
+    }
+    
+    function getAssignedVariantData(obj) {
+        return {UserId: obj.parentNode.previousSibling.dataset.id, VariantId: obj.options[obj.options.selectedIndex].dataset.id};
+    }
+    
+    function getComboBoxData(disciplineId)
+    {
+        $.ajax(
+            {
+                type: 'GET',
+                url: '/api/groups/getall',
+                async:false,
+                beforeSend: (xhr) => 
+                {
+                    let token = sessionStorage.getItem(tokenKey);
+                    xhr.setRequestHeader("Authorization", "Bearer " + token);
+                },
+                success: (groups) =>
+                {
+                    let sel = $('#groupSelect');
+                    for (let group of groups)
+                    {
+                        let opt = document.createElement('option');
+                        opt.text = group.name;
+                        opt.dataset.id = group.groupId;
+                        sel.append(opt);
+                    }
+                    
+                },
+                error: (groupsFail) =>
+                {
+                    document.body.innerHTML = '';
+                    alert('Нет доступа');
+                    history.go(-1);
+                }
+            }
+        );
+        
+        $.ajax(
+                    {
+                        type: 'GET',
+                        url: '/api/laboratoryworks/getall',
+                        async:false,
+                        beforeSend: (xhr) => 
+                        {
+                            let token = sessionStorage.getItem(tokenKey);
+                            xhr.setRequestHeader("Authorization", "Bearer " + token);
+                        },
+                        success: (laboratoryWorks) =>
+                        {
+                            let sel = $('#laboratoryWorkSelect');
+                            for (let lw of laboratoryWorks)
+                            {
+                                let opt = document.createElement('option');
+                                opt.dataset.id = lw.laboratoryWorkId;
+                                opt.text = lw.name;
+                                sel.append(opt);
+                            }
+                        },
+                        error: (groupsFail) =>
+                        {
+                            document.body.innerHTML = '';
+                            alert('Нет доступа');
+                            history.go(-1);
+                        }
+                    }
+                );
+        }
+        
+        
+</script>

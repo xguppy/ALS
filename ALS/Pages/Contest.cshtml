@@ -1,0 +1,44 @@
+@page
+@model ALS.Pages.Contest
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Отправить решение";
+}
+
+<table style="width: 100%" border="1">
+    <thead>
+    <tr>
+    <td>Лабораторная работа</td>
+    <td>Описание лабораторной работы</td>    
+    <td>Номер варианта</td>
+    <td>Описание варианта</td>
+    <td>Статус</td>
+    </thead>
+    <tbody id="tbodyContent">
+</table>
+
+<div id="myModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header"><h4 class="modal-title">Отправить решение</h4><button class="close" type="button" data-dismiss="modal">×</button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("Check", "Checks", FormMethod.Post))
+                {
+                    @Html.Label("Файл с решением:\t")
+                    <input type="file" id="fileUpload" />
+                    <input type="hidden" id="hiddenVariantId" />
+                    <p><input type="button" class="btn btn-dark" value="Отправить" onclick="LoadSolution()"/></p>
+                }
+            </div>
+            <div class="modal-footer"><button class="btn btn-default" type="button" data-dismiss="modal">Закрыть</button></div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+
+</script>
