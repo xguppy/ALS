@@ -240,8 +240,9 @@ namespace ALS
             }
             if (!context.Variants.Any())
             {
-                context.Variants.Add(new Variant { VariantNumber = 1, LaboratoryWorkId = 1, Description = "var descr" });
-                context.Variants.Add(new Variant { VariantNumber = 1, LaboratoryWorkId = 2, LinkToModel = Path.Combine(Environment.CurrentDirectory, "executeModel", $"{ProcessCompiler.CreatePath(2, 1)}.exe"), Description = "smpl", InputDataRuns = "[{\"Name\":\"тест1\",\"Data\":[\"#rnd(1 | 20 | int | 10)\"]},{\"Name\":\"тест2\",\"Data\":[\"#rnd(1 | 20 | int | 10)\"]},{\"Name\":\"тест3\",\"Data\":[\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"7\",\"8\",\"9\",\"10\"]}]"});
+                context.Variants.Add(new Variant { VariantNumber = 1, LaboratoryWorkId = 5, Description = "var descr" });
+                context.Variants.Add(new Variant { VariantNumber = 2, LaboratoryWorkId = 5, Description = "Тест" });
+                context.Variants.Add(new Variant { VariantNumber = 1, LaboratoryWorkId = 6, LinkToModel = Path.Combine(Environment.CurrentDirectory, "executeModel", $"{ProcessCompiler.CreatePath(2, 1)}.exe"), Description = "smpl", InputDataRuns = "[{\"Name\":\"тест1\",\"Data\":[\"#rnd(1 | 20 | int | 10)\"]},{\"Name\":\"тест2\",\"Data\":[\"#rnd(1 | 20 | int | 10)\"]},{\"Name\":\"тест3\",\"Data\":[\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"7\",\"8\",\"9\",\"10\"]}]"});
                 context.SaveChanges();
             }
 
@@ -287,8 +288,8 @@ namespace ALS
 
             if (!context.Plans.Any())
             {
-                context.Plans.Add(new Plan {DisciplineCipher = "pr1", GroupId = 1, UserId = 8 });
-                context.Plans.Add(new Plan {DisciplineCipher = "pr1", GroupId = 2, UserId = 8 });
+                context.Plans.Add(new Plan {DisciplineCipher = "pr1", GroupId = 1, UserId = 9 });
+                context.Plans.Add(new Plan {DisciplineCipher = "pr1", GroupId = 2, UserId = 9 });
                 
                 context.SaveChanges();
             }
