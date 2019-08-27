@@ -39,6 +39,22 @@ namespace ALS.Controllers
             return Ok(await Task.Run(() => _db.LaboratoryWorks.Where(lw => lw.UserId == curUserId)
                 .Select(laboratoryWork => new { laboratoryWork.LaboratoryWorkId, laboratoryWork.TemplateLaboratoryWorkId, laboratoryWork.ThemeId, laboratoryWork.Name, laboratoryWork.Description, laboratoryWork.Evaluation, laboratoryWork.DisciplineCipher, laboratoryWork.UserId, laboratoryWork.Constraints}).ToList()));
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllByDiscipline([FromHeader] string disciplineCipher)
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var role = User.FindFirst(ClaimTypes.Role).Value;
+            if (role == RoleEnum.Teacher.ToString())
+            {
+                return Ok(await Task.Run(() =>
+                    _db.LaboratoryWorks.Where(lw => lw.UserId == userId && lw.Discipline.Cipher == disciplineCipher)
+                        .ToList()));
+            }
+            return Ok(await Task.Run(() =>
+                _db.LaboratoryWorks.Where(lw => lw.Discipline.Cipher == disciplineCipher)
+                    .ToList()));
+        }
         
         [HttpGet]
         public async Task<IActionResult> Get([FromHeader] int laboratoryWorkId)

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ALS.DTO;
 using ALS.EntityСontext;
+using ALS.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -32,8 +33,9 @@ namespace ALS.Controllers
                     .Contains(aw.VariantId))
                 .Where(aw => _db.Users
                     .Where(user => user.GroupId == groupId).Select(user => user.Id)
-                    .Contains(aw.UserId)).Select(aw => new {Id = aw.UserId, VariantId = aw.VariantId}).ToList()));
-
+                    .Contains(aw.UserId)).Select(aw => new {Id = aw.AssignedVariantId,UserId = aw.UserId, VariantId = aw.VariantId}).ToList()));
+        
+        [HttpPost]
         public async Task<IActionResult> Create([FromBody] AssignedVariantDTO model)
         {
             var assignedVariant = new AssignedVariant {UserId = model.UserId, VariantId = model.VariantId};
@@ -90,6 +92,35 @@ namespace ALS.Controllers
                 return Ok();
             }
             return NotFound("Assigned variant not found");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RandomAssign([FromHeader] int groupId, [FromHeader] int laboratoryWorkId)
+        {
+            var variants = _db.Variants.Where(v => v.LaboratoryWorkId == laboratoryWorkId).ToList().Shuffle();
+            var students = _db.Users.Where(user => user.GroupId == groupId).ToList();
+            if (variants.Count != 0)
+            {
+                var counter = 0;
+                foreach (var student in students)
+                {
+                    var assignedVariant = await _db.AssignedVariants.FirstOrDefaultAsync(aw => aw.UserId == student.Id && aw.Variant.LaboratoryWorkId == laboratoryWorkId);
+                    if (assignedVariant == null)
+                    {
+                        await _db.AssignedVariants.AddAsync(new AssignedVariant
+                            {VariantId = variants[counter].VariantId, UserId = student.Id});
+                    }
+                    else
+                    {
+                        assignedVariant.VariantId = variants[counter].VariantId;
+                        _db.AssignedVariants.Update(assignedVariant);
+                    }
+                    counter = counter + 1 == variants.Count ? 0 : ++counter;
+                }
+                await _db.SaveChangesAsync();
+                return Ok();
+            }
+            return BadRequest("No Variants");
         }
     }
 }

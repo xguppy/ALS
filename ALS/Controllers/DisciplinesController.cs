@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using ALS.DTO;
 using ALS.EntityСontext;
@@ -26,7 +27,14 @@ namespace ALS.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await Task.Run(() => _db.Disciplines.Select(d => new { d.Cipher, d.Name}).ToList()));
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var role = User.FindFirst(ClaimTypes.Role).Value;
+            if (role == RoleEnum.Teacher.ToString())
+            {
+                return Ok(await Task.Run(() =>
+                    _db.Plans.Where(d => d.UserId == userId).Select(d => new {d.Discipline.Cipher, d.Discipline.Name}).Distinct().ToList()));
+            }
+            return Ok(await Task.Run(() => _db.Disciplines.ToList()));
         }
 
         [HttpGet]
