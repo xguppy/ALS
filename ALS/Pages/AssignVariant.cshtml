@@ -22,14 +22,74 @@
 
 <script>
     let tokenKey = "accessToken";
+    $.ajax(
+          {
+              type: 'GET',
+              url: '/api/disciplines/getall',
+              async: false,
+              beforeSend: (xhr) => 
+              {
+                  let token = sessionStorage.getItem(tokenKey);
+                  xhr.setRequestHeader("Authorization", "Bearer " + token);
+              },
+              success: (disciplines) =>
+              {
+                  let sel = $('#disciplineSelect');
+                  
+                        if(disciplines.length === 0)
+                        {
+                            alert('Вы не ведёте ни одной дисциплины');
+                            history.go(-1);
+                        }
+                      for (let discipline of disciplines)
+                      {
+                          let opt = document.createElement('option');
+                          opt.text = discipline.name;
+                          opt.dataset.id = discipline.cipher;
+                          sel.append(opt);
+                      }
+              },
+              error: (awFail) =>
+              {
+                  document.body.innerHTML = '';
+                  alert('Нет доступа');
+                  history.go(-1);
+              }
+          }
+    );
     getComboBoxData();
     CreateTable();
     
+    $('#randomAssign').click(() => 
+    {
+        $.ajax(
+            {
+                type: 'POST',
+                url: '/api/assignedvariants/randomassign',
+                beforeSend: (xhr) => 
+                {
+                    let data = getData();
+                    let token = sessionStorage.getItem(tokenKey);
+                    xhr.setRequestHeader("Authorization", "Bearer " + token);
+                    xhr.setRequestHeader("groupId", data.idGroup);
+                    xhr.setRequestHeader("laboratoryWorkId", data.idLw);
+                },
+                success: (aw) =>
+                {
+                        CreateTable();                                                                
+                },
+                error: (awFail) =>
+                {
+                    document.body.innerHTML = '';
+                    alert('Нет доступа');
+                    history.go(-1);
+                }
+            }
+        );
+    });
     
     function DisciplineSel() {
-      let groupSelect = $('#groupSelect');
-      let labSelect = $('#specialitySelect');
-      
+      getComboBoxData();
     }
     
     
@@ -87,6 +147,11 @@
                                 {
                                     let tbdy = document.getElementById('tbodyContent');
                                     tbdy.innerHTML = ""; //Удалим все дочерние узлы
+                                    if(variants.length === 0)
+                                    {
+                                        alert("У вас нет вариантов к этой лабораторной работе");
+                                        return;
+                                    }
                                     for (let user of users)
                                     {
                                         let tr = document.createElement('tr');
@@ -106,27 +171,76 @@
                                             console.log(obj.currentTarget);
                                         }).change((obj) => 
                                         {
+                                            let current = obj.currentTarget.value;
+                                            let userId = $(obj.currentTarget).parent("td").prev("td")[0].dataset.id;
+                                            let model = {userId: userId, variantId: current};
                                             if (previous === 'Не назначено')
                                             {
-                                                console.log(getAssignedVariantData(obj.currentTarget));
-                                                console.log("No");
+                                                $.ajax(
+                                                            {
+                                                                type: 'POST',
+                                                                url: '/api/assignedvariants/create',
+                                                                contentType:  "application/json; charset=utf-8",
+                                                                dataType: "json",
+                                                                data: JSON.stringify(model),
+                                                                beforeSend: (xhr) => 
+                                                                {
+                                                                    let token = sessionStorage.getItem(tokenKey);
+                                                                    xhr.setRequestHeader("Authorization", "Bearer " + token);
+                                                                },
+                                                                success: (aw) =>
+                                                                {
+                                                                        CreateTable();                                                                
+                                                                },
+                                                                error: (awFail) =>
+                                                                {
+                                                                    document.body.innerHTML = '';
+                                                                    alert('Нет доступа');
+                                                                    history.go(-1);
+                                                                }
+                                                            }
+                                                        );
                                             }
                                             else
                                             {
-                                                console.log(getAssignedVariantData(obj.currentTarget));
-                                                console.log("Yes");
+                                                $.ajax(
+                                                    {
+                                                        type: 'POST',
+                                                        url: '/api/assignedvariants/update',
+                                                        contentType:  "application/json; charset=utf-8",
+                                                        dataType: "json",
+                                                        data: JSON.stringify(model),
+                                                        beforeSend: (xhr) => 
+                                                        {
+                                                            let token = sessionStorage.getItem(tokenKey);
+                                                            xhr.setRequestHeader("Authorization", "Bearer " + token);
+                                                            xhr.setRequestHeader("assignedVariantId", obj.currentTarget.dataset.id);
+                                                        },
+                                                        success: (aw) =>
+                                                        {
+                                                                 CreateTable();                                                                        
+                                                        },
+                                                        error: (awFail) =>
+                                                        {
+                                                            document.body.innerHTML = '';
+                                                            alert('Нет доступа');
+                                                            history.go(-1);
+                                                        }
+                                                    }
+                                                );
                                             }
                                         });
                                         let isAssigned = false;
                                         for (let variant of variants)
                                         {
-                                           let find = assignedVariants.find(x => x.variantId === variant.variantId && x.id === user.id);
+                                           let find = assignedVariants.find(x => x.variantId === variant.variantId && x.userId === user.id);
                                            let opt = document.createElement('option');
                                            select.append(opt);
                                            opt.value = opt.innerText = variant.variantNumber;
                                            opt.dataset.id = variant.variantId;
                                            if(find !== undefined)
                                            {
+                                               select.dataset.id = find.id;
                                                isAssigned = true;
                                                opt.setAttribute("selected", "selected");
                                            }
@@ -170,17 +284,19 @@
         return {UserId: obj.parentNode.previousSibling.dataset.id, VariantId: obj.options[obj.options.selectedIndex].dataset.id};
     }
     
-    function getComboBoxData(disciplineId)
+    function getComboBoxData()
     {
+        let disciplineId = $('#disciplineSelect option:selected')[0].dataset.id;
         $.ajax(
             {
                 type: 'GET',
-                url: '/api/groups/getall',
+                url: '/api/groups/getallbydisciplineid',
                 async:false,
                 beforeSend: (xhr) => 
                 {
                     let token = sessionStorage.getItem(tokenKey);
                     xhr.setRequestHeader("Authorization", "Bearer " + token);
+                    xhr.setRequestHeader("disciplineCipher", disciplineId);
                 },
                 success: (groups) =>
                 {
@@ -206,12 +322,13 @@
         $.ajax(
                     {
                         type: 'GET',
-                        url: '/api/laboratoryworks/getall',
+                        url: '/api/laboratoryworks/getallbydiscipline',
                         async:false,
                         beforeSend: (xhr) => 
                         {
                             let token = sessionStorage.getItem(tokenKey);
                             xhr.setRequestHeader("Authorization", "Bearer " + token);
+                            xhr.setRequestHeader("disciplineCipher", disciplineId);
                         },
                         success: (laboratoryWorks) =>
                         {
