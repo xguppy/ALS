@@ -14,7 +14,7 @@ namespace ALS.Controllers
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin, Teacher")]
+    [Authorize]
     public class DisciplinesController : ControllerBase
     {
         private readonly ApplicationContext _db;
@@ -25,6 +25,7 @@ namespace ALS.Controllers
         }
 
         [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin, Teacher, Student")]
         public async Task<IActionResult> GetAll()
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
@@ -34,10 +35,22 @@ namespace ALS.Controllers
                 return Ok(await Task.Run(() =>
                     _db.Plans.Where(d => d.UserId == userId).Select(d => new {d.Discipline.Cipher, d.Discipline.Name}).Distinct().ToList()));
             }
+            if (role == RoleEnum.Student.ToString())
+            {
+                var groupId =  _db.Users.Where(user => user.Id == userId).Select(user => user.GroupId)
+                    .FirstOrDefaultAsync().Result;
+                if (groupId != null)
+                {
+                    return Ok(await Task.Run(() =>
+                        _db.Plans.Where(d => d.GroupId == groupId).Select(d => new {d.Discipline.Cipher, d.Discipline.Name}).Distinct().ToList()));
+                }
+                return BadRequest("The student is not in the group");
+            }
             return Ok(await Task.Run(() => _db.Disciplines.ToList()));
         }
 
         [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin, Teacher")]
         public async Task<IActionResult> Get([FromHeader] string cipher)
         {
             var discipline = await _db.Disciplines.FirstOrDefaultAsync(d => d.Cipher == cipher);
@@ -49,6 +62,7 @@ namespace ALS.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin, Teacher")]
         public async Task<IActionResult> Create([FromBody] DisciplineDTO model)
         {
             Discipline discipline = new Discipline { Name = model.Name, Cipher = model.Cipher };
@@ -65,6 +79,7 @@ namespace ALS.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin, Teacher")]
         public async Task<IActionResult> Update([FromBody] DisciplineDTO model)
         {
             var disciplineUpdate = await _db.Disciplines.FirstOrDefaultAsync(d => d.Cipher == model.Cipher);
@@ -87,6 +102,7 @@ namespace ALS.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin, Teacher")]
         public async Task<IActionResult> Delete([FromHeader] string cipher)
         {
             var discipline = await _db.Disciplines.FirstOrDefaultAsync(d => d.Cipher == cipher);

@@ -30,7 +30,7 @@ namespace ALS.Controllers
         [HttpPost]
         public async Task Login([FromBody] UserLoginDTO model)
         {
-            User appUser = _db.Users.FirstOrDefault(u => u.Email == model.Email);
+            User appUser = _db.Users.Include(user => user.UserRoles).ThenInclude(ur => ur.Role).FirstOrDefault(u => u.Email == model.Email);
             if (appUser != null && _authService.ValidateUserPassword(appUser.PwHash, model.Password))
             {
                 await SendIdentityResponse(model.Email, appUser);
@@ -41,7 +41,7 @@ namespace ALS.Controllers
                 await Response.WriteAsync("Invalid login or password");
             }
         }
-
+        
         /// <summary>
         /// Send response when user successfully register/login
         /// </summary>
@@ -54,7 +54,8 @@ namespace ALS.Controllers
             {
                 access_token = _authService.GetAuthData(email, appUser),
                 username = $"{appUser.Name} {appUser.Surname} {appUser.Patronymic}",
-                userId = appUser.Id
+                userId = appUser.Id,
+                roles = appUser.UserRoles.Select(ur => ur.Role.RoleName.ToString())
             };
 
             // сериализация ответа
@@ -99,27 +100,6 @@ namespace ALS.Controllers
         {
             var curUser = User.FindFirst(ClaimTypes.Name).Value;
             await Response.WriteAsync($"Hello, {curUser}!");
-        }
-
-        [HttpGet]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
-        public async Task TestAdmin()
-        {
-            await Response.WriteAsync("Done!");
-        }
-
-        [HttpGet]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Student")]
-        public async Task TestStudent()
-        {
-            await Response.WriteAsync("Done!");
-        }
-
-        [HttpGet]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Teacher")]
-        public async Task TestTeacher()
-        {
-            await Response.WriteAsync("Done!");
         }
 
     }

@@ -18,22 +18,13 @@
         <input type="password" id="passwordLogin" /><br /><br />
         <input type="button" class="btn btn-success" id="submitLogin" value="Логин" />
     </div>
-    <div style="margin-top: 1%">
-        <input type="button" class="btn btn-secondary" id="TestAdmin" value="Тест админа" />
-    </div>
-    <div style="margin-top: 1%">
-        <input type="button" class="btn btn-secondary" id="TestTeacher" value="Тест препода" />
-    </div>
-    <div style="margin-top: 1%">
-        <input type="button" class="btn btn-secondary" id="TestStudent" value="Тест студента" />
-    </div>
-    
-    <script>
+
+<script>
         //Специальные секции в sessionStorage
         let tokenKey = "accessToken";
         let username = "userName";
         let userId   = "userId";
-        
+        let roles = 'roles';
         if(sessionStorage.getItem(tokenKey) != null)
         {
             $('.userInfo').css('display', 'block');
@@ -63,6 +54,8 @@
                 sessionStorage.setItem(tokenKey, data.access_token);
                 sessionStorage.setItem(username, data.username);
                 sessionStorage.setItem(userId,   data.userId);
+                sessionStorage.setItem(roles,    JSON.stringify(data.roles));
+                showMenu();
             }).error(function (data) {
                 alert("Не удалось зайти в систему");
             });
@@ -74,57 +67,8 @@
             $('.userInfo').css('display', 'none');
             sessionStorage.removeItem(tokenKey);
             sessionStorage.removeItem(username);
-            
+            sessionStorage.removeItem(roles);
+            sessionStorage.removeItem(userId);
+            showMenu();
         });
-        $('#TestAdmin').click(function(e) {
-            e.preventDefault();
-          $.ajax({
-                 type: 'GET',
-                 url: '/api/users/testadmin',
-                 beforeSend: function (xhr) {
-                     let token = sessionStorage.getItem(tokenKey);
-                     xhr.setRequestHeader("Authorization", "Bearer " + token);
-                 },
-                 success: function (data) {
-                     alert(data);
-                 },
-                 error: function (data) {
-                     console.log(data);
-                 }
-             })
-        });
-        $('#TestTeacher').click(function(e) {
-                    e.preventDefault();
-                  $.ajax({
-                         type: 'GET',
-                         url: '/api/users/testteacher',
-                         beforeSend: function (xhr) {
-                             let token = sessionStorage.getItem(tokenKey);
-                             xhr.setRequestHeader("Authorization", "Bearer " + token);
-                         },
-                         success: function (data) {
-                             alert(data);
-                         },
-                         error: function (data) {
-                             console.log(data);
-                         }
-                     })
-                });
-        $('#TestStudent').click(function(e) {
-                    e.preventDefault();
-                  $.ajax({
-                         type: 'GET',
-                         url: '/api/users/teststudent',
-                         beforeSend: function (xhr) {
-                             var token = sessionStorage.getItem(tokenKey);
-                             xhr.setRequestHeader("Authorization", "Bearer " + token);
-                         },
-                         success: function (data) {
-                             alert(data);
-                         },
-                         error: function (data) {
-                             console.log(data);
-                         }
-                     })
-                });
     </script>

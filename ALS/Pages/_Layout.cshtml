@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims
+@using ALS.EntityСontext
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -18,25 +20,25 @@
              <li class="nav-item">
                  <a class="nav-link" href="~/index">Домой</a>
              </li>
-             <li class="nav-item">
+             <li class="nav-item" id="group">
                  <a class="nav-link" href="~/groups">Группы</a>
              </li>
-             <li class="nav-item">
-                 <a class="nav-link" href="~/templates">Шаблоны</a>
+             <li class="nav-item" id="template">
+                     <a class="nav-link" href="~/templates">Шаблоны</a>
              </li>
-             <li class="nav-item">
+             <li class="nav-item" id="speciality">
                  <a class="nav-link" href="~/specialities">Специальности</a>
              </li>
-             <li class="nav-item">
+             <li class="nav-item" id="variant">
                  <a class="nav-link" href="~/variants">Варианты</a>
              </li>
-             <li class="nav-item">
+             <li class="nav-item" id="laboratorywork">
                  <a class="nav-link" href="~/laboratoryworks">Лабораторные работы</a>
              </li>
-             <li class="nav-item">
+             <li class="nav-item" id="assignvariant">
                  <a class="nav-link" href="~/assignvariant">Назначение варианта</a>
              </li>
-             <li class="nav-item">
+             <li class="nav-item" id="contest">
                  <a class="nav-link" href="~/contest">Отправить решение</a>
              </li>
          </ul>
@@ -50,5 +52,38 @@
 <footer style="padding-left: 5%">
     <p>@DateTime.Now.Year - ALS</p>
 </footer>
+<script>
+    let group = $('#group');
+    let template = $('#template');
+    let speciality = $('#speciality');
+    let variant = $('#variant');
+    let lw = $('#laboratorywork');
+    let aw = $('#assignvariant');
+    let contest = $('#contest');
+    showMenu();
+    function showMenu() {
+        group.css('display', 'none');
+        template.css('display', 'none');
+        speciality.css('display', 'none');
+        variant.css('display', 'none');
+        lw.css('display', 'none');
+        aw.css('display', 'none');
+        contest.css('display', 'none');
+        let roles = JSON.parse(sessionStorage.getItem('roles'));
+        if (roles.includes('Teacher')) {
+            template.css('display', 'block');
+            variant.css('display', 'block');
+            lw.css('display', 'block');
+            aw.css('display', 'block');
+        }
+        if (roles.includes('Admin')) {
+            group.css('display', 'block');
+            speciality.css('display', 'block');
+        }
+        if (roles.includes('Student')) {
+            contest.css('display', 'block');
+        }
+    }
+</script>
 </body>
 </html>

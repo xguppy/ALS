@@ -5,7 +5,9 @@
     Layout = "_Layout";
     ViewData["Title"] = "Отправить решение";
 }
-
+<div style="margin-bottom: 1%">
+    <span>Дисциплина: </span><select onchange="DisciplineSel()" id="disciplineSelect"></select>
+</div>
 <table style="width: 100%" border="1">
     <thead>
     <tr>
@@ -18,27 +20,52 @@
     <tbody id="tbodyContent">
 </table>
 
-<div id="myModal" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header"><h4 class="modal-title">Отправить решение</h4><button class="close" type="button" data-dismiss="modal">×</button>
-            </div>
-            <div class="modal-body">
-                @using (Html.BeginForm("Check", "Checks", FormMethod.Post))
-                {
-                    @Html.Label("Файл с решением:\t")
-                    <input type="file" id="fileUpload" />
-                    <input type="hidden" id="hiddenVariantId" />
-                    <p><input type="button" class="btn btn-dark" value="Отправить" onclick="LoadSolution()"/></p>
-                }
-            </div>
-            <div class="modal-footer"><button class="btn btn-default" type="button" data-dismiss="modal">Закрыть</button></div>
-        </div>
-    </div>
-</div>
-
-
 
 <script>
-
+    let tokenKey = "accessToken";
+        
+    $.ajax(
+              {
+                  type: 'GET',
+                  url: '/api/disciplines/getall',
+                  async: false,
+                  beforeSend: (xhr) => 
+                  {
+                      let token = sessionStorage.getItem(tokenKey);
+                      xhr.setRequestHeader("Authorization", "Bearer " + token);
+                  },
+                  success: (disciplines) =>
+                  {
+                      let sel = $('#disciplineSelect');
+                      
+                            if(disciplines.length === 0)
+                            {
+                                alert('Не назначена ни одна дисциплина');
+                                history.go(-1);
+                            }
+                          for (let discipline of disciplines)
+                          {
+                              let opt = document.createElement('option');
+                              opt.text = discipline.name;
+                              opt.dataset.id = discipline.cipher;
+                              sel.append(opt);
+                          }
+                  },
+                  error: (awFail) =>
+                  {
+                      document.body.innerHTML = '';
+                      alert('Нет доступа');
+                      history.go(-1);
+                  }
+              }
+        );
+        
+        function getDiscipline() 
+        {
+          return $('#disciplineSelect option:selected')[0].dataset.id;
+        }
+    
+        function CreateTable() {
+          
+        }
 </script>

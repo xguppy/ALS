@@ -12,6 +12,7 @@ using ALS.EntityСontext;
 using Generator.MainGen;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -31,7 +32,7 @@ namespace ALS.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Check([FromHeader] string sourceCode, [FromHeader] int variantId)
+        public async Task<IActionResult> Check(IFormFile uploadedSource, [FromHeader] int variantId)
         {
             //Получим идентификатор юзера из его сессии
             var userIdentifier = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
@@ -47,20 +48,23 @@ namespace ALS.Controllers
 
                 if (solution == null)
                 {
-                    //Если не решил, то декодируем его код
-                    sourceCode = HttpUtility.UrlDecode(sourceCode);
-                    
-                    //Создаём новое решение
-                    solution = new Solution {SourceCode = sourceCode, AssignedVariant = assignedVar, IsSolved = true, SendDate = DateTime.Now};
-                    
-                    //Сохраним его код
+                    //Если не решил, то сохраним его код
                     var sourceCodeFile = Path.Combine(Environment.CurrentDirectory, "sourceCodeUser",
                         $"{ProcessCompiler.CreatePath(assignedVar.Variant.LaboratoryWorkId, variantId)}.cpp");
-                    using (var fileWrite = new StreamWriter(sourceCodeFile))
+                    //sourceCode = HttpUtility.UrlDecode(sourceCode);
+                    using (var fs = new FileStream(sourceCodeFile, FileMode.Create))
                     {
-                        await fileWrite.WriteAsync(sourceCode);
+                        await uploadedSource.CopyToAsync(fs);
                     }
                     
+                    //Создаём новое решение
+                    solution = new Solution {AssignedVariant = assignedVar, IsSolved = true, SendDate = DateTime.Now};
+                    
+                    using (var sr = new StreamReader(sourceCodeFile))
+                    {
+                        solution.SourceCode = await sr.ReadToEndAsync();
+                    }
+
                     //Возьмём пути для исполняемых файлов
                     var programFileUser =
                         Path.Combine(Environment.CurrentDirectory, "executeUser",
