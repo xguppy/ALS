@@ -4,18 +4,21 @@
     Layout = "_Layout";
     ViewData["Title"] = "Варианты";
 }
-<table style="width: 100%" border="1">
-    <thead>
-    <tr>
-    <td>Лабораторная работа</td>
-    <td>Номер варианта</td>    
-    <td>Описание</td>
-    <td>Ссылка на модель (эталонная программа)</td>
-    <td>Входные данные</td>
-    <td>Действие</td>
-    </thead>
-    <tbody id="tbodyContent">
-</table>
+<h3>Варианты </h3>
+<div class="container">
+    <table style="width: 100%" class="table table-hover" border="1">
+        <thead>
+        <tr>
+        <td>Лабораторная работа</td>
+        <td>Номер варианта</td>    
+        <td>Описание</td>
+        <td>Ссылка на модель (эталонная программа)</td>
+        <td>Входные данные</td>
+        <td>Действие</td>
+        </thead>
+        <tbody id="tbodyContent">
+    </table>
+</div>
 
 <button class="btn btn-info btn-lg" type="button" data-toggle="modal" data-target="#myModal">Добавить вариант</button>
 <div id="myModal" class="modal fade">

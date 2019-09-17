@@ -5,13 +5,15 @@
     Layout = "_Layout";
     ViewData["Title"] = "Назначить вариант";
 }
+<h3>Назначение варианта </h3>
 <div style="margin-bottom: 1%">
     <span>Дисциплина: </span><select onchange="DisciplineSel()" id="disciplineSelect"></select>
     <span>Группа: </span><select onchange="CreateTable()" id="groupSelect"></select>
     <span>Лабораторная работа: </span><select onchange="CreateTable()" id="laboratoryWorkSelect"></select>
     <button id="randomAssign" class="btn btn-primary edit-item">Назначить случайно</button>
 </div>
-<table style="width: 100%" border="1">
+<div class="container">
+<table style="width: 100%" class="table table-hover" border="1">
     <thead>
     <tr>
     <td>ФИО</td>
@@ -19,7 +21,7 @@
     </thead>
     <tbody id="tbodyContent">
 </table>
-
+</div>
 <script>
     let tokenKey = "accessToken";
     $.ajax(
