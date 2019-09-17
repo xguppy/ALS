@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using ALS.DTO;
 using ALS.EntityСontext;
@@ -9,13 +10,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace ALS.Controllers
 {
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin, Teacher")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class AssignedVariantsController : ControllerBase
     {
         private readonly ApplicationContext _db;
@@ -26,6 +28,7 @@ namespace ALS.Controllers
         }
 
         [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin, Teacher")]
         public async Task<IActionResult> GetAll([FromHeader] int groupId, [FromHeader] int laboratoryWorkId)
             => Ok(await Task.Run(() => _db.AssignedVariants
                 .Where(aw => _db.Variants
@@ -34,8 +37,24 @@ namespace ALS.Controllers
                 .Where(aw => _db.Users
                     .Where(user => user.GroupId == groupId).Select(user => user.Id)
                     .Contains(aw.UserId)).Select(aw => new {Id = aw.AssignedVariantId,UserId = aw.UserId, VariantId = aw.VariantId}).ToList()));
+
+        [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Student")]
+        public async Task<IActionResult> GetWorkVariants([FromHeader] string disciplineId)
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            return Ok(await Task.Run(() => _db.AssignedVariants.Include(av => av.Variant).ThenInclude(var => var.LaboratoryWork).Where(
+                    av =>
+                        av.UserId == userId && av.Variant.LaboratoryWork.DisciplineCipher == disciplineId)
+                .Select(av => new
+                {
+                    av.AssignedVariantId, av.Variant.LaboratoryWork.Description, av.Variant.LaboratoryWork.Name, av.Variant,
+                    IsSolved = av.Solutions.Any(sol => sol.IsSolved)
+                }).ToList()));
+        }
         
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin, Teacher")]
         public async Task<IActionResult> Create([FromBody] AssignedVariantDTO model)
         {
             var assignedVariant = new AssignedVariant {UserId = model.UserId, VariantId = model.VariantId};
@@ -52,6 +71,7 @@ namespace ALS.Controllers
         }
         
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin, Teacher")]
         public async Task<IActionResult> Update([FromBody] AssignedVariantDTO model, [FromHeader] int assignedVariantId)
         {
             var assignedVariantUpdate = await _db.AssignedVariants.FirstOrDefaultAsync(aw => aw.AssignedVariantId == assignedVariantId);
@@ -75,6 +95,7 @@ namespace ALS.Controllers
         }
         
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin, Teacher")]
         public async Task<IActionResult> Delete([FromHeader] int assignedVariantId)
         {
             var assignedVariant = await _db.AssignedVariants.FirstOrDefaultAsync(aw => aw.AssignedVariantId == assignedVariantId);
@@ -95,6 +116,7 @@ namespace ALS.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin, Teacher")]
         public async Task<IActionResult> RandomAssign([FromHeader] int groupId, [FromHeader] int laboratoryWorkId)
         {
             var variants = _db.Variants.Where(v => v.LaboratoryWorkId == laboratoryWorkId).ToList().Shuffle();
