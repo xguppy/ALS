@@ -5,10 +5,12 @@
     Layout = "_Layout";
     ViewData["Title"] = "Отправить решение";
 }
+<h3>Проверка работ </h3>
 <div style="margin-bottom: 1%">
-    <span>Дисциплина: </span><select onchange="DisciplineSel()" id="disciplineSelect"></select>
+    <span>Дисциплина: </span><select onchange="CreateTable()" id="disciplineSelect"></select>
 </div>
-<table style="width: 100%" border="1">
+<div class="container">
+<table style="width: 100%" class="table table-hover" border="1">
     <thead>
     <tr>
     <td>Лабораторная работа</td>
@@ -19,7 +21,7 @@
     </thead>
     <tbody id="tbodyContent">
 </table>
-
+</div>
 
 <script>
     let tokenKey = "accessToken";
@@ -59,6 +61,8 @@
                   }
               }
         );
+    
+        CreateTable();
         
         function getDiscipline() 
         {
@@ -66,6 +70,45 @@
         }
     
         function CreateTable() {
-          
+            var disciplineId = getDiscipline();
+            
+            $.ajax(
+                          {
+                              type: 'GET',
+                              url: '/api/AssignedVariants/GetWorkVariants',
+                              contentType:  "application/json; charset=utf-8",
+                              dataType: "json",
+                              beforeSend: (xhr) => 
+                              {
+                                  let token = sessionStorage.getItem(tokenKey);
+                                  xhr.setRequestHeader("Authorization", "Bearer " + token);
+                                  xhr.setRequestHeader("disciplineId", disciplineId);
+                              },
+                              success: (result) =>
+                              {
+                                  let tbdy = document.getElementById('tbodyContent');
+                                  tbdy.innerHTML = ""; //Удалим все дочерние узлы
+                                  console.log(result);
+                                  for(let task of result)
+                                  {
+                                      let tr = document.createElement('tr');
+                                      tbdy.appendChild(tr);
+                                      let tdNameLab = document.createElement('td');
+                                      tdNameLab.appendChild(document.createTextNode(task.name));
+                                      tr.appendChild(tdNameLab);
+                                      let tdDescLab = document.createElement('td');
+                                      tdDescLab.appendChild(document.createTextNode(task.description));
+                                      tr.appendChild(tdDescLab);
+                                  }
+                              },
+                              error: (awFail) =>
+                              {
+                                  document.body.innerHTML = '';
+                                  alert('Нет доступа');
+                                  history.go(-1);
+                              }
+                          }
+                    );
         }
+        
 </script>
