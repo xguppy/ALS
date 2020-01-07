@@ -43,6 +43,7 @@
     <ItemGroup>
       <Folder Include="executeUser" />
       <Folder Include="sourceCodeUser" />
+      <Folder Include="wwwroot" />
     </ItemGroup>
 
     <ItemGroup>

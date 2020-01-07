@@ -28,7 +28,8 @@ executeUser/
 sourceCodeUser/
 executeModel/
 sourceCodeModel/
-
+# Client Side Library
+wwwroot/lib/
 # Visual Studio 2015 cache/options directory
 .vs/
 /wwwroot/dist/

@@ -93,12 +93,33 @@
                                   {
                                       let tr = document.createElement('tr');
                                       tbdy.appendChild(tr);
+
                                       let tdNameLab = document.createElement('td');
                                       tdNameLab.appendChild(document.createTextNode(task.name));
                                       tr.appendChild(tdNameLab);
+
                                       let tdDescLab = document.createElement('td');
                                       tdDescLab.appendChild(document.createTextNode(task.description));
                                       tr.appendChild(tdDescLab);
+
+                                      let tdVariantNumber = document.createElement('td');
+                                      tdVariantNumber.appendChild(document.createTextNode(task.variant.variantId));
+                                      tr.appendChild(tdVariantNumber);
+
+                                      let tdVariantDesc = document.createElement('td');
+                                      tdVariantDesc.appendChild(document.createTextNode(task.variant.description));
+                                      tr.appendChild(tdVariantDesc);
+
+                                      let tdSolution = document.createElement('td');
+                                      if (task.isSolved)
+                                      {
+                                          tdSolution.appendChild(document.createTextNode("Задача решена"));
+                                      }
+                                      else
+                                      {
+                                          //TODO: Сделать кнопку отправки файла для текущей задачи
+                                      }
+                                      tr.appendChild(tdSolution);
                                   }
                               },
                               error: (awFail) =>

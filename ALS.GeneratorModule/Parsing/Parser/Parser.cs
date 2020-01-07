@@ -145,7 +145,6 @@ namespace Generator.Parsing
                         break;
                 }
             }
-            //throw new NotImplementedException();
         }
         
         private void GetTestsD(string body)

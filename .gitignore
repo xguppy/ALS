@@ -12,7 +12,8 @@
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
-
+# Client side library
+wwwroot/lib
 # Mono auto generated files
 mono_crash.*
 

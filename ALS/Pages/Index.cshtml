@@ -45,19 +45,25 @@
                 url: '/api/users/login',
                 contentType:  "application/json; charset=utf-8",
                 dataType: "json",
-                data: JSON.stringify(loginData)
-            }).success(function (data) {
-                $('.userName').text(data.username);
-                $('.userInfo').css('display', 'block');
-                $('.loginForm').css('display', 'none');
-                // сохраняем в хранилище sessionStorage токен доступа и имя
-                sessionStorage.setItem(tokenKey, data.access_token);
-                sessionStorage.setItem(username, data.username);
-                sessionStorage.setItem(userId,   data.userId);
-                sessionStorage.setItem(roles,    JSON.stringify(data.roles));
-                showMenu();
-            }).error(function (data) {
-                alert("Не удалось зайти в систему");
+                data: JSON.stringify(loginData),
+                success:
+                    function (data)
+                    {
+                    $('.userName').text(data.username);
+                    $('.userInfo').css('display', 'block');
+                    $('.loginForm').css('display', 'none');
+                    // сохраняем в хранилище sessionStorage токен доступа и имя
+                    sessionStorage.setItem(tokenKey, data.access_token);
+                    sessionStorage.setItem(username, data.username);
+                    sessionStorage.setItem(userId,   data.userId);
+                    sessionStorage.setItem(roles,    JSON.stringify(data.roles));
+                    showMenu();
+                    },
+                error:
+                    function (data)
+                    {
+                        alert(data.responseText);
+                    }
             });
         });
  
