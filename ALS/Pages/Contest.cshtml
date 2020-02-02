@@ -68,7 +68,42 @@
         {
           return $('#disciplineSelect option:selected')[0].dataset.id;
         }
-    
+        function sendSolution(evt)
+        {
+            var files = evt.target.files; // FileList object
+            var dataFile = new FormData();
+            dataFile.append('uploadedSource', files[0]);
+            /*for (var i = 0, f; f = files[i]; i++) {
+
+            }*/
+            $.ajax(
+                {
+                    type: 'POST',
+                    url: '/api/Checks/Check',
+                    contentType: false,
+                    data: dataFile,
+                    dataType: "json",
+                    processData: false,
+                    async: false,
+                    beforeSend: (xhr) =>
+                    {
+                        let token = sessionStorage.getItem(tokenKey);
+                        xhr.setRequestHeader("Authorization", "Bearer " + token);
+                        xhr.setRequestHeader("variantId", evt.target.dataset.id);
+                    },
+                    success: (result) =>
+                    {
+                        let tbdy = document.getElementById('tbodyContent');
+                        tbdy.innerHTML = ""; //Удалим все дочерние узлы
+                        alert(result.responseText);
+                    },
+                    error: (sendFail) =>
+                    {
+                        alert(sendFail.responseText);
+                    }
+                }
+            );
+        }
         function CreateTable() {
             var disciplineId = getDiscipline();
             
@@ -78,6 +113,7 @@
                               url: '/api/AssignedVariants/GetWorkVariants',
                               contentType:  "application/json; charset=utf-8",
                               dataType: "json",
+                              async: false,
                               beforeSend: (xhr) => 
                               {
                                   let token = sessionStorage.getItem(tokenKey);
@@ -88,7 +124,6 @@
                               {
                                   let tbdy = document.getElementById('tbodyContent');
                                   tbdy.innerHTML = ""; //Удалим все дочерние узлы
-                                  console.log(result);
                                   for(let task of result)
                                   {
                                       let tr = document.createElement('tr');
@@ -117,7 +152,13 @@
                                       }
                                       else
                                       {
-                                          //TODO: Сделать кнопку отправки файла для текущей задачи
+                                          let buttonSend = document.createElement('input');
+                                          buttonSend.type = "file";
+                                          buttonSend.id = "files";
+                                          buttonSend.accept = ".cpp, .h, .c";
+                                          buttonSend.dataset.id = task.variant.variantId;
+                                          buttonSend.className = "btn btn-primary edit-item";
+                                          tdSolution.appendChild(buttonSend);
                                       }
                                       tr.appendChild(tdSolution);
                                   }
@@ -129,7 +170,8 @@
                                   history.go(-1);
                               }
                           }
-                    );
+            );
+            document.getElementById('files').addEventListener('change', sendSolution, false);
         }
         
 </script>

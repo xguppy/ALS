@@ -31,7 +31,19 @@
             $('.loginForm').css('display', 'none');
             $('.userName').text(sessionStorage.getItem(username));
         }
-            
+        var inputPwd = document.getElementById("passwordLogin");
+        var inputEmail = document.getElementById("emailLogin");
+        inputPwd.addEventListener("keyup", LogInEnterButton);
+        inputEmail.addEventListener("keyup", LogInEnterButton);
+        function LogInEnterButton(event) {
+              // 13 это Enter
+              if (event.keyCode === 13) {
+                // Отмена стандартного действия
+                event.preventDefault();
+                // Нажмём на кнопку
+                document.getElementById("submitLogin").click();
+              }
+            }
         $('#submitLogin').click(function (e) {
             e.preventDefault();
             let loginData = {

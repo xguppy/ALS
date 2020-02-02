@@ -73,7 +73,7 @@ namespace ALS.Controllers
                     
                     //Скомпилируем программу пользователя
                     var compiler = new ProcessCompiler(sourceCodeFile, programFileUser);
-                    var isCompile = await compiler.Execute(60000);
+                    var isCompile = await compiler.Execute(10000);
                     
                     //Удалим ненужный файл исходного кода пользоватля
                     System.IO.File.Delete(sourceCodeFile);
