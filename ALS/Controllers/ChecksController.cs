@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using System.Web;
 using ALS.CheckModule.Compare;
 using ALS.CheckModule.Compare.DataStructures;
 using ALS.CheckModule.Processes;
@@ -32,7 +31,7 @@ namespace ALS.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Check(IFormFile uploadedSource, [FromHeader] int variantId)
+        public async Task<IActionResult> Check(IFormFileCollection uploadedSources, [FromHeader] int variantId)
         {
             //Получим идентификатор юзера из его сессии
             var userIdentifier = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
@@ -48,35 +47,21 @@ namespace ALS.Controllers
 
                 if (solution == null)
                 {
-                    //Если не решил, то сохраним его код
-                    var sourceCodeFile = Path.Combine(Environment.CurrentDirectory, "sourceCodeUser",
-                        $"{ProcessCompiler.CreatePath(assignedVar.Variant.LaboratoryWorkId, variantId)}.cpp");
-                    //sourceCode = HttpUtility.UrlDecode(sourceCode);
-                    using (var fs = new FileStream(sourceCodeFile, FileMode.Create))
-                    {
-                        await uploadedSource.CopyToAsync(fs);
-                    }
-                    
+                    //Если не решил, то создадим нужные директории
+                    var solutionDirectory = CreateDirectoriesSources(assignedVar.Variant.VariantId, variantId, userIdentifier);
+                    //Cохраним его код в директорию пользователя
+                    await SaveSources(solutionDirectory, uploadedSources);
                     //Создаём новое решение
-                    solution = new Solution {AssignedVariant = assignedVar, IsSolved = true, SendDate = DateTime.Now};
-                    
-                    using (var sr = new StreamReader(sourceCodeFile))
-                    {
-                        solution.SourceCode = await sr.ReadToEndAsync();
-                    }
+                    solution = new Solution {AssignedVariant = assignedVar, IsSolved = true, SendDate = DateTime.Now, SourceCode = solutionDirectory };
 
                     //Возьмём пути для исполняемых файлов
-                    var programFileUser =
-                        Path.Combine(Environment.CurrentDirectory, "executeUser",
-                            $"{ProcessCompiler.CreatePath(assignedVar.Variant.LaboratoryWorkId, variantId)}.exe");
+                    var programFileUser = CreateExecuteDirectories(assignedVar.Variant.VariantId, variantId, userIdentifier);
+
                     var programFileModel = new Uri((await _db.Variants.FirstOrDefaultAsync(var => var.VariantId == variantId)).LinkToModel).AbsolutePath;
                     
                     //Скомпилируем программу пользователя
-                    var compiler = new ProcessCompiler(sourceCodeFile, programFileUser);
+                    var compiler = new ProcessCompiler(solutionDirectory, programFileUser);
                     var isCompile = await compiler.Execute(10000);
-                    
-                    //Удалим ненужный файл исходного кода пользоватля
-                    System.IO.File.Delete(sourceCodeFile);
 
                     //Если не скомпилировалась заносим, то в последнее решение добавим информацию что программа пользователя не была скомпилированна
                     if (isCompile != true)
@@ -143,6 +128,68 @@ namespace ALS.Controllers
                 return Ok("Solution is solved");
             }
             return BadRequest("Not Privilege");
+        }
+
+        public static string CreateDirectoriesSources(int lwId, int variantId, int userId)
+        {
+            var userDirectory = Path.Combine(Environment.CurrentDirectory, "sourceCodeUser", userId.ToString());
+            if (!Directory.Exists(userDirectory))
+            {
+                Directory.CreateDirectory(userDirectory);
+            }
+            //Получим директорию решения пользователя
+            var taskDirectory = Path.Combine(userDirectory, ProcessCompiler.CreatePath(lwId, variantId));
+            if (!Directory.Exists(taskDirectory))
+            {
+                Directory.CreateDirectory(taskDirectory);
+            }
+            //Посмотрим на все его попытки
+            var numberLastSolution = 0;
+            var directoriesSolutions = Directory.GetDirectories(taskDirectory);
+            if (directoriesSolutions.Length != 0)
+            {
+                numberLastSolution = directoriesSolutions.Max(dir => {
+                        if(int.TryParse(Path.GetFileName(dir), out int res))
+                        {
+                            return res;
+                        }
+                    return 0;
+                });
+            }
+            //И создадим папку с новым решением
+            var solutionDirectory = Path.Combine(taskDirectory, (numberLastSolution + 1).ToString());
+            Directory.CreateDirectory(solutionDirectory);
+            
+            return solutionDirectory;
+        }
+
+        public static string CreateExecuteDirectories(int lwId, int variantId, int userId)
+        {
+            var userDirectory = Path.Combine(Environment.CurrentDirectory, "executeUser", userId.ToString());
+            if (!Directory.Exists(userDirectory))
+            {
+                Directory.CreateDirectory(userDirectory);
+            }
+            //Получим директорию решения пользователя
+            var taskDirectory = Path.Combine(userDirectory, ProcessCompiler.CreatePath(lwId, variantId));
+            if (!Directory.Exists(taskDirectory))
+            {
+                Directory.CreateDirectory(taskDirectory);
+            }
+
+            return Path.Combine(taskDirectory, $"{ProcessCompiler.CreatePath(lwId, variantId)}.exe");
+        }
+
+        public static async Task SaveSources(string directorySave, IFormFileCollection sources)
+        {
+            //Сохраним все файлы в директорию пользовательского решения
+            foreach (var file in sources)
+            {
+                using (var fileStream = new FileStream(Path.Combine(directorySave, file.FileName), FileMode.Create))
+                {
+                    await file.CopyToAsync(fileStream);
+                }
+            }
         }
     }
 }

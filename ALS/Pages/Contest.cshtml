@@ -72,10 +72,9 @@
         {
             var files = evt.target.files; // FileList object
             var dataFile = new FormData();
-            dataFile.append('uploadedSource', files[0]);
-            /*for (var i = 0, f; f = files[i]; i++) {
-
-            }*/
+            for (var i = 0; i < files.length; i++) {
+                dataFile.append('uploadedSources', files[i]);
+            }
             $.ajax(
                 {
                     type: 'POST',
@@ -154,9 +153,11 @@
                                       {
                                           let buttonSend = document.createElement('input');
                                           buttonSend.type = "file";
-                                          buttonSend.id = "files";
+                                          buttonSend.className = "files";
                                           buttonSend.accept = ".cpp, .h, .c";
                                           buttonSend.dataset.id = task.variant.variantId;
+                                          buttonSend.multiple = true;
+                                          buttonSend.addEventListener('change', sendSolution, false);
                                           buttonSend.className = "btn btn-primary edit-item";
                                           tdSolution.appendChild(buttonSend);
                                       }
@@ -171,7 +172,6 @@
                               }
                           }
             );
-            document.getElementById('files').addEventListener('change', sendSolution, false);
         }
         
 </script>

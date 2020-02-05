@@ -10,6 +10,6 @@ namespace ALS.CheckModule.Compare.Checker
         /// </summary>
         /// <param name="modeOutput">Эталонный выходной поток</param>
         /// <param name="result">Результат тестового прохода(изменяются IsCorrect и Comment)</param>
-        void Check(List<string> modeOutput, ref ResultRun result);
+        void Check(List<string> modeOutput, string pathToModel, ref ResultRun result);
     }
 }

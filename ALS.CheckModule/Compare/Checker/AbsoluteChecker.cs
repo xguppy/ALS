@@ -5,7 +5,7 @@ namespace ALS.CheckModule.Compare.Checker
 {
     public class AbsoluteChecker: IChecker
     {
-        public void Check(List<string> modeOutput, ref ResultRun result)
+        public void Check(List<string> modeOutput, string pathToModel, ref ResultRun result)
         {
             var counter = 0;
             

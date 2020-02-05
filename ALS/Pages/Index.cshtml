@@ -10,14 +10,14 @@
         <p>Вы вошли как: <span class="userName"></span></p>
         <input type="button" class="btn btn-dark" value="Выйти" id="logOut" />
     </div>
-    <div class="loginForm">
+    <form class="loginForm">
         <h3>Вход на сайт</h3>
         <label>Введите email</label><br />
-        <input type="email" id="emailLogin" /> <br /><br />
+        <input type="email" id="emailLogin" required /> <br /><br />
         <label>Введите пароль</label><br />
-        <input type="password" id="passwordLogin" /><br /><br />
-        <input type="button" class="btn btn-success" id="submitLogin" value="Логин" />
-    </div>
+        <input type="password" id="passwordLogin" required /><br /><br />
+        <input type="submit" class="btn btn-success" id="submitLogin" value="Логин" />
+    </form>
 
 <script>
         //Специальные секции в sessionStorage
@@ -31,19 +31,6 @@
             $('.loginForm').css('display', 'none');
             $('.userName').text(sessionStorage.getItem(username));
         }
-        var inputPwd = document.getElementById("passwordLogin");
-        var inputEmail = document.getElementById("emailLogin");
-        inputPwd.addEventListener("keyup", LogInEnterButton);
-        inputEmail.addEventListener("keyup", LogInEnterButton);
-        function LogInEnterButton(event) {
-              // 13 это Enter
-              if (event.keyCode === 13) {
-                // Отмена стандартного действия
-                event.preventDefault();
-                // Нажмём на кнопку
-                document.getElementById("submitLogin").click();
-              }
-            }
         $('#submitLogin').click(function (e) {
             e.preventDefault();
             let loginData = {

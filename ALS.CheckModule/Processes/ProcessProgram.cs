@@ -29,13 +29,14 @@ namespace ALS.CheckModule.Processes
         /// <summary>
         /// Максимальное количество затраченной памяти
         /// </summary>
-        public long Memory { get; private set; } 
+        public long Memory { get; private set; }
         //AppProcess.WorkingSet64;
         /// <summary>
         /// 
         /// </summary>
         /// <param name="timeMilliseconds">Время исполнения</param>
         /// <returns></returns>
+        public string PathToProgram => AppProcess.StartInfo.FileName;
         public async Task<bool> Execute(int timeMilliseconds)
         {
             var result = false;

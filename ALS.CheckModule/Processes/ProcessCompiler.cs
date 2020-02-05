@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace ALS.CheckModule.Processes
@@ -11,14 +12,15 @@ namespace ALS.CheckModule.Processes
         /// <summary>
         /// Конструктор
         /// </summary>
-        /// <param name="nameInput">Строка исходников</param>
+        /// <param name="nameInputFolderProject">Папка с проектом</param>
         /// <param name="nameOutput">Выходной файл(сборка)</param>
         /// <param name="arguments">Аргументы компилятора</param>
         /// <param name="pathToCompiler">Путь до компилятора</param>
-        public ProcessCompiler(string nameInput, string nameOutput, string arguments = default(string), string pathToCompiler = "g++")
+        public ProcessCompiler(string nameInputFolderProject, string nameOutput, string arguments = default, string pathToCompiler = "g++")
         {
+            var sourceCodeFiles = Directory.GetFiles(nameInputFolderProject);
             AppProcess.StartInfo.FileName = pathToCompiler;
-            AppProcess.StartInfo.Arguments = $"{arguments} {nameInput} -o {nameOutput}";
+            AppProcess.StartInfo.Arguments = $"{arguments} {String.Join(' ', sourceCodeFiles)} -o {nameOutput}";
             InitProcess();
         }
         /// <summary>

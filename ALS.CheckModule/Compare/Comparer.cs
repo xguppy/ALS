@@ -76,7 +76,7 @@ namespace ALS.CheckModule.Compare
             //Если чекера нет в словаре бросим исключение
             if(!Checkers.ContainsKey(constrains.Checker)) throw new Exception("There is no such checker");
 
-            Checkers[constrains.Checker].Check(modelOutput, ref _userResult);
+            Checkers[constrains.Checker].Check(modelOutput, _user.PathToProgram, ref _userResult);
             
             return _userResult;
         }
