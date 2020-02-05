@@ -81,7 +81,6 @@
                     url: '/api/Checks/Check',
                     contentType: false,
                     data: dataFile,
-                    dataType: "json",
                     processData: false,
                     async: false,
                     beforeSend: (xhr) =>
@@ -94,7 +93,8 @@
                     {
                         let tbdy = document.getElementById('tbodyContent');
                         tbdy.innerHTML = ""; //Удалим все дочерние узлы
-                        alert(result.responseText);
+                        CreateTable();
+                        alert(result);
                     },
                     error: (sendFail) =>
                     {
