@@ -37,7 +37,7 @@ namespace ALS.CheckModule.Compare
             //Получим текущую сборку
             var checkModuleAssembly = Assembly.GetExecutingAssembly();
             //Получим все чекеры
-            var checkers = checkModuleAssembly.GetTypes().Where(t => t.IsClass && t.Namespace == "ALS.CheckModule.Compare.Checker" && typeof(IChecker).IsAssignableFrom(t));
+            var checkers = checkModuleAssembly.GetTypes().Where(t => t.IsClass && typeof(IChecker).IsAssignableFrom(t));
             //Соберем словарь чекеров
             foreach (var checker in checkers)
             {
@@ -76,7 +76,7 @@ namespace ALS.CheckModule.Compare
             //Если чекера нет в словаре бросим исключение
             if(!Checkers.ContainsKey(constrains.Checker)) throw new Exception("There is no such checker");
 
-            Checkers[constrains.Checker].Check(modelOutput, _user.PathToProgram, ref _userResult);
+            Checkers[constrains.Checker].Check(modelOutput, _user.PathToProgram, _model.PathToProgram, ref _userResult);
             
             return _userResult;
         }
