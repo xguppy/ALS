@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ALS.CheckModule.Processes
@@ -18,7 +19,16 @@ namespace ALS.CheckModule.Processes
         /// <param name="pathToCompiler">Путь до компилятора</param>
         public ProcessCompiler(string nameInputFolderProject, string nameOutput, string arguments = default, string pathToCompiler = "g++")
         {
-            var sourceCodeFiles = Directory.GetFiles(nameInputFolderProject);
+            //Возьмём файлы которые нужно скомпилировать(расширение .cpp и .h)
+            var sourceCodeFiles = Directory.GetFiles(nameInputFolderProject)
+            .Where(file => {
+                var extension = Path.GetExtension(file);
+                if(extension == ".cpp" || extension == ".h")
+                {
+                    return true;
+                }
+                return false;
+            });
             AppProcess.StartInfo.FileName = pathToCompiler;
             AppProcess.StartInfo.Arguments = $"{arguments} {String.Join(' ', sourceCodeFiles)} -o {nameOutput}";
             InitProcess();
