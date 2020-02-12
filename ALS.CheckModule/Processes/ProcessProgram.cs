@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace ALS.CheckModule.Processes
 {
-    public class ProcessProgram: ProcessExecute, IExecutable
+    public class ProcessProgram: ProcessExecute
     {
         /// <summary>
         /// Входны данные для программы
@@ -37,7 +37,7 @@ namespace ALS.CheckModule.Processes
         /// <param name="timeMilliseconds">Время исполнения</param>
         /// <returns></returns>
         public string PathToProgram => AppProcess.StartInfo.FileName;
-        public async Task<bool> Execute(int timeMilliseconds)
+        public override async Task<bool> Execute(int timeMilliseconds)
         {
             var result = false;
             await Task.Run(() =>

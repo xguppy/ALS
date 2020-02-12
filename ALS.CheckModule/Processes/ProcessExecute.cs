@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace ALS.CheckModule.Processes
 {
@@ -56,5 +57,11 @@ namespace ALS.CheckModule.Processes
             OutputStreamReader = AppProcess.StandardOutput;
             InputStreamWriter = AppProcess.StandardInput;
         }
+        /// <summary>
+        /// Запуск процесса
+        /// </summary>
+        /// <param name="timeMilliseconds">Время исполнения</param>
+        /// <returns>Если не удачно завершился или занял больше времени, чем было задано</returns>
+        public abstract Task<bool> Execute(int timeMilliseconds);
     }
 }

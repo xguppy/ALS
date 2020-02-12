@@ -8,7 +8,7 @@ namespace ALS.CheckModule.Processes
     /// <summary>
     /// Процесс компиляции
     /// </summary>
-    public class ProcessCompiler: ProcessExecute, IExecutable
+    public class ProcessCompiler: ProcessExecute
     {
         /// <summary>
         /// Конструктор
@@ -50,7 +50,7 @@ namespace ALS.CheckModule.Processes
         /// Запуск компиляции
         /// </summary>
         /// <param name="timeMilliseconds">Время исполнения</param>
-        public async Task<bool> Execute(int timeMilliseconds)
+        public override async Task<bool> Execute(int timeMilliseconds)
         {
             var result = false;
             await Task.Run(() =>

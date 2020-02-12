@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using ALS.CheckModule.Compare.Checker;
 using ALS.CheckModule.Compare.DataStructures;
@@ -13,10 +11,11 @@ namespace ALS.CheckModule.Compare
     {
         private readonly ProcessProgram _model;
         private readonly ProcessProgram _user;
-        
+
+        private static readonly CheckerList CheckerList = new CheckerList();
+
         private ResultRun _userResult;
         
-        private static readonly Dictionary<string ,IChecker> Checkers = new Dictionary<string ,IChecker>();
         /// <summary>
         /// 
         /// </summary>
@@ -28,21 +27,6 @@ namespace ALS.CheckModule.Compare
             _userResult.Input = inputData;
             _model = new ProcessProgram(pathModel, inputData);
             _user = new ProcessProgram(pathUser, inputData);
-        }
-        /// <summary>
-        /// Конструктор типа для поиска всех чекеров в проекте
-        /// </summary>
-        static Comparer()
-        {
-            //Получим текущую сборку
-            var checkModuleAssembly = Assembly.GetExecutingAssembly();
-            //Получим все чекеры
-            var checkers = checkModuleAssembly.GetTypes().Where(t => t.IsClass && typeof(IChecker).IsAssignableFrom(t));
-            //Соберем словарь чекеров
-            foreach (var checker in checkers)
-            {
-                Checkers.Add(checker.Name, (IChecker)Activator.CreateInstance(checker));
-            }
         }
         /// <summary>
         /// Сранение программ
@@ -64,20 +48,13 @@ namespace ALS.CheckModule.Compare
             
             if (okModelProg == false)
             {
-                throw new Exception("Invalid model");
+                throw new Exception("Неверная модель");
             }
             
             _userResult.Output = GetOutput(_user);
             var modelOutput = GetOutput(_model);
-            
-            //Если чекер не задан применим дефолтный
-            if (constrains.Checker == null) constrains.Checker = "AbsoluteChecker";
-            
-            //Если чекера нет в словаре бросим исключение
-            if(!Checkers.ContainsKey(constrains.Checker)) throw new Exception("There is no such checker");
 
-            Checkers[constrains.Checker].Check(modelOutput, _user.PathToProgram, _model.PathToProgram, ref _userResult);
-            
+            CheckerList[constrains.Checker].Check(modelOutput, _user.PathToProgram, _model.PathToProgram, ref _userResult);
             return _userResult;
         }
         /// <summary>
