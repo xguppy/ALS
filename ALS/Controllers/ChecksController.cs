@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using ALS.CheckModule.Compare;
 using ALS.CheckModule.Compare.DataStructures;
@@ -121,15 +122,14 @@ namespace ALS.Controllers
                         }
                     }
                     await _db.SaveChangesAsync();
-                    var isCorrectCount = resultTests.Count(rt => rt.IsCorrect);
-                    //Выведем количество верных тестовых прогонов и комментарий к последнему
-                    return Ok($"{isCorrectCount} / {resultTests.Count} тестов пройдено \n {resultTests[isCorrectCount].Comment}");
+                    //Выведем количество верных тестовых прогонов и комментарии к ним
+                    return Ok($"{resultTests.Count(rt => rt.IsCorrect)} / {resultTests.Count} тестов пройдено.{FormattingResultLog(resultTests)}");
                 }
                 return Ok("Задача уже решена");
             }
             return BadRequest("Нет доступа");
         }
-
+        
         private static string CreateDirectoriesSources(int lwId, int variantId, int userId)
         {
             var userDirectory = Path.Combine(Environment.CurrentDirectory, "sourceCodeUser", userId.ToString());
@@ -173,7 +173,7 @@ namespace ALS.Controllers
 
             return Path.Combine(taskDirectory, $"{ProcessCompiler.CreatePath(lwId, variantId)}.exe");
         }
-
+        
         private static async Task SaveSources(string directorySave, IFormFileCollection sources)
         {
             //Сохраним все файлы в директорию пользовательского решения
@@ -184,6 +184,16 @@ namespace ALS.Controllers
                     await file.CopyToAsync(fileStream);
                 }
             }
+        }
+        
+        private static string FormattingResultLog(List<ResultRun> results)
+        {
+            var testsLog = new StringBuilder();
+            for (var i = 1; i <= results.Count; i++)
+            {
+                testsLog.Append($"\nТест {i}: {results[i].Comment}");
+            }
+            return testsLog.ToString();
         }
     }
 }
