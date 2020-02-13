@@ -10,11 +10,11 @@ namespace ALS.CheckModule.Compare.Checker
 {
     public class CheckerList
     {
-        private static readonly Dictionary<string, IChecker> _checkers = new Dictionary<string, IChecker>();
+        private static readonly Dictionary<string, IChecker> Checkers = new Dictionary<string, IChecker>();
 
         static CheckerList()
         {
-            GetCheckers(_checkers);
+            GetCheckers(Checkers);
         }
 
         public static async Task<bool> ReloadCheckers()
@@ -22,7 +22,7 @@ namespace ALS.CheckModule.Compare.Checker
             var result = await BuildCheckModule();
             if(result)
             {
-                GetCheckers(_checkers);
+                GetCheckers(Checkers);
             }
             return result;
         }
@@ -63,25 +63,25 @@ namespace ALS.CheckModule.Compare.Checker
                     nameChecker = "AbsoluteChecker";
                 }
                 //Если чекера нет в словаре бросим исключение
-                if (!_checkers.ContainsKey(nameChecker))
+                if (!Checkers.ContainsKey(nameChecker))
                 {
                     throw new Exception("Выбранного чекера не существует");
                 }
-                return _checkers[nameChecker];
+                return Checkers[nameChecker];
             }
         }
 
         public static List<string> GetListCheckers()
         {
-            var checkList = new List<string>(_checkers.Count);
-            foreach (var elem in _checkers)
+            var checkList = new List<string>(Checkers.Count);
+            foreach (var elem in Checkers)
             {
                 checkList.Add(elem.Key);
             }
             return checkList;
         }
 
-        public async static Task AddChecker(string checkerCode, string fileName)
+        public static async Task AddChecker(string checkerCode, string fileName)
         {
             using (var fileStreamWriter = new StreamWriter(Path.Combine(GetPathToModule(), "Compare", "Checker", fileName)))
             {

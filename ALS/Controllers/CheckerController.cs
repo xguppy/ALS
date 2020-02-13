@@ -18,7 +18,7 @@ namespace ALS.Controllers
     {
         [HttpGet]
         public async Task<IActionResult> GetAll() =>
-            Ok(await Task.Run(() => CheckerList.GetListCheckers()));
+            Ok(await Task.Run(CheckerList.GetListCheckers));
 
         [HttpPost]
         public async Task<IActionResult> Delete([FromHeader] string nameChecker)

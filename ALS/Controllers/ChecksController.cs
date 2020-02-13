@@ -44,7 +44,6 @@ namespace ALS.Controllers
                 //Возможно пользователь уже решил вариант
                 var solution =
                     await _db.Solutions.FirstOrDefaultAsync(sol => sol.AssignedVariant == assignedVar && sol.IsSolved);
-
                 if (solution == null)
                 {
                     //Если не решил, то создадим нужные директории
@@ -107,7 +106,6 @@ namespace ALS.Controllers
                     
                     foreach (var result in resultTests)
                     {
-                        
                         var testRun = new TestRun
                         {
                             InputData = result.Input.ToArray(),
@@ -123,14 +121,16 @@ namespace ALS.Controllers
                         }
                     }
                     await _db.SaveChangesAsync();
-                    return Ok($"{resultTests.Count(rt => rt.IsCorrect)} / {resultTests.Count} runs complete");
+                    var isCorrectCount = resultTests.Count(rt => rt.IsCorrect);
+                    //Выведем количество верных тестовых прогонов и комментарий к последнему
+                    return Ok($"{isCorrectCount} / {resultTests.Count} тестов пройдено \n {resultTests[isCorrectCount].Comment}");
                 }
-                return Ok("Solution is solved");
+                return Ok("Задача уже решена");
             }
-            return BadRequest("Not Privilege");
+            return BadRequest("Нет доступа");
         }
 
-        public static string CreateDirectoriesSources(int lwId, int variantId, int userId)
+        private static string CreateDirectoriesSources(int lwId, int variantId, int userId)
         {
             var userDirectory = Path.Combine(Environment.CurrentDirectory, "sourceCodeUser", userId.ToString());
             if (!Directory.Exists(userDirectory))
@@ -148,13 +148,7 @@ namespace ALS.Controllers
             var directoriesSolutions = Directory.GetDirectories(taskDirectory);
             if (directoriesSolutions.Length != 0)
             {
-                numberLastSolution = directoriesSolutions.Max(dir => {
-                        if(int.TryParse(Path.GetFileName(dir), out int res))
-                        {
-                            return res;
-                        }
-                    return 0;
-                });
+                numberLastSolution = directoriesSolutions.Max(dir => int.TryParse(Path.GetFileName(dir), out int res) ? res : 0);
             }
             //И создадим папку с новым решением
             var solutionDirectory = Path.Combine(taskDirectory, (numberLastSolution + 1).ToString());
@@ -163,7 +157,7 @@ namespace ALS.Controllers
             return solutionDirectory;
         }
 
-        public static string CreateExecuteDirectories(int lwId, int variantId, int userId)
+        private static string CreateExecuteDirectories(int lwId, int variantId, int userId)
         {
             var userDirectory = Path.Combine(Environment.CurrentDirectory, "executeUser", userId.ToString());
             if (!Directory.Exists(userDirectory))
@@ -180,7 +174,7 @@ namespace ALS.Controllers
             return Path.Combine(taskDirectory, $"{ProcessCompiler.CreatePath(lwId, variantId)}.exe");
         }
 
-        public static async Task SaveSources(string directorySave, IFormFileCollection sources)
+        private static async Task SaveSources(string directorySave, IFormFileCollection sources)
         {
             //Сохраним все файлы в директорию пользовательского решения
             foreach (var file in sources)
