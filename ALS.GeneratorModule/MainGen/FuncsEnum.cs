@@ -1,9 +1,13 @@
-﻿namespace Generator.MainGen
+﻿
+namespace Generator.MainGen
 {
     public enum FuncsEnum
     {
         rnd,
         genAE,
-        getAEcode
+        getAEcode,
+        parent,
+        lua,
+        justString
     }
 }

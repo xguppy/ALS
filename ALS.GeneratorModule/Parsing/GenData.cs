@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Generator.Parsing
 {
@@ -22,12 +22,12 @@ namespace Generator.Parsing
             string res = $"Template = {Template}   Code = {Code}\nSD:";
             foreach (var s in Sd)
             {
-                res += $"\t{s}\n";
+                res += $"\t{s.ToString()}\n";
             }
 
             foreach (var s in TestsD)
             {
-                res += $"\t{s}\n";
+                res += $"\t{s.ToString()}\n";
             }
             return res;
         }

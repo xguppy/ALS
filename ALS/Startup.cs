@@ -38,7 +38,7 @@ namespace ALS
             services.AddSingleton<IAuthService>(new AuthService(Configuration));
             services.AddSingleton<ILexer>(new CppLexer(new CppLexerFactory()));
             services.AddHttpClient();
-            services.AddScoped<IParser, Parser>();
+            //services.AddScoped<IParser, Parser>();
             
             services
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

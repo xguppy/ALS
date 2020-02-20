@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Generator.Parsing;
 
 namespace Generator.MainGen.Structs
 {

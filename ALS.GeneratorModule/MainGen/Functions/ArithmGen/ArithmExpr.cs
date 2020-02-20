@@ -12,7 +12,8 @@ namespace Generator
         
         private GenTree _genTree = new GenTree();
 
-        
+        private List<string> _uniqueVars = new List<string>();
+
         // проход по дереву до самого крайнего левого листа
         private Tree GoLeft(Tree tree)
         {
@@ -24,7 +25,7 @@ namespace Generator
         }
         
         //генерация констант (изменение листьев дерева на случайные значения)
-        private void GenConst(List<string> result, State s, bool isFirst, double range = 100.0, int finesse = 3)
+        private void GenConst(List<string> result, State s, bool isFirst, double range = 100.0, bool isDouble = true, int finesse = 3)
         {
             var pos = result.Count - 1;
             double rndConst = 0.0;
@@ -32,7 +33,7 @@ namespace Generator
             {
                 while (Math.Abs(rndConst) < 1.0e-12)
                 {
-                    rndConst = RndWrapper.NextD(-range, range, _random);
+                    rndConst = isDouble ? RndWrapper.NextD(-range, range, _random) : RndWrapper.NextI((int)-range, (int)range, _random);
                 }
 
                 string val = $"{rndConst}";
@@ -46,19 +47,26 @@ namespace Generator
                 }
                 else
                 {
-                    if (_random.Next(0, 100) < 50 && result[pos - 2].Length == 1)
+                    // убеждаемся что необходимое кол-во переменных присутсвует в выражении
+                    if (result[pos - 2].Length == 2 && !_uniqueVars.Contains(result[pos - 2]))
+                    {
+                        _uniqueVars.Add(result[pos - 2]);
+                    }
+                    else if (result[pos - 1].Length == 2 && !_uniqueVars.Contains(result[pos - 1]))
+                    {
+                        _uniqueVars.Add(result[pos - 1]);
+                    }
+                    // далее случайным образом меняем переменную на значение
+                    else if (result[pos - 1].Length != 2 || (result[pos - 2].Length == 2 && _random.Next(0, 100) < 50))
                     {
                         result[pos - 2] = val;
-                        return;
                     }
-                    if (_random.Next(0, 100) < 50 && result[pos - 1].Length == 1)
+                    else if (result[pos - 1].Length == 2 && _random.Next(0, 100) < 50)
                     {
                         if (result[pos] == "^")
-                        {
-                            result[pos - 1] = $"{(int)(rndConst*10/range)}";
-                            return;
-                        }
-                        result[pos - 1] = val;
+                            result[pos - 1] = $"{(int)(rndConst * 10 / range)}";
+                        else
+                            result[pos - 1] = val;
                     }
                 }
             }
@@ -70,11 +78,11 @@ namespace Generator
             if (_condition.Length > 0)
             {
                 _condition = _condition.Remove(_condition.Length - 3, 3);
-                CodeOnC = $"if ({_condition})\nvar = {Expression};";
+                CodeOnC = $"if ({_condition}) y = {Expression}; else y = 0.0;";
             }
             else
             {
-                CodeOnC = $"var = {Expression}";
+                CodeOnC = $"y = {Expression};";
             }
         }
         // генерация выражения в виде строки
@@ -132,10 +140,10 @@ namespace Generator
         }
 
         // перевод дерева в выражение       
-        public void Run(int itCount = 5)
+        public void Run(int itCount = 5, double range = 100.0, bool isDouble = true, int countOfVars = 1)
         {
             _condition = "";
-            Tree tree = _genTree.Next(itCount);
+            Tree tree = _genTree.Next(itCount, countOfVars);
             List<string> result = new List<string>();
             bool isRight = false, isFirst = true;
             
@@ -146,7 +154,7 @@ namespace Generator
                     if (tree.IsLeaf())
                     {
                         result.Add(tree.Value);
-                        GenConst(result, tree.State, isFirst);
+                        GenConst(result, tree.State, isFirst, range, isDouble);
                         GenExpr(result, tree.State);
                         isFirst = false;
                         var tmp = tree;
@@ -177,8 +185,10 @@ namespace Generator
                 // если лист
                 if (tree.State == State.Var)
                 {
-                    result.Add(tree.Value);
+                    //result.Add(tree.Value);
+                    result.Add(_genTree.GetNewVar());
                     tree = tree.Parent;
+                    if (tree == null) continue;
                     // удаление использованного листа
                     if (isRight)
                     {

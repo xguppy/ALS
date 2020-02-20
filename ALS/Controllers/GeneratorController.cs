@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ALS.EntityСontext;
 using Generator.MainGen;
+using Generator.MainGen.Parametr;
 using Generator.Parsing;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -18,10 +19,10 @@ namespace ALS.Controllers
         private Gen _gen;
         private ApplicationContext _db;
 
-        public GeneratorController(ApplicationContext db, IParser pr)
+        public GeneratorController(ApplicationContext db)//, IParser pr, IParamsContainer paramsContainer)
         {
             _db = db;
-            _gen = new Gen(pr);
+            _gen = new Gen(new Parser(), new ParamsContainer());
         }
 
         // Подумать над вариантом - откуда брать

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Text;
 
 namespace Generator
@@ -34,12 +34,12 @@ namespace Generator
                 str.Append($"{NextDStr(a, b, r)}, ");
             }
 
-            return str.ToString().Remove(str.Length - 2);
+            return str.ToString().Remove(str.Length - 2).ToString();
         }
 
         public static string NextDStr(double a, double b, Random r, int finesse = 3)
         {
-            var res = NextD(a, b, r).ToString();
+            var res = RndWrapper.NextD(a, b, r).ToString();
             return res.Substring(0, res.IndexOf(',') + finesse).Replace(',', '.');
         }
 
