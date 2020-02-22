@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using ALS.EntityСontext;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -21,6 +22,13 @@ namespace ALS.Controllers
             _db = db;
         }
 
+        // проверка аута
+        [HttpGet]
+        public IActionResult CheckAuth()
+        {
+            return Ok(new string("Auth is done!"));
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -40,11 +48,11 @@ namespace ALS.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] string themeName)
+        public async Task<IActionResult> Create([FromBody] Tuple<string> themeName)
         {
             try
             {
-                await _db.Themes.AddAsync(new Theme { Name = themeName });
+                await _db.Themes.AddAsync(new Theme { Name = themeName.Item1 });
                 await _db.SaveChangesAsync();
             }
             catch (DbUpdateException ex)
@@ -52,11 +60,11 @@ namespace ALS.Controllers
                 await Response.WriteAsync(ex.Message);
                 return BadRequest();
             }
-            return Ok();
+            return Ok(themeName);
         }
-
+        
         [HttpPost]
-        public async Task<IActionResult> Delete(int themeId)
+        public async Task<IActionResult> Delete([FromHeader]int themeId)
         {
             var theme = await _db.Themes.FirstOrDefaultAsync(t => t.ThemeId == themeId);
             if (theme != null)
@@ -71,20 +79,20 @@ namespace ALS.Controllers
                     await Response.WriteAsync(ex.Message);
                     return BadRequest();
                 }
-                return Ok();
+                return Ok(theme);
             }
             return NotFound();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Update([FromBody] string themeName, int themeId)
+        public async Task<IActionResult> Update([FromBody] Tuple<string> themeName, [FromHeader] int themeId)
         {
             var theme = await _db.Themes.FirstOrDefaultAsync(t => t.ThemeId == themeId);
             if (theme != null)
             {
                 try
                 {
-                    theme.Name = themeName;
+                    theme.Name = themeName.Item1;
                     _db.Themes.Update(theme);
                     await _db.SaveChangesAsync();
                 }
@@ -93,7 +101,7 @@ namespace ALS.Controllers
                     await Response.WriteAsync(ex.Message);
                     return BadRequest();
                 }
-                return Ok();
+                return Ok(theme);
             }
             return NotFound();
         }

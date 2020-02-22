@@ -80,12 +80,35 @@
 </div>
 
 <script>
-    /*let tokenKey = "accessToken";
-    let username = "userName";
+    let tokenKey = "accessToken";
+    /*let username = "userName";
     let userId = "userId";
     window.onload = function () {
         $('#hiddenUserId').val(sessionStorage.getItem(userId));
     };*/
+
+    $.ajax(
+        {
+            type: 'GET',
+            url: '/api/TemplateLWS/CheckAuth',
+            beforeSend: (xhr) => 
+            {
+                let token = sessionStorage.getItem(tokenKey);
+                xhr.setRequestHeader("Authorization", "Bearer " + token);
+            },
+            success: (variants) =>
+            {
+                
+            },
+            error: (varFail) =>
+            {
+                document.body.innerHTML = '';
+                alert('Нет доступа');
+                history.go(-1);
+            }
+        }
+    );
+
 
     function updateTlw(tlwId, themeid, pathFile) {
         $("#myModal").find("textarea[id='textAreaModel']").val('');

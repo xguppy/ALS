@@ -24,7 +24,7 @@
                  <a class="nav-link" href="~/groups">Группы</a>
              </li>
              <li class="nav-item" id="template">
-                     <a class="nav-link" href="~/templates">Шаблоны</a>
+                 <a class="nav-link" href="~/templates">Шаблоны</a>
              </li>
              <li class="nav-item" id="speciality">
                  <a class="nav-link" href="~/specialities">Специальности</a>
@@ -40,6 +40,9 @@
              </li>
              <li class="nav-item" id="contest">
                  <a class="nav-link" href="~/contest">Отправить решение</a>
+             </li>
+             <li class="nav-item" id="themes">
+                 <a class="nav-link" href="~/Themes">Темы</a>
              </li>
          </ul>
      </div>
@@ -60,6 +63,7 @@
     let lw = $('#laboratorywork');
     let aw = $('#assignvariant');
     let contest = $('#contest');
+    let themes = $('#themes');
     showMenu();
     function showMenu() {
         group.css('display', 'none');
@@ -69,6 +73,7 @@
         lw.css('display', 'none');
         aw.css('display', 'none');
         contest.css('display', 'none');
+        themes.css('display', 'none');
         let roles = JSON.parse(sessionStorage.getItem('roles'));
         if (roles == null) return;
         if (roles.includes('Teacher')) {
@@ -76,6 +81,7 @@
             variant.css('display', 'block');
             lw.css('display', 'block');
             aw.css('display', 'block');
+            themes.css('display', 'block');
         }
         if (roles.includes('Admin')) {
             group.css('display', 'block');

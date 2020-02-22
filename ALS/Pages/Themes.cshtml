@@ -1,0 +1,212 @@
+﻿@page
+@model ALS.Pages.ThemesModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Themes";
+}
+
+<h1>Themes</h1>
+
+<div class="container">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <td>Id</td>
+                <td>Имя темы</td>
+                <td>Действия</td>
+            </tr>
+        </thead>
+
+        <tbody id="containerBody">
+            @foreach (var item in Model.Themes)
+            {
+                <tr>
+                    <td>@item.ThemeId</td>
+                    <td>@item.Name</td>
+                    <td>
+                        <input type="button" id="buttonDelete" value="Удалить" onclick="deleteTheme(@item.ThemeId)" /> |
+                        <input type="button" id="buttonUpdate" value="Изменить" onclick="openModalUpdate(@item.ThemeId, '@item.Name')" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <input id="buttonCreate" type="submit" value="Создать" onclick="openModalCreate()" />
+</div>
+
+<div id="myModalCreate" class="modal fade bd-example-modal-lg">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Создание лабораторной работы</h4><button class="close" type="button" data-dismiss="modal">×</button>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    <p>
+                        <label>Название : </label>
+                        @Html.TextBox("Name", null, new { id = "i1themename" })
+                    </p>
+                    <p><input type="button" value="Отправить" id="submitCreate" onclick="createTheme()" /></p>
+                </form>
+            </div>
+            <div class="modal-footer"><button class="btn btn-default" type="button" data-dismiss="modal">Закрыть</button></div>
+        </div>
+    </div>
+</div>
+
+<div id="myModalUpdate" class="modal fade bd-example-modal-lg">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Обновление лабораторной работы</h4><button class="close" type="button" data-dismiss="modal">×</button>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    <p>
+                        <label>Название : </label>
+                        @Html.TextBox("Name", null, new { id = "i2themename" })
+                    </p>
+                    <p><input type="button" value="Отправить" id="submitUpdate" onclick="updateTheme()" /></p>
+                </form>
+            </div>
+            <div class="modal-footer"><button class="btn btn-default" type="button" data-dismiss="modal">Закрыть</button></div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    let tokenKey = "accessToken";
+    let curUpdThemeId = null;
+
+    // проверка доступа и все
+    $.ajax(
+        {
+            type: 'GET',
+            url: '/api/Themes/CheckAuth',
+            beforeSend: (xhr) => {
+                let token = sessionStorage.getItem(tokenKey);
+                xhr.setRequestHeader("Authorization", "Bearer " + token);
+            },
+            success: () => { },
+            error: (fail) => {
+                document.body.innerHTML = '';
+                alert('Нет доступа');
+                history.go(-1);
+            }
+        });
+
+    function openModalUpdate(themeid, name) {
+        /*if (userIdent != sessionStorage.getItem(userId)) {
+            alert('У вас нет доступа к данной лабораторной работе!');
+            return;
+        }*/
+        curUpdThemeId = themeid;
+        $("#myModalUpdate").find("input[id='i2themename']").val(name);        
+        $('#myModalUpdate').modal('show');
+    }
+
+    function openModalCreate() {
+        /*if (userIdent != sessionStorage.getItem(userId)) {
+            alert('У вас нет доступа к данной лабораторной работе!');
+            return;
+        }*/  
+        $('#myModalCreate').modal('show');
+    }
+
+    function createTheme() {
+        
+        let text = $("#myModalCreate").find("input[id='i1themename']").val();
+        let themeDto = {
+            Item1 : text,
+        }
+
+        if (text == 0 ) {
+            alert('Одно из полей не заполнено!');
+            return;
+        }
+
+        $.ajax(
+            {
+                type: 'POST',
+                url: '/api/Themes/Create',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: JSON.stringify(themeDto),
+                beforeSend: (xhr) => {
+                    let token = sessionStorage.getItem(tokenKey);
+                    xhr.setRequestHeader("Authorization", "Bearer " + token);
+                },
+                success: (response) => {
+                    document.location.reload(true);
+                },
+                error: (response) => {
+                    alert('Не удалось создать тему');
+                }
+            }
+        );
+    }
+    
+    function updateTheme() {
+        
+        let text = $("#myModalUpdate").find("input[id='i2themename']").val();
+        let themeid = curUpdThemeId;
+
+        let themeDto = {
+            Item1: text
+        }
+
+        if (text == 0 || themeid== 0 ) {
+            alert('Одно из полей не заполнено!');
+            return;
+        }
+        
+
+        $.ajax(
+            {
+                type: 'POST',
+                url: '/api/Themes/Update',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: JSON.stringify(themeDto),
+                beforeSend: (xhr) => {
+                    let token = sessionStorage.getItem(tokenKey);
+                    xhr.setRequestHeader("Authorization", "Bearer " + token);
+                    xhr.setRequestHeader("themeId", themeid);
+                    /*xhr.setRequestHeader("themeName", text);
+                    xhr.setRequestHeader("themeId", themeid);*/
+                },
+                success: (d) => {
+                    document.location.reload(true);
+                },
+                error: (response) => {
+                    console.log(response);
+                    alert('Не удалось обновить тему');
+                }
+            }
+        );
+    }
+
+    function deleteTheme(themeid) {
+        if (confirm("Уверены, что хотите удалить данную тему")) {
+            $.ajax(
+                {
+                    type: 'POST',
+                    url: '/api/Themes/Delete',
+                    beforeSend: (xhr) => {
+                        let token = sessionStorage.getItem(tokenKey);
+                        xhr.setRequestHeader("Authorization", "Bearer " + token);
+                        xhr.setRequestHeader('themeId', themeid);
+                    },
+                    success: (t) => {
+                        document.location.reload(true);          
+                    },
+                    error: (response) => {
+                        alert('Удаление невозможно! Данная тема еще используется');
+                    }
+                }
+            );
+        }
+    }
+
+</script>

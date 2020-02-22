@@ -62,8 +62,10 @@ namespace ALS.Pages
                 await upload.CopyToAsync(fileStream);
             }
 
-            var request = new HttpRequestMessage(HttpMethod.Post,
-                "http://localhost:5000/api/TemplateLWS/Create");
+            var request = new HttpRequestMessage(
+                HttpMethod.Post,
+                "http://localhost:5000/api/TemplateLWS/Create" // тут что-то непонятное
+            );
 
             request.Content = new StringContent(JsonConvert.SerializeObject(new TemplateLWDTO { ThemeId = themeId, TemplateTask = new Uri(file).AbsoluteUri }), Encoding.UTF8, "application/json");
 

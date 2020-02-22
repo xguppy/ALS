@@ -25,6 +25,12 @@ namespace ALS.Controllers
             _db = db;
             _environment = env;
         }
+        // проверка аута
+        [HttpGet]
+        public IActionResult CheckAuth()
+        {
+            return Ok(new string("Auth is done!"));
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
