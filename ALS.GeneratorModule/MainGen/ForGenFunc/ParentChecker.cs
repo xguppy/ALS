@@ -20,7 +20,7 @@ namespace Generator.MainGen.ForGenFunc
         {
             string raw = param.RawData;
             var args = GetArgs(param.RawData, parametrs);
-            if (args.Length < 2) throw new Exception($"func #{FuncsEnum.parent} takes 2+ parametrs (value | nameOfParent| posOfParam(| posOfParam...))");
+            if (args.Length < 2) throw new Exception($"func #{FuncsEnum.parent} takes 2+ parametrs (value | nameOfParent| posOfParam(| posOfParam...)) | строка = [ {param} ]");
             param.RawData = param.Value = args[0];
             StringBuilder str = new StringBuilder(args[1]);
             if (str[0] == str[str.Length - 1] && str[0] == '\"')

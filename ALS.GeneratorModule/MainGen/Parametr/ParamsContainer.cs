@@ -1,4 +1,5 @@
-﻿using Generator.Parsing;
+﻿using Generator.MainGen.ForGenFunc;
+using Generator.Parsing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,27 @@ namespace Generator.MainGen.Parametr
     {
         public List<Param> Parametrs { get; set; } = new List<Param>();
         public GenFunctions Gf = new GenFunctions();
+        private Dictionary<int, FuncsEnum> _funcs = new Dictionary<int, FuncsEnum>();
+        
+        public ParamsContainer()
+        {
+            foreach (int i in Enum.GetValues(typeof(FuncsEnum)))
+            {
+                FuncsEnum f = (FuncsEnum)i;
+                _funcs.Add(AFunc.GetHashOfFunc($"{f}"), f);
+            }
+        }
+
+        private FuncsEnum WhatParamIsIt(string name)
+        {
+            int h = AFunc.GetHashOfFunc(name);
+            if (_funcs.ContainsKey(h))
+            {
+                if (name == $"{_funcs[h]}")
+                    return _funcs[h];
+            }
+            return FuncsEnum.justString;
+        }
 
         public List<Param> GenNewParametrs(List<DataContainer> d)
         {
@@ -24,18 +46,19 @@ namespace Generator.MainGen.Parametr
                 {
                     map.Add(sd.Data[i], i+1);
                 }
-                Param param = new Param("INIT", 0, sd.Name);
+                Param param = new Param(default, default, sd.Name);
                 while (!flag && sd.Data.Count > 0)
                 {
                     int pos = r.Next(0, sd.Data.Count);
                     string rawData = sd.Data[pos];
                     sd.Data.RemoveAt(pos);
                     param = new Param(rawData, map[rawData], sd.Name, Parametrs);
-                    if ( param.WhatIsIt() == FuncsEnum.parent)
+                    var ftype = WhatParamIsIt(param.GetFuncName());
+                    if (ftype == FuncsEnum.parent)
                     {
                         if (!bool.Parse(Gf.WhatToDoWithParam(FuncsEnum.parent, param, Parametrs))) continue;
                     }
-                    param.Value = Gf.WhatToDoWithParam(param.WhatIsIt(), param, Parametrs);
+                    param.Value = Gf.WhatToDoWithParam(ftype, param, Parametrs);
                     flag = true;
                 }
 

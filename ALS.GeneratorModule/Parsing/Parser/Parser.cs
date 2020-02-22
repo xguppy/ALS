@@ -64,7 +64,7 @@ namespace Generator.Parsing
             }
             catch (Exception e)
             {
-                throw; //new Exception($"Error during parsing! Message ---[{e.Message}]---");
+                throw; //new Exception($"Возникла ошибка во время парсинга фалйа! Сообщение об ошибке = [{e.Message}] ");
             }
 
             return GenData;
@@ -140,7 +140,7 @@ namespace Generator.Parsing
                 else if (s[i] == '\"')
                 {
                     i = FindStringEnd(s, i);
-                    if (i < 0) throw new Exception($"Cannot find end of string pos in text: {s.ToString()}");
+                    if (i < 0) throw new Exception($"Не получилось найти окончание строки: [{s.ToString()}]");
                 }
             }
 
@@ -152,7 +152,7 @@ namespace Generator.Parsing
             const char separator = '|';
             const char super = '■';
             int i_start = str.IndexOf('(') + 1;
-            if (i_start < 0) throw new Exception($"Cannot find end of func in text: {str}");
+            if (i_start < 0) throw new Exception($"Не получилось найти окончание функции: [{str}]");
             StringBuilder s = new StringBuilder(str.Substring(i_start));
             int counter = 1;
 
@@ -173,7 +173,7 @@ namespace Generator.Parsing
                         break;
                     case '\"':
                         i = FindStringEnd(s, i);
-                        if (i < 0) throw new Exception($"Cannot find end of string pos in text: {str}");
+                        if (i < 0) throw new Exception($"Не получилось найти окончание строки: [{str}]");
                         break;
                     case separator:
                         if (counter == 1)
@@ -184,7 +184,7 @@ namespace Generator.Parsing
                 }
             }
 
-            if (counter > 0) throw new Exception($"Cannot find end of func in text: {str}");
+            if (counter > 0) throw new Exception($"Не получилось найти окончание функции: [{str}]");
 
             return s.ToString().Split(super, StringSplitOptions.RemoveEmptyEntries);
         }

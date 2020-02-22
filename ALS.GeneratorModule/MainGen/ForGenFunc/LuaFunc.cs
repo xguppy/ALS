@@ -19,14 +19,14 @@ namespace Generator.MainGen.ForGenFunc
         public override string Run(Param param, List<Param> parametrs = null)
         {
             var args = GetArgs(param.RawData, parametrs);
-            if (args.Length != 1) throw new Exception($"func #{FuncsEnum.lua} take only 1 arg");
+            if (args.Length != 1) throw new Exception($"Функция #{FuncsEnum.lua} только 1 параметр| строка = [ {param} ]");
             StringBuilder s = new StringBuilder(args[0]);
             if (s[0] == '\"' && s[s.Length - 1] == '\"')
             {
                 s[0] = ' ';
                 s[s.Length - 1] = ' ';
             }
-            s = s.Replace("io", "you cannot use stdin/out");
+            s = s.Replace("io", "Вы не можете использовать stdin/stdout");
             string res = _lua.DoString(s.ToString())[0].ToString();
             return res;
         }

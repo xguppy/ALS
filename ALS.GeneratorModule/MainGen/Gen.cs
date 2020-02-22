@@ -92,7 +92,7 @@ namespace Generator.MainGen
             return new ResultData()
             {
                 Template = d.Template, /* шаблон задания */
-                Code = (returnRawCode) ? d.Code : new System.Uri(Path.Combine(Environment.CurrentDirectory, "executeModel", $"{name}.exe")).AbsoluteUri, /*путь до бинарника / или сырой код*/
+                Code = (returnRawCode) ? d.Code : new System.Uri(Path.Combine(Environment.CurrentDirectory, PathExecuteModel(name, "exe"))).AbsoluteUri, /*путь до бинарника / или сырой код*/
                 Tests = JsonConvert.SerializeObject(d.TestsD) /* тестовые данные */
             };
         }

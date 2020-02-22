@@ -12,22 +12,15 @@ namespace Generator.MainGen.ForGenFunc
         private string GenValue(string a, string b, string type, Random r, string count = "1")
         {
             string str;
-            try
+            if (type == "int")
             {
-                if (type == "int")
-                {
-                    Int32 A = Int32.Parse(a), B = Int32.Parse(b);
-                    str = RndWrapper.NextIMass(A, B, Int32.Parse(count), r);
-                }
-                else
-                {
-                    Double A = Double.Parse(a.Replace('.', ',')), B = Double.Parse(b.Replace('.', ','));
-                    str = RndWrapper.NextDMass(A, B, Int32.Parse(count), r);
-                }
+                Int32 A = Int32.Parse(a), B = Int32.Parse(b);
+                str = RndWrapper.NextIMass(A, B, Int32.Parse(count), r);
             }
-            catch (Exception e)
+            else
             {
-                throw new Exception($"\nError in str = {_rawstr}\nFunc #{FuncsEnum.rnd} cannot convert values, maybe it has wrong format | error = {e.Message}");
+                Double A = Double.Parse(a.Replace('.', ',')), B = Double.Parse(b.Replace('.', ','));
+                str = RndWrapper.NextDMass(A, B, Int32.Parse(count), r);
             }
 
             return str;
@@ -38,18 +31,19 @@ namespace Generator.MainGen.ForGenFunc
             _rawstr = param.RawData;
             var args = GetArgs(param.RawData, parametrs);
 
-            if (args.Length != 3 && args.Length != 4) throw new Exception($"Func #{FuncsEnum.rnd} take 3(4) parametrs (min | max| type (| count) )");
+            if (args.Length < 3) throw new Exception($"Функция #{FuncsEnum.rnd} принимает 3(4) параметра ( минимум | максимум | тип (| количество) )| строка = [ {param} ]");
 
-            string res;
+            string res, count = args.Length == 4 ? args[3] : "1";
 
-            if (args.Length < 4)
+            try
             {
-                res = GenValue(args[0], args[1], args[2], _random);
+                res = GenValue(args[0], args[1], args[2], _random, count);
             }
-            else
+            catch (Exception e)
             {
-                res = GenValue(args[0], args[1], args[2], _random, args[3]);
+                throw new Exception($"Функция #{FuncsEnum.rnd} не может конвертировать значения, убедитесь что значения имееют формат [double = 0.0] для [int = 0] | строка = [ {param} ] | error = {e.Message} ");
             }
+
             return res;
         }
     }

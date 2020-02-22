@@ -22,45 +22,13 @@ namespace Generator.MainGen.Parametr
             Name = name;
         }
 
-        public string GetFuncName(string str)
+        public string GetFuncName()
         {
-            int p = str.IndexOf('(');
-            if (p < 0) return "NULL";
-            return str.Substring(0, p);
-        }
-
-        public FuncsEnum CheckParamType(string str)
-        {
-            string nameOfFunction = GetFuncName(str);
-            FuncsEnum type = FuncsEnum.justString;
-
-            if (nameOfFunction == $"#{FuncsEnum.rnd}")
-            {
-                type = FuncsEnum.rnd;
-            }
-            else if (nameOfFunction == $"#{FuncsEnum.genAE}")
-            {
-                type = FuncsEnum.genAE;
-            }
-            else if (nameOfFunction == $"#{FuncsEnum.getAEcode}")
-            {
-                type = FuncsEnum.getAEcode;
-            }
-            else if (nameOfFunction == $"#{FuncsEnum.lua}")
-            {
-                type = FuncsEnum.lua;
-            }
-            else if (nameOfFunction == $"#{FuncsEnum.parent}")
-            {
-                type = FuncsEnum.parent;
-            }
-
-            return type;
-        }
-
-        public FuncsEnum WhatIsIt()
-        {
-            return CheckParamType(RawData);
+            int s = RawData.IndexOf('#');
+            if (s == -1) return "just string";
+            int f = RawData.IndexOf('(');
+            if (f == -1) return "just string";
+            return RawData.Substring(s+1, f-s-1);
         }
 
         private string SubstituteValues(string raw, List<Param> parametrs)
@@ -70,24 +38,15 @@ namespace Generator.MainGen.Parametr
             StringBuilder s = new StringBuilder(raw);
             foreach (var elem in parametrs)
             {
-                s = s.Replace($"({elem.Name})", elem.Value);
-                /*if (args[i].Contains($"({elem.Name})"))
-                {
-                    args[i] = args[i].Replace($"({elem.Name})", elem.Value);
-                }*/
+                s = s.Replace($"@{elem.Name}@", elem.Value);
             }
 
             return s.ToString();
         }
 
-        /*public FuncsEnum FindParent()
+        public override string ToString()
         {
-            if (RawData.Contains($"#{FuncsEnum.parent}"))
-            {
-                return FuncsEnum.parent;
-            }
-
-            return FuncsEnum.justString;
-        }*/
+            return $"{Name} : {RawData}";
+        }
     }
 }

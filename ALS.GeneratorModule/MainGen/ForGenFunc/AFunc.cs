@@ -12,8 +12,7 @@ namespace Generator.MainGen.ForGenFunc
         protected string[] GetArgs(string str, List<Param> parametrs)
         {
             var args = _pr.GetSeparatedArgs(str);
-            if (parametrs == null) return args;
-
+            //if (parametrs == null) return args;
             return args.Select(arg => arg.Trim(' ', '\n', '\r')).ToArray();
             /*for (int i = 0; i < args.Length; i++)
             {
@@ -27,6 +26,11 @@ namespace Generator.MainGen.ForGenFunc
                 }
             }
             return args;*/
+        }
+
+        public static int GetHashOfFunc(string name)
+        {
+            return name.Sum(ch => ch * 1337);
         }
 
         public abstract string Run(Param param, List<Param> parametrs = null);
