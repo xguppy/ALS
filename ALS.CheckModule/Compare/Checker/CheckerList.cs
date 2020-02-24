@@ -29,9 +29,9 @@ namespace ALS.CheckModule.Compare.Checker
 
         private static void GetCheckers(Dictionary<string, IChecker> checkers)
         {
-            //Получим сборку 
+            //Получим сборку
             var checkModulePath = Path.Combine(GetPathToModule(), "bin", "Release", "netcoreapp2.2", "ALS.CheckModule.dll");
-            var checkModuleAssembly = Assembly.LoadFile(checkModulePath);
+            var checkModuleAssembly = Assembly.LoadFrom(checkModulePath);
             //Получим все чекеры
             var checkersAvailable = checkModuleAssembly.GetTypes().Where(t => t.IsClass && typeof(IChecker).IsAssignableFrom(t));
             //Соберем словарь чекеров
@@ -74,10 +74,7 @@ namespace ALS.CheckModule.Compare.Checker
         public static List<string> GetListCheckers()
         {
             var checkList = new List<string>(Checkers.Count);
-            foreach (var elem in Checkers)
-            {
-                checkList.Add(elem.Key);
-            }
+            checkList.AddRange(Checkers.Select(elem => elem.Key));
             return checkList;
         }
 
@@ -92,12 +89,19 @@ namespace ALS.CheckModule.Compare.Checker
         public static async Task<string> DeleteChecker(string fileName)
         {
             var pathDeleteFile = Path.Combine(GetPathToModule(), "Compare", "Checker", fileName);
+            var sourceCode = await GetTextChecker(fileName);
+            File.Delete(pathDeleteFile);
+            return sourceCode;
+        }
+
+        public static async Task<string> GetTextChecker(string fileName)
+        {
+            var filePath = Path.Combine(GetPathToModule(), "Compare", "Checker", fileName);
             string sourceCode;
-            using(var fileStreamReader = new StreamReader(pathDeleteFile))
+            using (var fileStreamReader = new StreamReader(filePath))
             {
                 sourceCode = await fileStreamReader.ReadToEndAsync();
             }
-            File.Delete(pathDeleteFile);
             return sourceCode;
         }
     }

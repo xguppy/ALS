@@ -1,0 +1,89 @@
+@page
+@model ALS.Pages.Checkers
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Добавить чекер";
+}
+
+<h3>Чекеры </h3>
+<div style="margin-bottom: 1%">
+    <form asp-action="Create" asp-controller="Checker" method="post" enctype="multipart/form-data">
+        <input class="btn btn-primary edit-item" type="file" accept=".cs" name="nameChecker"/>
+        <input class="btn btn-primary edit-item" type="submit" value="Загрузить"/>
+    </form>
+</div>
+<div class="container">
+<table style="width: 100%" class="table table-hover" border="1">
+    <thead>
+    <tr>
+    <td>Название чекера</td>
+    <td>Просмотреть код чекера</td>
+    <td>Удалить чекер</td>
+    </thead>
+    <tbody id="tbodyContent">
+</table>
+</div>
+<script>
+    let tokenKey = "accessToken";
+    CreateTable();
+    
+    function CreateTable() {
+        $.ajax(
+                    {
+                        type: 'GET',
+                        url: '/api/checker/getall',
+                        beforeSend: (xhr) => 
+                        {
+                            let token = sessionStorage.getItem(tokenKey);
+                            xhr.setRequestHeader("Authorization", "Bearer " + token);
+                        },
+                        success: (checkers) =>
+                        {
+                            let tbdy = document.getElementById('tbodyContent');
+                            tbdy.innerHTML = ""; //Удалим все дочерние узлы
+                            for (let checker of checkers)
+                            {
+                                let tr = document.createElement('tr');
+                                tbdy.appendChild(tr);
+                                let tdChecker = document.createElement('td');
+                                tr.appendChild(tdChecker);
+                                tdChecker.appendChild(document.createTextNode(checker));
+                                let tdGetCode = document.createElement('td');
+                                tr.appendChild(tdGetCode);
+                                let getCodeBtn = document.createElement('button');
+                                getCodeBtn.className = "btn btn-primary edit-item";
+                                getCodeBtn.addEventListener('click', function() {
+                                    ReadCodeChecker(checker)
+                                });
+                                getCodeBtn.innerText = "Получить код";
+                                tdGetCode.appendChild(getCodeBtn);
+                                let tdRemoveChecker = document.createElement('td');
+                                tr.appendChild(tdRemoveChecker);
+                                let removeCheckerBtn = document.createElement('button');
+                                removeCheckerBtn.className = "btn btn-danger remove-item";
+                                removeCheckerBtn.addEventListener('click', function() {
+                                  RemoveChecker(checker)
+                                });
+                                removeCheckerBtn.innerText = "Удалить чекер";
+                                tdRemoveChecker.appendChild(removeCheckerBtn);
+                            }
+                        },
+                        error: (checkerFail) =>
+                        {
+                            document.body.innerHTML = '';
+                            alert('Нет доступа');
+                            history.go(-1);
+                            
+                        }
+                    }
+            );
+    }
+  function ReadCodeChecker(nameChecker) {
+    CreateTable();
+  }
+  
+  function RemoveChecker(nameChecker) {
+    CreateTable();
+  }
+</script>

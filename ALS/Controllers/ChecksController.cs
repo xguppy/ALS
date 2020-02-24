@@ -189,9 +189,9 @@ namespace ALS.Controllers
         private static string FormattingResultLog(List<ResultRun> results)
         {
             var testsLog = new StringBuilder();
-            for (var i = 1; i <= results.Count; i++)
+            for (var i = 0; i < results.Count; i++)
             {
-                testsLog.Append($"\nТест {i}: {results[i].Comment}");
+                testsLog.Append($"\nТест {i + 1}: {results[i].Comment}");
             }
             return testsLog.ToString();
         }
