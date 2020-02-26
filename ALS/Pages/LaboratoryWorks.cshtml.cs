@@ -32,6 +32,7 @@ namespace ALS.Pages
             LaboratoryWorks = await Task.Run( () => _context.LaboratoryWorks
                                             .Include(x => x.Theme) // можно ли сразу 2 сущности включить ?
                                             .Include(x => x.User)
+                                            .Include(x => x.TemplateLaboratoryWork)
                                             .Where( _ => true)
                                             .OrderBy( x => x.LaboratoryWorkId).ToList());
 
@@ -53,7 +54,7 @@ namespace ALS.Pages
                      new SelectListItem
                      {
                          Value = x.TemplateLaboratoryWorkId.ToString(),
-                         Text = x.TemplateLaboratoryWorkId.ToString()
+                         Text = $"#{x.TemplateLaboratoryWorkId}  {x.TemplateTask.Substring(x.TemplateTask.LastIndexOf('/') + 1)}"
                      }).ToList()
                  );
             TemplateLWs.Add(new SelectListItem

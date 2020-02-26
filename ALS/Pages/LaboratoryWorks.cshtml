@@ -25,8 +25,12 @@
                 <td>@item.Name</td>
                 <td>@item.Theme.Name</td>
                 @{
-                    string s = item.TemplateLaboratoryWorkId?.ToString() ?? "-";
+                    string s = "---";
                     int templateId = item.TemplateLaboratoryWorkId ?? -1;
+                    if (item.TemplateLaboratoryWork != null)
+                    {
+                        s = $"#{item.TemplateLaboratoryWorkId?.ToString()} {item.TemplateLaboratoryWork.TemplateTask.Substring(item.TemplateLaboratoryWork.TemplateTask.LastIndexOf('/')+1)}";
+                    }
                     <td>@s</td>
                 }
                 <td>@item.Description</td>
@@ -222,7 +226,7 @@
                     document.location.reload(true);
                 },
                 error: (response) => {
-                    alert('something goes wrong');
+                    alert(response.responseText);
                 }
             }
         );

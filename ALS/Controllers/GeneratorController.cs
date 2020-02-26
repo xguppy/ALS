@@ -27,7 +27,7 @@ namespace ALS.Controllers
 
         // Подумать над вариантом - откуда брать
         [HttpPost]
-        public async Task<IActionResult> GenNewTask(int lrId, int var)
+        public async Task<IActionResult> GenNewTask([FromHeader]int lrId, [FromHeader]int var)
         {
             var TemplateLaboratoryWorkId = _db.LaboratoryWorks.FirstOrDefault(lr => lr.LaboratoryWorkId == lrId).TemplateLaboratoryWorkId;
             if (TemplateLaboratoryWorkId == null) return BadRequest("TemplateLaboratoryWorkId is null");
@@ -37,7 +37,7 @@ namespace ALS.Controllers
 
             try
             {
-                var res = await _gen.Run(new Uri(tlwPath).AbsolutePath, lrId, var);
+                var res = await _gen.Run(new Uri(tlwPath).AbsolutePath, lrId, var, true);
                 if (res == null) return BadRequest("Result of generation is null");
 
                 _db.Variants.Add(new Variant { LaboratoryWorkId = lrId, VariantNumber = var, Description = res.Template, LinkToModel = res.Code, InputDataRuns = res.Tests });

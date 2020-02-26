@@ -74,12 +74,12 @@ namespace ALS.Controllers
         public async Task<IActionResult> Create([FromBody] LaboratoryWorkDTO model)
         {
             var laboratoryWork = 
-                new LaboratoryWork { TemplateLaboratoryWorkId = model.TemplateLaboratoryWorkId, ThemeId = model.ThemeId, Name = model.Name, Description = model.Description, Evaluation = model.Evaluation, DisciplineCipher  = model.DisciplineCipher, UserId = model.UserId, Constraints = model.Constraints};
+                new LaboratoryWork { TemplateLaboratoryWorkId = model.TemplateLaboratoryWorkId == -1 ? null : model.TemplateLaboratoryWorkId, ThemeId = model.ThemeId, Name = model.Name, Description = model.Description, Evaluation = model.Evaluation, DisciplineCipher  = model.DisciplineCipher, UserId = model.UserId, Constraints = model.Constraints};
 
             if (laboratoryWork.TemplateLaboratoryWorkId != null &&
                 laboratoryWork.ThemeId != _db.TemplateLaboratoryWorks.FirstOrDefault(x => x.TemplateLaboratoryWorkId == laboratoryWork.TemplateLaboratoryWorkId).ThemeId)
             {
-                return BadRequest("Theme of laboratory work not equal theme TemplateLaboratoryWork");
+                return BadRequest("Темы лабораторный работы не принадлежит теме шаблона");
             }
 
             try
@@ -89,7 +89,8 @@ namespace ALS.Controllers
             }
             catch (DbUpdateException e)
             {
-                await Response.WriteAsync(e.Message);
+                await Response.WriteAsync(e.InnerException.Message);
+                return BadRequest(e.InnerException.Message);
             }
             return Ok(model);
         }
@@ -130,7 +131,7 @@ namespace ALS.Controllers
                 {
                     await Response.WriteAsync(e.Message);
                 }
-                return Ok(new string("LW successfully updated"));
+                return Ok("successfully");
             }
             return NotFound();
         }
@@ -155,7 +156,7 @@ namespace ALS.Controllers
                 {
                     await Response.WriteAsync(e.Message);
                 }
-                return Ok();
+                return Ok("successfully");
             }
             return NotFound();
         }
