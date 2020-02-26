@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using ALS.Controllers;
 using ALS.DTO;
 using ALS.EntityСontext;
 using Microsoft.AspNetCore.Hosting;
@@ -46,39 +47,7 @@ namespace ALS.Pages
                          Text = x.Name
                      }).ToList()
                  );
-        }
-
-        public async Task<IActionResult> OnPostCreatingAsync(int themeId, IFormFile upload)
-        {
-            if (upload == null)
-            {
-                return RedirectToPage("");
-            }
-
-            var file = Path.Combine(_environment.ContentRootPath, "uploads", upload.FileName);
-
-            using (var fileStream = new FileStream(file, FileMode.Create))
-            {
-                await upload.CopyToAsync(fileStream);
-            }
-
-            var request = new HttpRequestMessage(
-                HttpMethod.Post,
-                "http://localhost:5000/api/TemplateLWS/Create" // тут что-то непонятное
-            );
-
-            request.Content = new StringContent(JsonConvert.SerializeObject(new TemplateLWDTO { ThemeId = themeId, TemplateTask = new Uri(file).AbsoluteUri }), Encoding.UTF8, "application/json");
-
-            var client = _clientFactory.CreateClient();
-
-            var response = await client.SendAsync(request);
-
-            if (response.IsSuccessStatusCode)
-            {
-                return RedirectToPage("");
-            }
-            return RedirectToPage("/Error");
-        }   
+        } 
         
     }
 }
