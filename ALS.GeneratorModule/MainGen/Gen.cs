@@ -46,7 +46,7 @@ namespace Generator.MainGen
             return await Task.Run(() => pc.Execute(60000));
         }
 
-        public async Task<ResultData> Run(string fileName, int lr = 1, int var = 1, bool needCompile = false, bool returnRawCode = false)
+        public async Task<ResultData> Run(string fileName, int lr = 1, int var = 1, bool needCompile = false)
         {
             var d = await Task.Run(() => _pr.Read(fileName));
             if (d == null) return null;
@@ -92,7 +92,7 @@ namespace Generator.MainGen
             return new ResultData()
             {
                 Template = d.Template, /* шаблон задания */
-                Code = (returnRawCode) ? d.Code : new System.Uri(Path.Combine(Environment.CurrentDirectory, PathExecuteModel(name, "exe"))).AbsoluteUri, /*путь до бинарника / или сырой код*/
+                Code = new System.Uri(Path.Combine(Environment.CurrentDirectory, PathExecuteModel(name, "exe"))).AbsoluteUri, /*путь до бинарника*/
                 Tests = JsonConvert.SerializeObject(d.TestsD) /* тестовые данные */
             };
         }

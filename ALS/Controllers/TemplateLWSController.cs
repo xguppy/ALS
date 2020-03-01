@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using ALS.DTO;
 using ALS.EntityСontext;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +16,7 @@ namespace ALS.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Teacher")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Teacher")]
     public class TemplateLWSController : ControllerBase
     {
         private readonly ApplicationContext _db;
@@ -48,19 +50,19 @@ namespace ALS.Controllers
             }
             return NotFound();
         }
+        
 
-
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] TemplateLWDTO model)
+        public async Task<IActionResult> UploadDb(string templateTask, int themeid)
         {
-            if (!System.IO.File.Exists(new Uri(model.TemplateTask).AbsolutePath))
+            templateTask = templateTask.Replace('\\', '/');
+            if (!System.IO.File.Exists(new Uri(templateTask).AbsolutePath))
             {
-                return NotFound($"File {model.TemplateTask} Not Found");
+                return NotFound($"File {templateTask} Not Found");
             }
 
             try
             {
-                await _db.TemplateLaboratoryWorks.AddAsync(new TemplateLaboratoryWork { TemplateTask = model.TemplateTask, ThemeId = model.ThemeId });
+                await _db.TemplateLaboratoryWorks.AddAsync(new TemplateLaboratoryWork { TemplateTask = templateTask, ThemeId = themeid });
                 await _db.SaveChangesAsync();
             }
             catch (DbUpdateException ex)
@@ -68,7 +70,25 @@ namespace ALS.Controllers
                 await Response.WriteAsync(ex.Message);
                 return BadRequest();
             }
-            return Ok();
+            return Ok("SUCCESS");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(IFormFileCollection upload, [FromHeader]int themeId)
+        {
+            if (upload == null)
+            {
+                return RedirectToPage("");
+            }
+
+            var file = Path.Combine(_environment.ContentRootPath, "uploads", upload[0].FileName);
+
+            using (var fileStream = new FileStream(file, FileMode.Create))
+            {
+                await upload[0].CopyToAsync(fileStream);
+            }
+
+            return await UploadDb(file, themeId);
         }
 
         [HttpPost]
@@ -101,12 +121,6 @@ namespace ALS.Controllers
             }
             return Ok(text);
         }
-
-        /*public class TypaKlassDlyaEtogoMetodaYaShasSdohnu
-        {
-            public string pathToFile;
-            public string content;
-        }*/
 
         [HttpPost]
         public async Task<IActionResult> WriteFile([FromBody] Tuple<string, string> data)

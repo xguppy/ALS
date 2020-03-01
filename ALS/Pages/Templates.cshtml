@@ -19,7 +19,7 @@
             <tr>
                 <td>@item.TemplateLaboratoryWorkId</td>
                 <td>@item.Theme.Name</td>
-                <td>@item.TemplateTask</td>
+                <td>@item.TemplateTask.Substring(item.TemplateTask.LastIndexOf('/')+1)</td>
                 <td>
                     <input type="button" id="buttonDelete" value="Удалить" onclick="deleteTlw(@item.TemplateLaboratoryWorkId)" /> |
                     <input type="button" id="buttonUpdate" value="Изменить" onclick="updateTlw(@item.TemplateLaboratoryWorkId, @item.ThemeId, '@item.TemplateTask')" />
@@ -27,6 +27,7 @@
             </tr>
         }
     </table>
+    <input id="buttonCreate" type="submit" value="Создать" onclick="openModalCreate()" />
 </div>
 
 <div id="myModal" class="modal fade bd-example-modal-lg">
@@ -55,27 +56,25 @@
     </div>
 </div>
 
-<hr />
-<hr />
-
-<h4> Создание нового шаблона </h4>
-<div class="row">
-
-    <div class="col-md-5">
-        <form method="post" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label class="control-label">Тема</label>
-                <select id="selectThemeId" name="themeId" asp-items="Model.Themes"></select>
+<div id="myModalCreate" class="modal fade bd-example-modal-lg">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Создание шаблона</h4><button class="close" type="button" data-dismiss="modal">×</button>
             </div>
-            <div class="form-group">
-                <label class="control-label">Файл с шаблоном</label>
-                <input id="selectFile" type="file" name="upload" />
+            <div class="modal-body">
+                <form method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label class="control-label">Тема</label>
+                        <select id="selectThemeId" name="themeId" asp-items="@Model.Themes"></select>
+                    </div>
+                    <div id="fileselecting" class="form-group">
+                        <label class="control-label">Файл с шаблоном</label>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <input id="submitCreating" asp-page-handler="Creating" type="submit" value="Создать" />
-            </div>
-        </form>
+            <div class="modal-footer"><button class="btn btn-default" type="button" data-dismiss="modal">Закрыть</button></div>
+        </div>
     </div>
 </div>
 
@@ -85,6 +84,43 @@
     window.onload = function () {
         $('#hiddenUserId').val(sessionStorage.getItem(userId));
     };*/
+    let tokenKey = "accessToken";
+
+    function sendSolution(evt)
+    {
+            var files = evt.target.files; // FileList object
+            var dataFile = new FormData();
+            for (var i = 0; i < files.length; i++) {
+                dataFile.append('upload', files[i]);
+            }
+            var selector = document.getElementById('selectThemeId');
+            var value = selector[selector.selectedIndex].value;
+
+            $.ajax(
+                {
+                    type: 'POST',
+                    url: '/api/TemplateLWS/Create',
+                    contentType: false,
+                    data: dataFile,
+                    processData: false,
+                    async: false,
+                    beforeSend: (xhr) =>
+                    {
+                        let token = sessionStorage.getItem(tokenKey);
+                        xhr.setRequestHeader("Authorization", "Bearer " + token);
+                        xhr.setRequestHeader("themeid", value);
+                    },
+                    success: (result) =>
+                    {                    
+                        document.location.reload(true);
+                    },
+                    error: (sendFail) =>
+                    {
+                        alert(sendFail.responseText);
+                    }
+                }
+            );
+    }
 
     $.ajax(
         {
@@ -95,11 +131,19 @@
                 let token = sessionStorage.getItem(tokenKey);
                 xhr.setRequestHeader("Authorization", "Bearer " + token);
             },
-            success: (variants) =>
+            success: (_) =>
             {
-                
+                let div = document.getElementById('fileselecting');
+                let buttonSend = document.createElement('input');
+                buttonSend.type = "file";
+                buttonSend.className = "files";
+                buttonSend.accept = ".*";
+                buttonSend.multiple = false;
+                buttonSend.addEventListener('change', sendSolution, false);
+                buttonSend.className = "btn btn-primary edit-item";
+                div.appendChild(buttonSend);
             },
-            error: (varFail) =>
+            error: (_) =>
             {
                 document.body.innerHTML = '';
                 alert('Нет доступа');
@@ -108,14 +152,20 @@
         }
     );
 
+    function openModalCreate() {
+        $('#myModalCreate').modal('show');
+    }
 
     function updateTlw(tlwId, themeid, pathFile) {
+
         $("#myModal").find("textarea[id='textAreaModel']").val('');
         $.ajax(
             {
                 type: 'GET',
                 url: '/api/TemplateLWS/ReadFile',
                 beforeSend: (xhr) => {
+                    let token = sessionStorage.getItem(tokenKey);
+                    xhr.setRequestHeader("Authorization", "Bearer " + token);
                     xhr.setRequestHeader('path', pathFile);
                 },
                 success: (response) => {
@@ -131,9 +181,10 @@
         $("#myModal").find("input[name='hiddenId']").val(tlwId);
         $("#myModal").find("input[id='path']").val(pathFile);
         
-        $('#newThemeId option:selected').each(function () {
+        /*$('#newThemeId option:selected').each(function () {
             this.selected = false;
-        });
+        });*/
+        $("#newThemeId").find('option').attr("selected",false) ;
         $("#newThemeId option[value='" + themeid + "']").attr("selected", "selected");
         $('#myModal').modal('show');
     }
@@ -157,6 +208,8 @@
                 dataType: "json",
                 data: JSON.stringify(datas),
                 beforeSend: (xhr) => {
+                    let token = sessionStorage.getItem(tokenKey);
+                    xhr.setRequestHeader("Authorization", "Bearer " + token);
                 },
                 success: (data) => {
                     //document.location.reload(true);
@@ -164,11 +217,10 @@
                 error: (response) => {
                     console.log(response);
                     alert('Не удалось обновить шаблон');
-                    return;
                 }
             }
         );
-        
+
         let tdto = {
             TemplateTask: path,
             ThemeId: themeId,
@@ -181,8 +233,8 @@
                 dataType: "json",
                 data: JSON.stringify(tdto),
                 beforeSend: (xhr) => {
-                    //let token = sessionStorage.getItem(tokenKey);
-                    //xhr.setRequestHeader("Authorization", "Bearer " + token);
+                    let token = sessionStorage.getItem(tokenKey);
+                    xhr.setRequestHeader("Authorization", "Bearer " + token);
                     //xhr.setRequestHeader("groupId", $('#EditGroupId').val());
                     xhr.setRequestHeader("templateId", twlId);
                 },
@@ -205,8 +257,8 @@
                     type: 'POST',
                     url: '/api/TemplateLWS/Delete',
                     beforeSend: (xhr) => {
-                        //let token = sessionStorage.getItem(tokenKey);
-                        //xhr.setRequestHeader("Authorization", "Bearer " + token);
+                        let token = sessionStorage.getItem(tokenKey);
+                        xhr.setRequestHeader("Authorization", "Bearer " + token);
                         xhr.setRequestHeader('templateId', data);
                     },
                     success: (t) => {

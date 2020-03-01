@@ -1,8 +1,13 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using ALS.DTO;
 using ALS.EntityСontext;
+using Generator.MainGen;
+using Generator.MainGen.Parametr;
+using Generator.MainGen.Structs;
+using Generator.Parsing;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -18,10 +23,30 @@ namespace ALS.Controllers
     public class VariantsController : ControllerBase
     {
         private readonly ApplicationContext _db;
+        private Gen _gen;
 
         public VariantsController(ApplicationContext db)
         {
             _db = db;
+            _gen = new Gen(new Parser(), new ParamsContainer());
+        }
+
+        public async Task GenNewTask(VariantDTO model, int templateId)
+        {
+            ResultData resOfGen = null;
+            var path = _db.TemplateLaboratoryWorks
+                    .Where(twl => twl.TemplateLaboratoryWorkId == templateId)
+                    .FirstOrDefault().TemplateTask;
+            // если условия соблюдены, генерируем данные
+            if (path != null) resOfGen = await _gen.Run(new Uri(path).AbsolutePath, model.LaboratoryWorkId, model.VariantNumber, true);
+            // успешная генерация
+            if (resOfGen != null)
+            {
+                // перезаписываем введеные пользователем данные
+                model.Description = resOfGen.Template;
+                model.LinkToModel = resOfGen.Code;
+                model.InputDataRuns = resOfGen.Tests;
+            }
         }
 
         [HttpGet]
@@ -71,9 +96,24 @@ namespace ALS.Controllers
         public async Task<IActionResult> Create([FromBody] VariantDTO model)
         {
             var userId = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
+            var laboratoryWork = await _db.LaboratoryWorks.Where(lw => lw.UserId == userId && lw.LaboratoryWorkId == model.LaboratoryWorkId).FirstOrDefaultAsync();
 
-            if (await _db.LaboratoryWorks.Where(lw => lw.UserId == userId && lw.LaboratoryWorkId == model.LaboratoryWorkId).FirstOrDefaultAsync() != null)
+            if (laboratoryWork != null)
             {
+                // если лабораторная работа содержит шаблон
+                try
+                {
+                    // генерируем описание, ссылку на модель, список входных данных
+                    if (laboratoryWork.TemplateLaboratoryWorkId != null)
+                        await GenNewTask(model, laboratoryWork.TemplateLaboratoryWorkId.Value);
+                }
+                catch (Exception ex)
+                {
+                    // пишем ошибку генератора
+                    await Response.WriteAsync(ex.Message);
+                    // выходим
+                    return BadRequest(ex.Message);
+                }
                 Variant variant = new Variant {VariantNumber = model.VariantNumber, LaboratoryWorkId = model.LaboratoryWorkId, Description = model.Description, LinkToModel = model.LinkToModel, InputDataRuns = model.InputDataRuns };
                 try
                 {
@@ -82,7 +122,7 @@ namespace ALS.Controllers
                 }
                 catch (DbUpdateException e)
                 {
-                    await Response.WriteAsync(e.Message);
+                    await Response.WriteAsync(e.InnerException.Message);
                 }
                 return Ok(model);
             }
@@ -94,13 +134,27 @@ namespace ALS.Controllers
         public async Task<IActionResult> Update([FromBody] VariantDTO model, [FromHeader] int varId)
         {
             var userId = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
-
             if (await _db.Variants.Include(v => v.LaboratoryWork).Where(v => v.LaboratoryWork.UserId == userId && v.LaboratoryWorkId == model.LaboratoryWorkId).FirstOrDefaultAsync() != null)
             {
                 var variantUpdate = await _db.Variants.FirstOrDefaultAsync(v => v.VariantId == varId);
 
                 if (variantUpdate != null)
                 {
+                    // если лабораторная работа содержит шаблон
+                    try
+                    {
+                        var laboratoryWork = await _db.LaboratoryWorks.Where(lw => lw.UserId == userId && lw.LaboratoryWorkId == model.LaboratoryWorkId).FirstOrDefaultAsync();
+                        // генерируем описание, ссылку на модель, список входных данных
+                        if (laboratoryWork.TemplateLaboratoryWorkId != null)
+                            await GenNewTask(model, laboratoryWork.TemplateLaboratoryWorkId.Value);
+                    }
+                    catch (Exception ex)
+                    {
+                        // пишем ошибку генератора
+                        await Response.WriteAsync(ex.Message);
+                        // выходим
+                        return BadRequest(ex.Message);
+                    }
                     try
                     {
                         variantUpdate.Description = model.Description;
