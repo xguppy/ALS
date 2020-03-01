@@ -23,5 +23,7 @@ namespace ALS.Controllers
         [HttpGet]
         public async Task<IActionResult> Get([FromHeader] int solutionId) =>
             Ok(await Task.Run(() => _db.TestRuns.Where(testRun => testRun.SolutionId == solutionId).Select(testRun => new {testRun.InputData, testRun.OutputData, testRun.ResultRun})));
+        
+        
     }
 }

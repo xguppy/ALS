@@ -11,51 +11,53 @@
     <script src="~/lib/bootstrap/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css">
 </head>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
 <body>
 <!--меню-->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="~/index">ALS</a>
-     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-         <ul class="navbar-nav mr-auto">
-             <li class="nav-item">
-                 <a class="nav-link" href="~/index">Домой</a>
-             </li>
-             <li class="nav-item" id="group">
-                 <a class="nav-link" href="~/groups">Группы</a>
-             </li>
-             <li class="nav-item" id="template">
-                 <a class="nav-link" href="~/templates">Шаблоны</a>
-             </li>
-             <li class="nav-item" id="speciality">
-                 <a class="nav-link" href="~/specialities">Специальности</a>
-             </li>
-             <li class="nav-item" id="variant">
-                 <a class="nav-link" href="~/variants">Варианты</a>
-             </li>
-             <li class="nav-item" id="laboratorywork">
-                 <a class="nav-link" href="~/laboratoryworks">Лабораторные работы</a>
-             </li>
-             <li class="nav-item" id="assignvariant">
-                 <a class="nav-link" href="~/assignvariant">Назначение варианта</a>
-             </li>
-             <li class="nav-item" id="contest">
-                 <a class="nav-link" href="~/contest">Отправить решение</a>
-             </li>
-             <li class="nav-item" id="themes">
-                 <a class="nav-link" href="~/Themes">Темы</a>
-             </li>
-         </ul>
-     </div>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="~/index">Домой</a>
+            </li>
+            <li class="nav-item" id="group">
+                <a class="nav-link" href="~/groups">Группы</a>
+            </li>
+            <li class="nav-item" id="template">
+                <a class="nav-link" href="~/templates">Шаблоны</a>
+            </li>
+            <li class="nav-item" id="speciality">
+                <a class="nav-link" href="~/specialities">Специальности</a>
+            </li>
+            <li class="nav-item" id="variant">
+                <a class="nav-link" href="~/variants">Варианты</a>
+            </li>
+            <li class="nav-item" id="laboratorywork">
+                <a class="nav-link" href="~/laboratoryworks">Лабораторные работы</a>
+            </li>
+            <li class="nav-item" id="assignvariant">
+                <a class="nav-link" href="~/assignvariant">Назначение варианта</a>
+            </li>
+            <li class="nav-item" id="contest">
+                <a class="nav-link" href="~/contest">Отправить решение</a>
+            </li>
+            <li class="nav-item" id="themes">
+                <a class="nav-link" href="~/Themes">Темы</a>
+            </li>
+        </ul>
+        <div class="userInfo" style="display:none;">
+            Вы вошли как: <span class="userName"></span>
+            <input type="button" class="btn btn-dark" value="Выйти" id="logOut" /></div>
+        
+    </div>
 </nav>
-<!--основной контент-->
-<div id="content" class="container body-content">
-    @RenderBody()
-</div>
-<hr />
-<footer style="padding-left: 5%">
-    <p>@DateTime.Now.Year - ALS</p>
-</footer>
+<!--глобальный скрипт(Основные переменные и создание меню)-->
 <script>
+    let tokenKey = "accessToken";
+    let username = "userName";
+    let userId   = "userId";
+    let roles = 'roles';
     let group = $('#group');
     let template = $('#template');
     let speciality = $('#speciality');
@@ -64,6 +66,24 @@
     let aw = $('#assignvariant');
     let contest = $('#contest');
     let themes = $('#themes');
+    if(sessionStorage.getItem(tokenKey) != null)
+            {
+                $('.userInfo').css('display', 'block');
+                $('.loginForm').css('display', 'none');
+                $('.userName').text(sessionStorage.getItem(username));
+            }
+            
+            $('#logOut').click(function (e) {
+                e.preventDefault();
+                $('.loginForm').css('display', 'block');
+                $('.userInfo').css('display', 'none');
+                sessionStorage.removeItem(tokenKey);
+                sessionStorage.removeItem(username);
+                sessionStorage.removeItem(roles);
+                sessionStorage.removeItem(userId);
+                location.href = "/";
+                showMenu();
+            });
     showMenu();
     function showMenu() {
         group.css('display', 'none');
@@ -92,5 +112,14 @@
         }
     }
 </script>
+<!--основной контент-->
+<div id="content" class="container body-content">
+    @RenderBody()
+</div>
+<hr />
+<footer style="padding-left: 5%">
+    <p>@DateTime.Now.Year - ALS</p>
+</footer>
+
 </body>
 </html>

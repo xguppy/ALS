@@ -3,77 +3,50 @@
 
 @{
     Layout = "_Layout";
-    ViewData["Title"] = "ALS";
+    ViewData["Title"] = "Домашняя страница";
 }
-    
-    <div class="userInfo" style="display:none;">
-        <p>Вы вошли как: <span class="userName"></span></p>
-        <input type="button" class="btn btn-dark" value="Выйти" id="logOut" />
-    </div>
-    <form class="loginForm">
-        <h3>Вход на сайт</h3>
-        <label>Введите email</label><br />
-        <input type="email" id="emailLogin" required /> <br /><br />
-        <label>Введите пароль</label><br />
-        <input type="password" id="passwordLogin" required /><br /><br />
-        <input type="submit" class="btn btn-success" id="submitLogin" value="Логин" />
-    </form>
+
+<form class="loginForm">
+    <label>Введите email</label>
+    <input type="email" id="emailLogin" required /> <br />
+    <label>Введите пароль</label>
+    <input type="password" id="passwordLogin" required /> <br />
+    <input type="submit" class="btn btn-success" id="submitLogin" value="Логин" />
+</form>
 
 <script>
-        //Специальные секции в sessionStorage
-        let tokenKey = "accessToken";
-        let username = "userName";
-        let userId   = "userId";
-        let roles = 'roles';
-        if(sessionStorage.getItem(tokenKey) != null)
-        {
-            $('.userInfo').css('display', 'block');
-            $('.loginForm').css('display', 'none');
-            $('.userName').text(sessionStorage.getItem(username));
-        }
-        $('#submitLogin').click(function (e) {
-            e.preventDefault();
-            let loginData = {
-                grant_type: 'Password',
-                Email: $('#emailLogin').val(),
-                Password: $('#passwordLogin').val()
-            };
- 
-            $.ajax({
-                type: 'POST',
-                url: '/api/users/login',
-                contentType:  "application/json; charset=utf-8",
-                dataType: "json",
-                data: JSON.stringify(loginData),
-                success:
-                    function (data)
-                    {
-                    $('.userName').text(data.username);
-                    $('.userInfo').css('display', 'block');
-                    $('.loginForm').css('display', 'none');
-                    // сохраняем в хранилище sessionStorage токен доступа и имя
-                    sessionStorage.setItem(tokenKey, data.access_token);
-                    sessionStorage.setItem(username, data.username);
-                    sessionStorage.setItem(userId,   data.userId);
-                    sessionStorage.setItem(roles,    JSON.stringify(data.roles));
-                    showMenu();
-                    },
-                error:
-                    function (data)
-                    {
-                        alert(data.responseText);
-                    }
+$('#submitLogin').click(function (e) {
+                e.preventDefault();
+                let loginData = {
+                    grant_type: 'Password',
+                    Email: $('#emailLogin').val(),
+                    Password: $('#passwordLogin').val()
+                };
+     
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/users/login',
+                    contentType:  "application/json; charset=utf-8",
+                    dataType: "json",
+                    data: JSON.stringify(loginData),
+                    success:
+                        function (data)
+                        {
+                        $('.userName').text(data.username);
+                        $('.userInfo').css('display', 'block');
+                        $('.loginForm').css('display', 'none');
+                        // сохраняем в хранилище sessionStorage токен доступа и имя
+                        sessionStorage.setItem(tokenKey, data.access_token);
+                        sessionStorage.setItem(username, data.username);
+                        sessionStorage.setItem(userId,   data.userId);
+                        sessionStorage.setItem(roles,    JSON.stringify(data.roles));
+                        showMenu();
+                        },
+                    error:
+                        function (data)
+                        {
+                            alert(data.responseText);
+                        }
+                });
             });
-        });
- 
-        $('#logOut').click(function (e) {
-            e.preventDefault();
-            $('.loginForm').css('display', 'block');
-            $('.userInfo').css('display', 'none');
-            sessionStorage.removeItem(tokenKey);
-            sessionStorage.removeItem(username);
-            sessionStorage.removeItem(roles);
-            sessionStorage.removeItem(userId);
-            showMenu();
-        });
-    </script>
+</script>
