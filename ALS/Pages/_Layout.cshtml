@@ -66,12 +66,7 @@
     let aw = $('#assignvariant');
     let contest = $('#contest');
     let themes = $('#themes');
-    if(sessionStorage.getItem(tokenKey) != null)
-            {
-                $('.userInfo').css('display', 'block');
-                $('.loginForm').css('display', 'none');
-                $('.userName').text(sessionStorage.getItem(username));
-            }
+    
             
             $('#logOut').click(function (e) {
                 e.preventDefault();
@@ -120,6 +115,13 @@
 <footer style="padding-left: 5%">
     <p>@DateTime.Now.Year - ALS</p>
 </footer>
-
+<script>
+if(sessionStorage.getItem(tokenKey) != null)
+            {
+                $('.userInfo').css('display', 'block');
+                $('.loginForm').css('display', 'none');
+                $('.userName').text(sessionStorage.getItem(username));
+            }
+</script>
 </body>
 </html>

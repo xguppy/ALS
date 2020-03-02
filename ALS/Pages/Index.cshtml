@@ -15,6 +15,23 @@
 </form>
 
 <script>
+function ShowInfo()
+{
+    let roles = JSON.parse(sessionStorage.getItem('roles'));
+    if (roles == null) return;
+    if (roles.includes('Teacher')) {
+        
+    }
+    if (roles.includes('Admin')) {
+        
+    }
+    if (roles.includes('Student')) {
+        $(function() {
+            $('#content').load('UserInstruction.html');
+        });
+    }
+}
+ShowInfo();
 $('#submitLogin').click(function (e) {
                 e.preventDefault();
                 let loginData = {
@@ -41,6 +58,7 @@ $('#submitLogin').click(function (e) {
                         sessionStorage.setItem(userId,   data.userId);
                         sessionStorage.setItem(roles,    JSON.stringify(data.roles));
                         showMenu();
+                        ShowInfo();
                         },
                     error:
                         function (data)
