@@ -47,6 +47,8 @@ namespace ALS.Controllers
                     await _db.Solutions.FirstOrDefaultAsync(sol => sol.AssignedVariant == assignedVar && sol.IsSolved);
                 if (solution == null)
                 {
+                    //Получим метод оценки
+                    var evaluation = assignedVar.Variant.LaboratoryWork.Evaluation;
                     //Если не решил, то создадим нужные директории
                     var solutionDirectory = CreateDirectoriesSources(assignedVar.Variant.VariantId, variantId, userIdentifier);
                     //Cохраним его код в директорию пользователя
@@ -121,9 +123,14 @@ namespace ALS.Controllers
                             solution.IsSolved = false;
                         }
                     }
+
+                    var countCompleteTest = resultTests.Count(rt => rt.IsCorrect);
+                    var currMark = assignedVar.Mark;
+                    Rate(evaluation, countCompleteTest, resultTests.Count, ref currMark);
+                    assignedVar.Mark = currMark;
                     await _db.SaveChangesAsync();
                     //Выведем количество верных тестовых прогонов и комментарии к ним
-                    return Ok($"{resultTests.Count(rt => rt.IsCorrect)} / {resultTests.Count} тестов пройдено.{FormattingResultLog(resultTests)}");
+                    return Ok($"{countCompleteTest} / {resultTests.Count} тестов пройдено.{FormattingResultLog(resultTests)}");
                 }
                 return Ok("Задача уже решена");
             }
@@ -194,6 +201,24 @@ namespace ALS.Controllers
                 testsLog.Append($"\nТест {i + 1}: {results[i].Comment}");
             }
             return testsLog.ToString();
+        }
+
+        private static void Rate(Evaluation evaluation, int testComplete, int sumTest, ref int currentMark)
+        {
+            switch (evaluation)
+            {
+                case Evaluation.Strict:
+                    currentMark = sumTest == testComplete ? 1 : 0;
+                    break;
+                case Evaluation.NotStrict:
+                    currentMark = testComplete;
+                    break;
+                case Evaluation.Penalty:
+                    currentMark -= sumTest - testComplete;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(evaluation), evaluation, "Выбранная стратегия оценивания отсутствует");
+            }
         }
     }
 }
