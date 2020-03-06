@@ -10,6 +10,10 @@ namespace ALS.CheckModule.Processes
         /// </summary>
         private readonly List<string> _inputData;
         /// <summary>
+        /// Мониторинг ресурсов процесса
+        /// </summary>
+        private readonly ProcessMonitor _monitor;
+        /// <summary>
         /// Конструктор программы 
         /// </summary>
         /// <param name="nameProgram">Имя исполняемого файла</param>
@@ -17,6 +21,7 @@ namespace ALS.CheckModule.Processes
         public ProcessProgram(string nameProgram, List<string> inputData)
         {
             AppProcess.StartInfo.FileName = nameProgram;
+            _monitor = new ProcessMonitor(AppProcess);
             _inputData = inputData;
             InitProcess();
         }
@@ -24,13 +29,11 @@ namespace ALS.CheckModule.Processes
         /// <summary>
         /// Время потраченное на выполнение процесса
         /// </summary>
-        public int Time { get; private set; }
-        //AppProcess.TotalProcessorTime.Milliseconds;
+        public int Time => _monitor.Time;
         /// <summary>
         /// Максимальное количество затраченной памяти
         /// </summary>
-        public long Memory { get; private set; }
-        //AppProcess.WorkingSet64;
+        public long Memory => _monitor.Memory;
         /// <summary>
         /// 
         /// </summary>
@@ -44,15 +47,14 @@ namespace ALS.CheckModule.Processes
             {
                 using (AppProcess)
                 {
+                    _monitor.Start();
                     InitExecute();
                     foreach (var elem in _inputData)
                     {
                         Input = elem;
                     }
-
-                    Memory = AppProcess.WorkingSet64;
                     result = AppProcess.WaitForExit(timeMilliseconds);
-                    Time = AppProcess.TotalProcessorTime.Milliseconds;
+                    _monitor.Stop();
                 }
             });
             return result;
