@@ -13,15 +13,20 @@ namespace ALS.CheckModule.Processes
         /// Мониторинг ресурсов процесса
         /// </summary>
         private readonly ProcessMonitor _monitor;
+
         /// <summary>
         /// Конструктор программы 
         /// </summary>
         /// <param name="nameProgram">Имя исполняемого файла</param>
         /// <param name="inputData">Входные данные</param>
-        public ProcessProgram(string nameProgram, List<string> inputData)
+        /// <param name="isMonitoring">Нужно ли запускать монитор для программы</param>
+        public ProcessProgram(string nameProgram, List<string> inputData, bool isMonitoring)
         {
             AppProcess.StartInfo.FileName = nameProgram;
-            _monitor = new ProcessMonitor(AppProcess);
+            if (isMonitoring)
+            {
+                _monitor = new ProcessMonitor(AppProcess);
+            }
             _inputData = inputData;
             InitProcess();
         }
@@ -47,14 +52,14 @@ namespace ALS.CheckModule.Processes
             {
                 using (AppProcess)
                 {
-                    _monitor.Start();
                     InitExecute();
+                    _monitor?.Start();
                     foreach (var elem in _inputData)
                     {
                         Input = elem;
                     }
                     result = AppProcess.WaitForExit(timeMilliseconds);
-                    _monitor.Stop();
+                    _monitor?.Stop();
                 }
             });
             return result;

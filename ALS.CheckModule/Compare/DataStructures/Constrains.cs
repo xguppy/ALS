@@ -21,8 +21,16 @@ namespace ALS.CheckModule.Compare.DataStructures
         [DefaultValue(10000)]
         public int Time { get; set; }
         /// <summary>
+        /// Подготавливает директорию, где будет запущено пользовательское приложение(если null, то не будет использован)
+        /// </summary>
+        public string Preparer { get; set; }
+        /// <summary>
         /// Черекер (если null либо неверно задан, то стандартный чекер будет использован)
         /// </summary>
         public string Checker { get; set; }
+        /// <summary>
+        /// Постпроверочные мероприятия(если null, то не будет использован)
+        /// </summary>
+        public string Finaliter { get; set; }
     }
 }

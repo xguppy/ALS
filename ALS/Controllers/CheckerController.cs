@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -17,13 +16,14 @@ namespace ALS.Controllers
     public class CheckerController : Controller
     {
         private static bool _isAvailable = true;
+        private static readonly CheckerList CheckerList = new CheckerList();
         [HttpGet]
         public async Task<IActionResult> GetAll() =>
-            Ok(await Task.Run(CheckerList.GetListCheckers));
+            Ok(await Task.Run(CheckerList.GetList));
 
         [HttpGet]
         public async Task<IActionResult> Get([FromHeader] string nameChecker) =>
-            Ok(await CheckerList.GetTextChecker(nameChecker));
+            Ok(await CheckerList.GetText(nameChecker));
 
         [HttpPost]
         public async Task<IActionResult> Delete([FromHeader] string nameChecker)
@@ -33,14 +33,14 @@ namespace ALS.Controllers
                 return BadRequest("В данный момент система производит сборку");
             }
             _isAvailable = false;
-            var backUpCheckerCode = await CheckerList.DeleteChecker($"{nameChecker}.cs");
-            var noError = await CheckerList.ReloadCheckers();
+            var backUpCheckerCode = await CheckerList.Delete($"{nameChecker}.cs");
+            var noError = await CheckerList.ReloadActions();
             _isAvailable = true;
             if(noError)
             {
                 return Ok("Чекер успешно удалён");
             }
-            await CheckerList.AddChecker(backUpCheckerCode, $"{nameChecker}.cs");
+            await CheckerList.Add(backUpCheckerCode, $"{nameChecker}.cs");
             return BadRequest("Не удалось удалить чекер. Возможно его используют другие чекеры");
         }
 
@@ -57,15 +57,28 @@ namespace ALS.Controllers
             {
                 sourceCodeChecker = await sr.ReadToEndAsync();
             }
-            await CheckerList.AddChecker(sourceCodeChecker, checkerFile.FileName);
-            var noError = await CheckerList.ReloadCheckers();
+            var checkerList = CheckerList.GetList();
+            var fileName = checkerFile.FileName;
+            var className = fileName.Substring(0, fileName.IndexOf(".cs", StringComparison.Ordinal));
+            await CheckerList.Add(sourceCodeChecker, fileName);
+            var noError = await CheckerList.ReloadActions();
+            var newCheckerList = CheckerList.GetList();
+            var newCheckers = newCheckerList.Except(checkerList).ToList();
+            //Только один чекер может быть добавлен
+            //Имя файла с чекером должно быть аналогично имени класса
+            if (newCheckers.Count > 1 || className != newCheckers[0])
+            {
+                noError = false;
+                await Delete(className);
+            }
             _isAvailable = true;
             if (noError)
             {
                 return Ok("Чекер успешно добавлен");
             }
-            await CheckerList.DeleteChecker(checkerFile.FileName);
+            await CheckerList.Delete(checkerFile.FileName);
             return BadRequest("Не удалось добавить чекер. Возможно в коде чекере имеются ошибки");
         }
+        
     }
 }

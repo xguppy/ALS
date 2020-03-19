@@ -28,9 +28,9 @@ namespace ALS.CheckModule.Processes
                     return true;
                 }
                 return false;
-            });
-            AppProcess.StartInfo.FileName = pathToCompiler;
-            AppProcess.StartInfo.Arguments = $"{arguments} {String.Join(' ', sourceCodeFiles)} -o {nameOutput}";
+            }).Select(file => $"\"{file}\"");
+            AppProcess.StartInfo.FileName = $"\"{pathToCompiler}\"";
+            AppProcess.StartInfo.Arguments = $"{arguments} {String.Join(' ', sourceCodeFiles)} -o \"{nameOutput}\"";
             InitProcess();
         }
         /// <summary>

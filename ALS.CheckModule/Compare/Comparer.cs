@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using ALS.CheckModule.Compare.Checker;
 using ALS.CheckModule.Compare.DataStructures;
+using ALS.CheckModule.Compare.Finaliter;
+using ALS.CheckModule.Compare.Preparer;
 using ALS.CheckModule.Processes;
 
 namespace ALS.CheckModule.Compare
@@ -11,9 +14,9 @@ namespace ALS.CheckModule.Compare
     {
         private readonly ProcessProgram _model;
         private readonly ProcessProgram _user;
-
+        private static readonly PreparerList PreparerList = new PreparerList();
         private static readonly CheckerList CheckerList = new CheckerList();
-
+        private static readonly FinaliterList FinaliterList = new FinaliterList();
         private ResultRun _userResult;
         
         /// <summary>
@@ -25,8 +28,8 @@ namespace ALS.CheckModule.Compare
         public Comparer(string pathModel, string pathUser, List<string> inputData)
         {
             _userResult.Input = inputData;
-            _model = new ProcessProgram(pathModel, inputData);
-            _user = new ProcessProgram(pathUser, inputData);
+            _model = new ProcessProgram(pathModel, inputData, false);
+            _user = new ProcessProgram(pathUser, inputData, true);
         }
         /// <summary>
         /// Сранение программ
@@ -34,12 +37,13 @@ namespace ALS.CheckModule.Compare
         /// <param name="constrains">Ограничения</param>
         public async Task<ResultRun> CompareAsync(Constrains constrains)
         {
+            PreparerList.Get(constrains.Preparer)?.Prepare(_user.PathToProgram);
             //Начнём и подождём завершения
             var okUserProg = await _user.Execute(constrains.Time);
             var okModelProg = await _model.Execute(constrains.Time);
             _userResult.Memory = _user.Memory;
             _userResult.Time = _user.Time;
-
+            
             if (okUserProg == false || _user.Memory > constrains.Memory)
             {
                 _userResult.Comment = $"Ваше решение использует {_user.Memory / 1024} КБ и {_user.Time} мс времени, требуется {constrains.Memory / 1024} КБ и {constrains.Time} мс";
@@ -53,8 +57,8 @@ namespace ALS.CheckModule.Compare
             
             _userResult.Output = GetOutput(_user);
             var modelOutput = GetOutput(_model);
-
-            CheckerList[constrains.Checker].Check(modelOutput, _user.PathToProgram, _model.PathToProgram, ref _userResult);
+            CheckerList.Get(constrains.Checker).Check(modelOutput, _user.PathToProgram, _model.PathToProgram, ref _userResult);
+            FinaliterList.Get(constrains.Finaliter).Finalite(_user.PathToProgram);
             return _userResult;
         }
         /// <summary>
@@ -68,7 +72,8 @@ namespace ALS.CheckModule.Compare
             {
                 while (!fs.EndOfStream)
                 {
-                    output.Add(fs.ReadLine()?.Trim());
+                    var line = fs.ReadLine()?.Split(' ').SelectMany(elem => elem.Split()).Where(elem => elem != String.Empty);
+                    output.AddRange(line);
                 }
             }
 

@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -37,8 +38,16 @@ namespace ALS.CheckModule.Processes
         {
             while (!_process.HasExited || !_cancellationTokenMeasuring.IsCancellationRequested)
             {
-                _memory = _process.PeakWorkingSet64;
-                _time = _process.TotalProcessorTime.Milliseconds;
+                try
+                {
+                    _memory = _process.PeakWorkingSet64;
+                    _time = _process.TotalProcessorTime.Milliseconds;
+                }
+                catch (Exception)
+                {
+                    //Если процесс завершён, то обязательно при замерах будет исключение
+                    return;
+                }
             }
             
         }
