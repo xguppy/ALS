@@ -4,34 +4,34 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using ALS.CheckModule.Processes;
 
-namespace ALS.CheckModule
+namespace ALS.CheckModule.Compare
 {
-    public abstract class ActionList<T> where T: class
+    public abstract class ComponentList<T>
     {
         protected static readonly Dictionary<string, T> Actions = new Dictionary<string, T>();
-
-        static ActionList()
+        
+        static ComponentList()
         {
             FillActions();
         }
-        protected static string GetPathToModule() => Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName, "ALS.CheckModule");
+        
         protected abstract string GetPathToSource();
         public abstract T Get(string name);
         public async Task<bool> ReloadActions()
         {
-            var result = await BuildCheckModule();
+            var result = await ModuleGovernor.BuildCheckModule();
             if(result)
             {
                 FillActions();
             }
             return result;
         }
-        protected static void FillActions()
+
+        private static void FillActions()
         {
             //Получим сборку
-            var checkModulePath = Path.Combine(GetPathToModule(), "bin", "Release", "netcoreapp2.2", "ALS.CheckModule.dll");
+            var checkModulePath = Path.Combine(ModuleGovernor.GetPathToModule(), "bin", "Release", "netcoreapp2.2", "ALS.CheckModule.dll");
             var checkModuleAssembly = Assembly.LoadFrom(checkModulePath);
             //Получим все действия пользователя
             var checkersAvailable = checkModuleAssembly.GetTypes().Where(t => t.IsClass && typeof(T).IsAssignableFrom(t));
@@ -79,11 +79,6 @@ namespace ALS.CheckModule
             }
         }
 
-        private static async Task<bool> BuildCheckModule()
-        {
-            var modulePath = GetPathToModule();
-            var dotnetAssembly = new ProcessDotnetReloader(modulePath);
-            return await dotnetAssembly.Execute(10000);
-        }
+        
     }
 }

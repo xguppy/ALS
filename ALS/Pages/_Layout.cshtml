@@ -45,6 +45,9 @@
             <li class="nav-item" id="themes">
                 <a class="nav-link" href="~/Themes">Темы</a>
             </li>
+            <li class="nav-item" id="checker">
+                <a class="nav-link" href="~/Checkers">Чекеры</a>
+            </li>
         </ul>
         <div class="userInfo" style="display:none;">
             Вы вошли как: <span class="userName"></span>
@@ -66,7 +69,7 @@
     let aw = $('#assignvariant');
     let contest = $('#contest');
     let themes = $('#themes');
-    
+    let checkers = $('#checker');
             
             $('#logOut').click(function (e) {
                 e.preventDefault();
@@ -97,10 +100,12 @@
             lw.css('display', 'block');
             aw.css('display', 'block');
             themes.css('display', 'block');
+            checkers.css('display', 'block');
         }
         if (roles.includes('Admin')) {
             group.css('display', 'block');
             speciality.css('display', 'block');
+            checkers.css('display', 'block');
         }
         if (roles.includes('Student')) {
             contest.css('display', 'block');

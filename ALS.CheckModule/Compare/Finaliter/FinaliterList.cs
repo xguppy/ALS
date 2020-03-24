@@ -2,10 +2,10 @@ using System.IO;
 
 namespace ALS.CheckModule.Compare.Finaliter
 {
-    public class FinaliterList: ActionList<IFinaliter>
+    public class FinaliterList: ComponentList<IFinaliter>
     {
         protected override string GetPathToSource()
-            => Path.Combine(GetPathToModule(), "Compare", "Finaliter");
+            => Path.Combine(ModuleGovernor.GetPathToModule(), "Compare", "Finaliter");
 
         public override IFinaliter Get(string name)
         {

@@ -2,10 +2,10 @@ using System.IO;
 
 namespace ALS.CheckModule.Compare.Preparer
 {
-    public class PreparerList: ActionList<IPreparer>
+    public class PreparerList: ComponentList<IPreparer>
     {
         protected override string GetPathToSource()
-            => Path.Combine(GetPathToModule(), "Compare", "Preparer");
+            => Path.Combine(ModuleGovernor.GetPathToModule(), "Compare", "Preparer");
 
         public override IPreparer Get(string name)
         {

@@ -11,12 +11,10 @@ namespace ALS.CheckModule.Processes
         private readonly Task _monitorTask;
         private readonly CancellationTokenSource _tokenSource = new CancellationTokenSource();
         private readonly CancellationToken _cancellationTokenMeasuring;
-        private int _time;
-        private long _memory;
 
-        public int Time => _time;
-        public long Memory => _memory;
-        
+        public int Time { get; private set; }
+        public long Memory { get; private set; }
+
         public ProcessMonitor(Process process)
         {
             _process = process;
@@ -40,8 +38,8 @@ namespace ALS.CheckModule.Processes
             {
                 try
                 {
-                    _memory = _process.PeakWorkingSet64;
-                    _time = _process.TotalProcessorTime.Milliseconds;
+                    Memory = _process.PeakWorkingSet64;
+                    Time = _process.TotalProcessorTime.Milliseconds;
                 }
                 catch (Exception)
                 {

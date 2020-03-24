@@ -8,10 +8,10 @@ using ALS.CheckModule.Processes;
 
 namespace ALS.CheckModule.Compare.Checker
 {
-    public class CheckerList: ActionList<IChecker>
+    public class CheckerList: ComponentList<IChecker>
     {
         protected override string GetPathToSource()
-            => Path.Combine(GetPathToModule(), "Compare", "Checker");
+            => Path.Combine(ModuleGovernor.GetPathToModule(), "Compare", "Checker");
 
         public override IChecker Get(string name)
         {
