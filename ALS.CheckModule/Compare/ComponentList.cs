@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Threading.Tasks;
 
 namespace ALS.CheckModule.Compare
@@ -10,7 +11,7 @@ namespace ALS.CheckModule.Compare
     public abstract class ComponentList<T>
     {
         protected static readonly Dictionary<string, T> Actions = new Dictionary<string, T>();
-        
+        private static CheckModuleLoadContext _loadContext = new CheckModuleLoadContext();
         static ComponentList()
         {
             FillActions();
@@ -20,6 +21,11 @@ namespace ALS.CheckModule.Compare
         public abstract T Get(string name);
         public async Task<bool> ReloadActions()
         {
+            if (Actions.Count != 0)
+            {
+                Actions.Clear();
+                _loadContext.Unload();
+            }
             var result = await ModuleGovernor.BuildCheckModule();
             if(result)
             {
@@ -31,17 +37,14 @@ namespace ALS.CheckModule.Compare
         private static void FillActions()
         {
             //Получим сборку
-            var checkModulePath = Path.Combine(ModuleGovernor.GetPathToModule(), "bin", "Release", "netcoreapp2.2", "ALS.CheckModule.dll");
-            var checkModuleAssembly = Assembly.LoadFrom(checkModulePath);
+            var checkModulePath = Path.Combine(ModuleGovernor.GetPathToModule(), "bin", "Debug", "netcoreapp3.1", "ALS.CheckModule.dll");
+            var checkModuleAssembly = _loadContext.LoadFromAssemblyPath(checkModulePath);
             //Получим все действия пользователя
             var checkersAvailable = checkModuleAssembly.GetTypes().Where(t => t.IsClass && typeof(T).IsAssignableFrom(t));
             //Соберем(или обновим) словарь действий
             foreach (var action in checkersAvailable)
             {
-                if(!Actions.ContainsKey(action.Name))
-                {
-                    Actions.Add(action.Name, (T)Activator.CreateInstance(action));
-                }
+                Actions.Add(action.Name, (T)Activator.CreateInstance(action));
             }
         }
         
@@ -73,10 +76,8 @@ namespace ALS.CheckModule.Compare
         
         public async Task Add(string code, string fileName)
         {
-            using (var fileStreamWriter = new StreamWriter(Path.Combine(GetPathToSource(), fileName)))
-            {
-                await fileStreamWriter.WriteAsync(code);
-            }
+            await using var fileStreamWriter = new StreamWriter(Path.Combine(GetPathToSource(), fileName));
+            await fileStreamWriter.WriteAsync(code);
         }
 
         

@@ -8,22 +8,31 @@
 
 <h3>Чекеры </h3>
 <div style="margin-bottom: 1%">
-    <form asp-action="Create" asp-controller="Checker" method="post" enctype="multipart/form-data">
-        <input class="btn btn-primary edit-item" type="file" accept=".cs" name="nameChecker"/>
-        <input class="btn btn-primary edit-item" type="submit" value="Загрузить"/>
-    </form>
+    <input onchange="sendSolution(this)" class="btn btn-primary edit-item" type="file" accept=".cs"/>
 </div>
 <div class="container">
-<table style="width: 100%" class="table table-hover" border="1">
-    <thead>
-    <tr>
-    <td>Название чекера</td>
-    <td>Просмотреть код чекера</td>
-    <td>Удалить чекер</td>
-    </thead>
-    <tbody id="tbodyContent">
-</table>
+    <table style="width: 100%" class="table table-hover" border="1">
+        <thead>
+        <tr>
+        <td>Название чекера</td>
+        <td>Просмотреть код чекера</td>
+        <td>Удалить чекер</td>
+        </thead>
+        <tbody id="tbodyContent">
+    </table>
 </div>
+<div id="checkerModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header"><h4 class="modal-title">Текст чекера</h4><button class="close" type="button" data-dismiss="modal">×</button>
+            </div>
+            <div id="checkerTextContent" class="modal-body">
+            </div>
+            <div class="modal-footer"><button class="btn btn-default" type="button" data-dismiss="modal">Закрыть</button></div>
+        </div>
+    </div>
+</div>
+
 <script>
     CreateTable();
     
@@ -57,12 +66,14 @@
                                 });
                                 getCodeBtn.innerText = "Получить код";
                                 tdGetCode.appendChild(getCodeBtn);
+                                getCodeBtn.setAttribute('data-target', '#checkerModal');
+                                getCodeBtn.setAttribute('data-toggle', 'modal');
                                 let tdRemoveChecker = document.createElement('td');
                                 tr.appendChild(tdRemoveChecker);
                                 let removeCheckerBtn = document.createElement('button');
                                 removeCheckerBtn.className = "btn btn-danger remove-item";
                                 removeCheckerBtn.addEventListener('click', function() {
-                                  RemoveChecker(checker)
+                                  RemoveChecker(checker);
                                 });
                                 removeCheckerBtn.innerText = "Удалить чекер";
                                 tdRemoveChecker.appendChild(removeCheckerBtn);
@@ -79,10 +90,89 @@
             );
     }
   function ReadCodeChecker(nameChecker) {
-    CreateTable();
+        $.ajax(
+             {
+                type: 'GET',
+                url: '/api/checker/get',
+                beforeSend: (xhr) => 
+                {
+                    let token = sessionStorage.getItem(tokenKey);
+                    xhr.setRequestHeader("Authorization", "Bearer " + token);
+                    xhr.setRequestHeader("nameComponent", nameChecker);
+                },
+                success: (textChecker) =>
+                {
+                    document.getElementById('checkerTextContent').innerText = textChecker;
+                },
+                error: (checkerFail) =>
+                {
+                    document.body.innerHTML = '';
+                    alert('Нет доступа');
+                    history.go(-1);
+                    
+                }
+             }
+         )
   }
   
   function RemoveChecker(nameChecker) {
-    CreateTable();
+    $.ajax(
+                 {
+                    type: 'POST',
+                    url: '/api/Checker/Delete',
+                    beforeSend: (xhr) => 
+                    {
+                        let token = sessionStorage.getItem(tokenKey);
+                        xhr.setRequestHeader("Authorization", "Bearer " + token);
+                        xhr.setRequestHeader("nameComponent", nameChecker);
+                    },
+                    success: (textChecker) =>
+                    {
+                        alert(textChecker)
+                    },
+                    error: (checkerFail) =>
+                    {
+                        document.body.innerHTML = '';
+                        alert('Нет доступа');
+                        history.go(-1);
+                        
+                    }
+                 }
+             );
+     CreateTable();
   }
+  
+  function sendSolution(evt)
+          {
+              var files = evt.files; // FileList object
+              var dataFile = new FormData();
+              for (var i = 0; i < files.length; i++) {
+                  dataFile.append('componentFile', files[i]);
+              }
+              $.ajax(
+                  {
+                      type: 'POST',
+                      url: '/api/Checker/Create',
+                      contentType: false,
+                      data: dataFile,
+                      processData: false,
+                      async: false,
+                      beforeSend: (xhr) =>
+                      {
+                          let token = sessionStorage.getItem(tokenKey);
+                          xhr.setRequestHeader("Authorization", "Bearer " + token);
+                      },
+                      success: (result) =>
+                      {
+                          let tbdy = document.getElementById('tbodyContent');
+                          CreateTable();
+                          alert(result);
+                      },
+                      error: (sendFail) =>
+                      {
+                          alert(sendFail.responseText);
+                      }
+                  }
+              );
+          }
 </script>

@@ -24,11 +24,11 @@ namespace ALS.Pages
         public List<TemplateLaboratoryWork> Templates;
         public TemplateLaboratoryWork NewTemplate;
         public List<SelectListItem> Themes;
-        private IHostingEnvironment _environment;
+        private IWebHostEnvironment _environment;
         private IHttpClientFactory _clientFactory;
         public int Id = -1;
 
-        public TemplatesModel(ApplicationContext context, IHttpClientFactory clientFactory, IHostingEnvironment env)
+        public TemplatesModel(ApplicationContext context, IHttpClientFactory clientFactory, IWebHostEnvironment env)
         {
             Templates = new List<TemplateLaboratoryWork>();
             _context = context;

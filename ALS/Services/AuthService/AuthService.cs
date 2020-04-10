@@ -15,11 +15,14 @@ namespace ALS.Services.AuthService
     public class AuthService: IAuthService
     {
         // Generates JWT
-        private IConfiguration _Config { get; }
-
+        private IConfiguration Config { get; }
+        private readonly DbContextOptions<ApplicationContext> _options;
+        
         public AuthService(IConfiguration config)
         {
-            _Config = config;
+            Config = config;
+             var builder = new DbContextOptionsBuilder<ApplicationContext>();
+            _options = builder.UseNpgsql(Config.GetConnectionString("AlsDatabase")).Options;
         }
 
         public string GetAuthData(string email, User user)
@@ -30,8 +33,7 @@ namespace ALS.Services.AuthService
                 new Claim(ClaimTypes.Email, email),
                 new Claim(ClaimTypes.Name, $"{user.Surname} {user.Name}")
             };
-
-            using (var db = new ApplicationContext())
+            using (var db = new ApplicationContext(_options))
             {
                 var dbUser = db.Users.Include(u => u.UserRoles).ThenInclude(ur => ur.Role).FirstOrDefault(u => u.Email == email);
                 if (dbUser != null)
@@ -40,13 +42,13 @@ namespace ALS.Services.AuthService
                 }
             }
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_Config["JwtKey"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Config["JwtKey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var expires = DateTime.Now.AddDays(Convert.ToDouble(_Config["JwtExpires"]));
+            var expires = DateTime.Now.AddDays(Convert.ToDouble(Config["JwtExpires"]));
 
             var token = new JwtSecurityToken(
-                _Config["JwtIssuer"],
-                _Config["JwtAudience"],
+                Config["JwtIssuer"],
+                Config["JwtAudience"],
                 claims,
                 expires: expires,
                 signingCredentials: creds

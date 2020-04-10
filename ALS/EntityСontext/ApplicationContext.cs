@@ -34,8 +34,8 @@ namespace ALS.EntityСontext
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.ForNpgsqlHasEnum<Evaluation>();
-            modelBuilder.ForNpgsqlHasEnum<RoleEnum>();
+            modelBuilder.HasPostgresEnum<Evaluation>();
+            modelBuilder.HasPostgresEnum<RoleEnum>();
 
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email)
@@ -53,8 +53,5 @@ namespace ALS.EntityСontext
                 .HasIndex(av => new {av.UserId, av.VariantId})
                 .IsUnique();
         }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            => optionsBuilder.UseNpgsql("Host=localhost;Database=als;Username=postgres;Password=postgres");
     }
 }

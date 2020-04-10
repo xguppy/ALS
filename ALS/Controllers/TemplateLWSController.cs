@@ -20,9 +20,9 @@ namespace ALS.Controllers
     public class TemplateLWSController : ControllerBase
     {
         private readonly ApplicationContext _db;
-        private IHostingEnvironment _environment;
+        private IWebHostEnvironment _environment;
 
-        public TemplateLWSController(ApplicationContext db, IHostingEnvironment env)
+        public TemplateLWSController(ApplicationContext db, IWebHostEnvironment env)
         {
             _db = db;
             _environment = env;

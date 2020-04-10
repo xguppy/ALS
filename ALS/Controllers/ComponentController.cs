@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using ALS.CheckModule.Compare;
+using ALS.EntityСontext;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,14 +12,21 @@ namespace ALS.Controllers
     public abstract class ComponentController<T>: Controller
     {
         protected static ComponentList<T> ComponentList;
+        private readonly ApplicationContext _db;
+
+        protected ComponentController(ApplicationContext db)
+        {
+            _db = db;
+        }
+
         
         [HttpGet]
         public async Task<IActionResult> GetAll() =>
             Ok(await Task.Run(ComponentList.GetList));
-
+        
         [HttpGet]
         public async Task<IActionResult> Get([FromHeader] string nameComponent) =>
-            Ok(await ComponentList.GetText(nameComponent));
+            Ok(await ComponentList.GetText($"{nameComponent}.cs"));
 
         [HttpPost]
         public async Task<IActionResult> Delete([FromHeader] string nameComponent)
@@ -43,21 +51,22 @@ namespace ALS.Controllers
             ModuleGovernor.AllowBuild();
             if(noError)
             {
+                await DeleteComponentFromDataBase(nameComponent);
                 return Ok("Пользовательский компонент успешно удалён");
             }
             return BadRequest("Не удалось удалить компонент. Возможно его используют другие компоненты");
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(IFormFile checkerFile)
+        public async Task<IActionResult> Create(IFormFile componentFile)
         {
             string sourceCodeChecker;
-            using (var sr = new StreamReader(checkerFile.OpenReadStream()))
+            using (var sr = new StreamReader(componentFile.OpenReadStream()))
             {
                 sourceCodeChecker = await sr.ReadToEndAsync();
             }
             var checkerList = ComponentList.GetList();
-            var fileName = checkerFile.FileName;
+            var fileName = componentFile.FileName;
             var className = fileName.Substring(0, fileName.IndexOf(".cs", StringComparison.Ordinal));
             await ComponentList.Add(sourceCodeChecker, fileName);
             var noError = false;
@@ -75,9 +84,10 @@ namespace ALS.Controllers
                 var newCheckers = newCheckerList.Except(checkerList).ToList();
                 //Только один чекер может быть добавлен
                 //Имя файла с чекером должно быть аналогично имени класса
-                if (newCheckers.Count > 1 || className != newCheckers[0])
+                if (newCheckers.Count == 0 || newCheckers.Count > 1 || className != newCheckers[0])
                 {
                     noError = false;
+                    ModuleGovernor.AllowBuild();
                     await Delete(className);
                 }
             }
@@ -86,8 +96,26 @@ namespace ALS.Controllers
             {
                 return Ok("Пользовательский компонент успешно добавлен");
             }
-            await ComponentList.Delete(checkerFile.FileName);
+            await ComponentList.Delete(componentFile.FileName);
             return BadRequest("Не удалось добавить компонент. Возможно в коде компонента имеются ошибки");
         }
+        
+        /// <summary>
+        /// Удаление компонента из БД
+        /// </summary>
+        /// <param name="nameComponent"></param>
+        public async Task DeleteComponentFromDataBase(string nameComponent)
+        {
+            var deletingPreparersLab = _db.LaboratoryWorks.Where(lab => ComponentPredicate(lab, nameComponent));
+            foreach (var item in deletingPreparersLab)
+            {
+                item.Constraints = DeleteComponent(item.Constraints);
+                _db.LaboratoryWorks.Update(item);
+                await _db.SaveChangesAsync();
+            }
+        }
+
+        protected abstract bool ComponentPredicate(LaboratoryWork laboratoryWork, string nameComponent);
+        protected abstract string DeleteComponent(string constrains);
     }
 }

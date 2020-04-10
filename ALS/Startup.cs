@@ -9,14 +9,15 @@ using ALS.CheckModule.Processes;
 using ALS.EntityСontext;
 using ALS.Services;
 using ALS.Services.AuthService;
-using Generator.Parsing;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 
 namespace ALS
@@ -32,9 +33,9 @@ namespace ALS
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            services.AddEntityFrameworkNpgsql().AddDbContext<ApplicationContext>();
-
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            services.AddEntityFrameworkNpgsql().AddDbContext<ApplicationContext>(options => options.UseNpgsql(Configuration.GetConnectionString("AlsDatabase")));
+            
             services.AddSingleton<IAuthService>(new AuthService(Configuration));
             services.AddSingleton<ILexer>(new CppLexer(new CppLexerFactory()));
             services.AddHttpClient();
@@ -67,9 +68,9 @@ namespace ALS
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ApplicationContext dbContext)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApplicationContext dbContext)
         {
-            if (env.IsDevelopment())
+            if (env.ApplicationName == Environments.Development)
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -81,17 +82,18 @@ namespace ALS
                 app.UseHsts();
             }
 
+            app.UseRouting();
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
             app.UseAuthentication();
+            app.UseAuthorization();
+            app.UseEndpoints(endpoints =>
+                {
+                    endpoints.MapControllerRoute("default", "{controller}/{action=Index}/{id?}");
+                    endpoints.MapRazorPages();
+                });
 
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    "default",
-                    "{controller}/{action=Index}/{id?}");
-            });
 
             dbContext.Database.EnsureCreated();
 
