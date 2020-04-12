@@ -128,7 +128,8 @@
                     },
                     success: (textChecker) =>
                     {
-                        alert(textChecker)
+                        CreateTable();
+                        alert(textChecker);
                     },
                     error: (checkerFail) =>
                     {
@@ -139,7 +140,6 @@
                     }
                  }
              );
-     CreateTable();
   }
   
   function sendSolution(evt)
@@ -164,7 +164,6 @@
                       },
                       success: (result) =>
                       {
-                          let tbdy = document.getElementById('tbodyContent');
                           CreateTable();
                           alert(result);
                       },

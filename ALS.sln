@@ -8,6 +8,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ALS.AntiPlagModule", "ALS.A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ALS.GeneratorModule", "ALS.GeneratorModule\ALS.GeneratorModule.csproj", "{719258E3-797D-4474-969B-4A00E091921E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ALS.CheckModule.Component.Checker", "ALS.CheckModule.Component.Checker\ALS.CheckModule.Component.Checker.csproj", "{848B4F1A-9AB8-4F5E-9620-398A1A7FBEEF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ALS.CheckModule.Component.Finaliter", "ALS.CheckModule.Component.Finaliter\ALS.CheckModule.Component.Finaliter.csproj", "{9BA6028A-A9BB-4CB1-8A4F-0ADA8087F8D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ALS.CheckModule.Component.Preparer", "ALS.CheckModule.Component.Preparer\ALS.CheckModule.Component.Preparer.csproj", "{2FDE84BC-B212-4901-BE07-194571948EFC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +36,17 @@ Global
 		{719258E3-797D-4474-969B-4A00E091921E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{719258E3-797D-4474-969B-4A00E091921E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{719258E3-797D-4474-969B-4A00E091921E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{848B4F1A-9AB8-4F5E-9620-398A1A7FBEEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{848B4F1A-9AB8-4F5E-9620-398A1A7FBEEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{848B4F1A-9AB8-4F5E-9620-398A1A7FBEEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{848B4F1A-9AB8-4F5E-9620-398A1A7FBEEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BA6028A-A9BB-4CB1-8A4F-0ADA8087F8D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BA6028A-A9BB-4CB1-8A4F-0ADA8087F8D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BA6028A-A9BB-4CB1-8A4F-0ADA8087F8D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BA6028A-A9BB-4CB1-8A4F-0ADA8087F8D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2FDE84BC-B212-4901-BE07-194571948EFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FDE84BC-B212-4901-BE07-194571948EFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FDE84BC-B212-4901-BE07-194571948EFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FDE84BC-B212-4901-BE07-194571948EFC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

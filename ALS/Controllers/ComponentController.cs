@@ -106,7 +106,7 @@ namespace ALS.Controllers
         /// <param name="nameComponent"></param>
         public async Task DeleteComponentFromDataBase(string nameComponent)
         {
-            var deletingPreparersLab = _db.LaboratoryWorks.Where(lab => ComponentPredicate(lab, nameComponent));
+            var deletingPreparersLab = _db.LaboratoryWorks.ToList().Where(lab => ComponentPredicate(lab, nameComponent));
             foreach (var item in deletingPreparersLab)
             {
                 item.Constraints = DeleteComponent(item.Constraints);

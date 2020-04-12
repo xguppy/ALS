@@ -11,7 +11,7 @@ namespace ALS.CheckModule.Compare.Checker
     public class CheckerList: ComponentList<IChecker>
     {
         protected override string GetPathToSource()
-            => Path.Combine(ModuleGovernor.GetPathToModule(), "Compare", "Checker");
+            => Path.Combine(ModuleGovernor.GetPathToModule(GetComponentName()));
 
         public override IChecker Get(string name)
         {
@@ -27,5 +27,6 @@ namespace ALS.CheckModule.Compare.Checker
             }
             return Actions[name];
         }
+        
     }
 }

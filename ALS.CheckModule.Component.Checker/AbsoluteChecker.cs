@@ -1,7 +1,8 @@
 using System.Collections.Generic;
+using ALS.CheckModule.Compare.Checker;
 using ALS.CheckModule.Compare.DataStructures;
 
-namespace ALS.CheckModule.Compare.Checker
+namespace ALS.CheckModule.Component.Checker
 {
     public class AbsoluteChecker: IChecker
     {
