@@ -3,10 +3,10 @@
 
 @{
     Layout = "_Layout";
-    ViewData["Title"] = "Добавить чекер";
+    ViewData["Title"] = "Добавить завершитель";
 }
 
-<h3>Чекеры </h3>
+<h3>Завершители </h3>
 <div style="margin-bottom: 1%">
     <input onchange="sendSolution(this)" class="btn btn-primary edit-item" type="file" accept=".cs"/>
 </div>
@@ -14,9 +14,9 @@
     <table style="width: 100%" class="table table-hover" border="1">
         <thead>
         <tr>
-        <td>Наименование чекера</td>
-        <td>Просмотреть код чекера</td>
-        <td>Удалить чекер</td>
+        <td>Наименование завершителя</td>
+        <td>Просмотреть код завершителя</td>
+        <td>Удалить завершитель</td>
         </thead>
         <tbody id="tbodyContent">
     </table>
@@ -24,7 +24,7 @@
 <div id="checkerModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header"><h4 class="modal-title">Текст чекера</h4><button class="close" type="button" data-dismiss="modal">×</button>
+            <div class="modal-header"><h4 class="modal-title">Текст завершителя</h4><button class="close" type="button" data-dismiss="modal">×</button>
             </div>
             <div id="checkerTextContent" class="modal-body">
             </div>
@@ -40,7 +40,7 @@
         $.ajax(
                     {
                         type: 'GET',
-                        url: '/api/checker/getall',
+                        url: '/api/finaliter/getall',
                         beforeSend: (xhr) => 
                         {
                             let token = sessionStorage.getItem(tokenKey);
@@ -75,7 +75,7 @@
                                 removeCheckerBtn.addEventListener('click', function() {
                                   RemoveChecker(checker);
                                 });
-                                removeCheckerBtn.innerText = "Удалить чекер";
+                                removeCheckerBtn.innerText = "Удалить завершитель";
                                 tdRemoveChecker.appendChild(removeCheckerBtn);
                             }
                         },
@@ -93,7 +93,7 @@
         $.ajax(
              {
                 type: 'GET',
-                url: '/api/checker/get',
+                url: '/api/finaliter/get',
                 beforeSend: (xhr) => 
                 {
                     let token = sessionStorage.getItem(tokenKey);
@@ -119,7 +119,7 @@
     $.ajax(
                  {
                     type: 'POST',
-                    url: '/api/Checker/Delete',
+                    url: '/api/finaliter/Delete',
                     beforeSend: (xhr) => 
                     {
                         let token = sessionStorage.getItem(tokenKey);
@@ -152,7 +152,7 @@
               $.ajax(
                   {
                       type: 'POST',
-                      url: '/api/Checker/Create',
+                      url: '/api/finaliter/Create',
                       contentType: false,
                       data: dataFile,
                       processData: false,

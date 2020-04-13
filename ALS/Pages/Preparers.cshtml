@@ -6,7 +6,7 @@
     ViewData["Title"] = "Добавить чекер";
 }
 
-<h3>Чекеры </h3>
+<h3>Подготовщики </h3>
 <div style="margin-bottom: 1%">
     <input onchange="sendSolution(this)" class="btn btn-primary edit-item" type="file" accept=".cs"/>
 </div>
@@ -14,9 +14,9 @@
     <table style="width: 100%" class="table table-hover" border="1">
         <thead>
         <tr>
-        <td>Наименование чекера</td>
-        <td>Просмотреть код чекера</td>
-        <td>Удалить чекер</td>
+        <td>Наименование подготовщика</td>
+        <td>Просмотреть код подготовщика</td>
+        <td>Удалить подготовщик</td>
         </thead>
         <tbody id="tbodyContent">
     </table>
@@ -24,7 +24,7 @@
 <div id="checkerModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header"><h4 class="modal-title">Текст чекера</h4><button class="close" type="button" data-dismiss="modal">×</button>
+            <div class="modal-header"><h4 class="modal-title">Текст подготовщика</h4><button class="close" type="button" data-dismiss="modal">×</button>
             </div>
             <div id="checkerTextContent" class="modal-body">
             </div>
@@ -40,7 +40,7 @@
         $.ajax(
                     {
                         type: 'GET',
-                        url: '/api/checker/getall',
+                        url: '/api/Preparer/getall',
                         beforeSend: (xhr) => 
                         {
                             let token = sessionStorage.getItem(tokenKey);
@@ -93,7 +93,7 @@
         $.ajax(
              {
                 type: 'GET',
-                url: '/api/checker/get',
+                url: '/api/Preparer/get',
                 beforeSend: (xhr) => 
                 {
                     let token = sessionStorage.getItem(tokenKey);
@@ -119,7 +119,7 @@
     $.ajax(
                  {
                     type: 'POST',
-                    url: '/api/Checker/Delete',
+                    url: '/api/Preparer/Delete',
                     beforeSend: (xhr) => 
                     {
                         let token = sessionStorage.getItem(tokenKey);
@@ -152,7 +152,7 @@
               $.ajax(
                   {
                       type: 'POST',
-                      url: '/api/Checker/Create',
+                      url: '/api/Preparer/Create',
                       contentType: false,
                       data: dataFile,
                       processData: false,
