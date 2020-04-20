@@ -58,7 +58,7 @@ namespace ALS.CheckModule.Compare
             _userResult.Output = GetOutput(_user);
             var modelOutput = GetOutput(_model);
             CheckerList.Get(constrains.Checker).Check(modelOutput, _user.PathToProgram, _model.PathToProgram, ref _userResult);
-            FinaliterList.Get(constrains.Finaliter).Finalite(_user.PathToProgram);
+            FinaliterList.Get(constrains.Finaliter)?.Finalite(_user.PathToProgram);
             return _userResult;
         }
         /// <summary>
@@ -67,14 +67,12 @@ namespace ALS.CheckModule.Compare
         private static List<string> GetOutput(ProcessExecute prog)
         {
             var output = new List<string>();
-            
-            using (var fs = prog.Output)
+
+            using var fs = prog.Output;
+            while (!fs.EndOfStream)
             {
-                while (!fs.EndOfStream)
-                {
-                    var line = fs.ReadLine()?.Split(' ').SelectMany(elem => elem.Split()).Where(elem => elem != String.Empty);
-                    output.AddRange(line);
-                }
+                var line = fs.ReadLine()?.Split(' ').SelectMany(elem => elem.Split()).Where(elem => elem != String.Empty);
+                output.AddRange(line);
             }
 
             return output;

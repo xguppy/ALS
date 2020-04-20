@@ -130,11 +130,11 @@
                                       tr.appendChild(tdDescLab);
 
                                       let tdVariantNumber = document.createElement('td');
-                                      tdVariantNumber.appendChild(document.createTextNode(task.variant.variantId));
+                                      tdVariantNumber.appendChild(document.createTextNode(task.variantId));
                                       tr.appendChild(tdVariantNumber);
 
                                       let tdVariantDesc = document.createElement('td');
-                                      tdVariantDesc.appendChild(document.createTextNode(task.variant.description));
+                                      tdVariantDesc.appendChild(document.createTextNode(task.varDescription));
                                       tr.appendChild(tdVariantDesc);
 
                                       let tdSolution = document.createElement('td');
@@ -148,7 +148,7 @@
                                           buttonSend.type = "file";
                                           buttonSend.className = "files";
                                           buttonSend.accept = ".cpp, .h, .c";
-                                          buttonSend.dataset.id = task.variant.variantId;
+                                          buttonSend.dataset.id = task.variantId;
                                           buttonSend.multiple = true;
                                           buttonSend.addEventListener('change', sendSolution, false);
                                           buttonSend.className = "btn btn-primary edit-item";

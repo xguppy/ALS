@@ -48,7 +48,7 @@ namespace ALS.Controllers
                         av.UserId == userId && av.Variant.LaboratoryWork.DisciplineCipher == disciplineId)
                 .Select(av => new
                 {
-                    av.AssignedVariantId, av.Variant.LaboratoryWork.Description, av.Variant.LaboratoryWork.Name, av.Variant,
+                    av.AssignedVariantId, av.Variant.LaboratoryWork.Description, av.Variant.LaboratoryWork.Name, av.Variant.VariantId, VarDescription = av.Variant.Description,
                     IsSolved = av.Solutions.Any(sol => sol.IsSolved)
                 }).ToList()));
         }
