@@ -138,9 +138,6 @@
 
 <script>
 
-    let username = "userName";
-    let userId = "userId";
-
     // проверка доступа и все
     $.ajax(
         {
@@ -164,8 +161,6 @@
 
     //function openModalUpdate(tmpId, themeId, cipher, name, descr, constr) {
     function openModalUpdate(lwId,userIdent,tmpId, themeId, cipher, name, descr, constr) {
-
-
         if (userIdent != sessionStorage.getItem(userId)) {
             alert('У вас нет доступа к данной лабораторной работе!');
             return;
