@@ -21,17 +21,6 @@
         <tbody id="tbodyContent">
     </table>
 </div>
-<div id="checkerModal" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header"><h4 class="modal-title">Текст чекера</h4><button class="close" type="button" data-dismiss="modal">×</button>
-            </div>
-            <div id="checkerTextContent" class="modal-body">
-            </div>
-            <div class="modal-footer"><button class="btn btn-default" type="button" data-dismiss="modal">Закрыть</button></div>
-        </div>
-    </div>
-</div>
 
 <script>
     CreateTable();
@@ -43,8 +32,6 @@
                         url: '/api/checker/getall',
                         beforeSend: (xhr) => 
                         {
-                            let token = sessionStorage.getItem(tokenKey);
-                            xhr.setRequestHeader("Authorization", "Bearer " + token);
                         },
                         success: (checkers) =>
                         {
@@ -66,8 +53,6 @@
                                 });
                                 getCodeBtn.innerText = "Получить код";
                                 tdGetCode.appendChild(getCodeBtn);
-                                getCodeBtn.setAttribute('data-target', '#checkerModal');
-                                getCodeBtn.setAttribute('data-toggle', 'modal');
                                 let tdRemoveChecker = document.createElement('td');
                                 tr.appendChild(tdRemoveChecker);
                                 let removeCheckerBtn = document.createElement('button');
@@ -90,29 +75,7 @@
             );
     }
   function ReadCodeChecker(nameChecker) {
-        $.ajax(
-             {
-                type: 'GET',
-                url: '/api/checker/get',
-                beforeSend: (xhr) => 
-                {
-                    let token = sessionStorage.getItem(tokenKey);
-                    xhr.setRequestHeader("Authorization", "Bearer " + token);
-                    xhr.setRequestHeader("nameComponent", nameChecker);
-                },
-                success: (textChecker) =>
-                {
-                    document.getElementById('checkerTextContent').innerText = textChecker;
-                },
-                error: (checkerFail) =>
-                {
-                    document.body.innerHTML = '';
-                    alert('Нет доступа');
-                    history.go(-1);
-                    
-                }
-             }
-         )
+        window.open('/api/Checker/Get?nameComponent=' + nameChecker);
   }
   
   function RemoveChecker(nameChecker) {
@@ -122,8 +85,6 @@
                     url: '/api/Checker/Delete',
                     beforeSend: (xhr) => 
                     {
-                        let token = sessionStorage.getItem(tokenKey);
-                        xhr.setRequestHeader("Authorization", "Bearer " + token);
                         xhr.setRequestHeader("nameComponent", nameChecker);
                     },
                     success: (textChecker) =>
@@ -159,8 +120,6 @@
                       async: false,
                       beforeSend: (xhr) =>
                       {
-                          let token = sessionStorage.getItem(tokenKey);
-                          xhr.setRequestHeader("Authorization", "Bearer " + token);
                       },
                       success: (result) =>
                       {

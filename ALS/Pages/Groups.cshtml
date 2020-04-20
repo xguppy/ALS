@@ -70,8 +70,6 @@
             url: '/api/groups/getall',
             beforeSend: (xhr) => 
             {
-                let token = sessionStorage.getItem(tokenKey);
-                xhr.setRequestHeader("Authorization", "Bearer " + token);
             },
             success: (groups) =>
             {
@@ -120,8 +118,6 @@
                       data: JSON.stringify(group),
                       beforeSend: (xhr) =>
                       {
-                           let token = sessionStorage.getItem(tokenKey);
-                           xhr.setRequestHeader("Authorization", "Bearer " + token);
                       },
                       success: (g) =>
                       {
@@ -144,8 +140,6 @@
                                 url: '/api/groups/delete',
                                 beforeSend: (xhr) =>
                                 {
-                                     let token = sessionStorage.getItem(tokenKey);
-                                     xhr.setRequestHeader("Authorization", "Bearer " + token);
                                      xhr.setRequestHeader("groupId", groupId)
                                 },
                                 success: (g) =>
@@ -192,8 +186,6 @@
                            data: JSON.stringify(group),
                            beforeSend: (xhr) =>
                            {
-                                let token = sessionStorage.getItem(tokenKey);
-                                xhr.setRequestHeader("Authorization", "Bearer " + token);
                                 xhr.setRequestHeader("groupId", $('#EditGroupId').val());
                            },
                            success: (g) =>

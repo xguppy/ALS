@@ -53,7 +53,6 @@ $('#submitLogin').click(function (e) {
                         $('.userInfo').css('display', 'block');
                         $('.loginForm').css('display', 'none');
                         // сохраняем в хранилище sessionStorage токен доступа и имя
-                        sessionStorage.setItem(tokenKey, data.access_token);
                         sessionStorage.setItem(username, data.username);
                         sessionStorage.setItem(userId,   data.userId);
                         sessionStorage.setItem(roles,    JSON.stringify(data.roles));

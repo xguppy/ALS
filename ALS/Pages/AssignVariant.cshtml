@@ -30,8 +30,6 @@
               async: false,
               beforeSend: (xhr) => 
               {
-                  let token = sessionStorage.getItem(tokenKey);
-                  xhr.setRequestHeader("Authorization", "Bearer " + token);
               },
               success: (disciplines) =>
               {
@@ -70,8 +68,6 @@
                 beforeSend: (xhr) => 
                 {
                     let data = getData();
-                    let token = sessionStorage.getItem(tokenKey);
-                    xhr.setRequestHeader("Authorization", "Bearer " + token);
                     xhr.setRequestHeader("groupId", data.idGroup);
                     xhr.setRequestHeader("laboratoryWorkId", data.idLw);
                 },
@@ -104,8 +100,6 @@
                         url: '/api/assignedvariants/getall',
                         beforeSend: (xhr) => 
                         {
-                            let token = sessionStorage.getItem(tokenKey);
-                            xhr.setRequestHeader("Authorization", "Bearer " + token);
                             xhr.setRequestHeader("groupId", data.idGroup);
                             xhr.setRequestHeader("laboratoryWorkId", data.idLw);
                         },
@@ -128,8 +122,6 @@
                   url: '/api/users/getusersbygroup',
                   beforeSend: (xhr) => 
                   {
-                      let token = sessionStorage.getItem(tokenKey);
-                      xhr.setRequestHeader("Authorization", "Bearer " + token);
                       xhr.setRequestHeader("groupId", data.idGroup);
                   },
                   success: (users) =>
@@ -140,8 +132,6 @@
                                 url: '/api/variants/getallbylaboratoryid',
                                 beforeSend: (xhr) => 
                                 {
-                                    let token = sessionStorage.getItem(tokenKey);
-                                    xhr.setRequestHeader("Authorization", "Bearer " + token);
                                     xhr.setRequestHeader("laboratoryWorkId", data.idLw);
                                 },
                                 success: (variants) =>
@@ -186,8 +176,6 @@
                                                                 data: JSON.stringify(model),
                                                                 beforeSend: (xhr) => 
                                                                 {
-                                                                    let token = sessionStorage.getItem(tokenKey);
-                                                                    xhr.setRequestHeader("Authorization", "Bearer " + token);
                                                                 },
                                                                 success: (aw) =>
                                                                 {
@@ -213,8 +201,6 @@
                                                         data: JSON.stringify(model),
                                                         beforeSend: (xhr) => 
                                                         {
-                                                            let token = sessionStorage.getItem(tokenKey);
-                                                            xhr.setRequestHeader("Authorization", "Bearer " + token);
                                                             xhr.setRequestHeader("assignedVariantId", obj.currentTarget.dataset.id);
                                                         },
                                                         success: (aw) =>
@@ -295,8 +281,6 @@
                 async:false,
                 beforeSend: (xhr) => 
                 {
-                    let token = sessionStorage.getItem(tokenKey);
-                    xhr.setRequestHeader("Authorization", "Bearer " + token);
                     xhr.setRequestHeader("disciplineCipher", disciplineId);
                 },
                 success: (groups) =>
@@ -327,8 +311,6 @@
                         async:false,
                         beforeSend: (xhr) => 
                         {
-                            let token = sessionStorage.getItem(tokenKey);
-                            xhr.setRequestHeader("Authorization", "Bearer " + token);
                             xhr.setRequestHeader("disciplineCipher", disciplineId);
                         },
                         success: (laboratoryWorks) =>

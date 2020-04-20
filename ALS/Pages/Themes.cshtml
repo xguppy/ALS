@@ -84,8 +84,6 @@
             type: 'GET',
             url: '/api/Themes/CheckAuth',
             beforeSend: (xhr) => {
-                let token = sessionStorage.getItem(tokenKey);
-                xhr.setRequestHeader("Authorization", "Bearer " + token);
             },
             success: () => { },
             error: (fail) => {
@@ -133,8 +131,6 @@
                 dataType: "json",
                 data: JSON.stringify(themeDto),
                 beforeSend: (xhr) => {
-                    let token = sessionStorage.getItem(tokenKey);
-                    xhr.setRequestHeader("Authorization", "Bearer " + token);
                 },
                 success: (response) => {
                     document.location.reload(true);
@@ -169,8 +165,6 @@
                 dataType: "json",
                 data: JSON.stringify(themeDto),
                 beforeSend: (xhr) => {
-                    let token = sessionStorage.getItem(tokenKey);
-                    xhr.setRequestHeader("Authorization", "Bearer " + token);
                     xhr.setRequestHeader("themeId", themeid);
                     /*xhr.setRequestHeader("themeName", text);
                     xhr.setRequestHeader("themeId", themeid);*/
@@ -193,8 +187,6 @@
                     type: 'POST',
                     url: '/api/Themes/Delete',
                     beforeSend: (xhr) => {
-                        let token = sessionStorage.getItem(tokenKey);
-                        xhr.setRequestHeader("Authorization", "Bearer " + token);
                         xhr.setRequestHeader('themeId', themeid);
                     },
                     success: (t) => {

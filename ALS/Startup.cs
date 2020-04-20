@@ -12,7 +12,9 @@ using ALS.Services.AuthService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -38,9 +40,10 @@ namespace ALS
             
             services.AddSingleton<IAuthService>(new AuthService(Configuration));
             services.AddSingleton<ILexer>(new CppLexer(new CppLexerFactory()));
+            services.AddDistributedMemoryCache();
+            services.AddSession();
             services.AddHttpClient();
             //services.AddScoped<IParser, Parser>();
-            
             services
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(cfg =>
@@ -82,10 +85,22 @@ namespace ALS
                 app.UseHsts();
             }
 
+            app.UseSession();
             app.UseRouting();
             app.UseDefaultFiles();
             app.UseStaticFiles();
-
+            
+            //Custom cookie middleware
+            app.Use(async (context, next) =>
+            {
+                var token = context.Session.GetString("Token");
+                if (!String.IsNullOrEmpty(token))
+                {
+                    context.Request.Headers.Add("Authorization", "Bearer " + token);
+                }
+                await next();
+            });
+            
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
@@ -128,6 +143,11 @@ namespace ALS
             if (!Directory.Exists("executeModel"))
             {
                 Directory.CreateDirectory("executeModel");
+            }
+
+            if (!Directory.Exists("tmp"))
+            {
+                Directory.CreateDirectory("tmp");
             }
         }
 

@@ -84,8 +84,6 @@
             url: '/api/variants/getall',
             beforeSend: (xhr) => 
             {
-                let token = sessionStorage.getItem(tokenKey);
-                xhr.setRequestHeader("Authorization", "Bearer " + token);
             },
             success: (variants) =>
             {
@@ -128,8 +126,6 @@
                 url: '/api/laboratoryworks/getall',
                 beforeSend: (xhr) => 
                 {
-                    let token = sessionStorage.getItem(tokenKey);
-                    xhr.setRequestHeader("Authorization", "Bearer " + token);
                 },
                 success: (lws) =>
                 {
@@ -171,8 +167,6 @@
                       data: JSON.stringify(variant),
                       beforeSend: (xhr) =>
                       {
-                           let token = sessionStorage.getItem(tokenKey);
-                           xhr.setRequestHeader("Authorization", "Bearer " + token);
                       },
                       success: (g) =>
                       {
@@ -195,8 +189,6 @@
                                 url: '/api/variants/delete',
                                 beforeSend: (xhr) =>
                                 {
-                                     let token = sessionStorage.getItem(tokenKey);
-                                     xhr.setRequestHeader("Authorization", "Bearer " + token);
                                      xhr.setRequestHeader("variantId", variantId)
                                 },
                                 success: (g) =>
@@ -251,8 +243,6 @@
                            data: JSON.stringify(variant),
                            beforeSend: (xhr) =>
                            {
-                                let token = sessionStorage.getItem(tokenKey);
-                                xhr.setRequestHeader("Authorization", "Bearer " + token);
                                 xhr.setRequestHeader("varId", $('#EditVariantId').val());
                            },
                            success: (g) =>

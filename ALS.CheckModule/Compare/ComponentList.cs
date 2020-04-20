@@ -69,17 +69,17 @@ namespace ALS.CheckModule.Compare
         
         public async Task<string> Delete(string fileName)
         {
-            var pathDeleteFile = Path.Combine(GetPathToSource(), fileName);
             var sourceCode = await GetText(fileName);
-            File.Delete(pathDeleteFile);
+            File.Delete(GetPathToFile(fileName));
             return sourceCode;
         }
-        
-        public async Task<string> GetText(string fileName)
+        public string GetPathToFile(string fileName)
+            => Path.Combine(GetPathToSource(), fileName);
+
+            private async Task<string> GetText(string fileName)
         {
-            var filePath = Path.Combine(GetPathToSource(), fileName);
             string sourceCode;
-            using (var fileStreamReader = new StreamReader(filePath))
+            using (var fileStreamReader = new StreamReader(GetPathToFile(fileName)))
             {
                 sourceCode = await fileStreamReader.ReadToEndAsync();
             }
@@ -88,7 +88,7 @@ namespace ALS.CheckModule.Compare
         
         public async Task Add(string code, string fileName)
         {
-            await using var fileStreamWriter = new StreamWriter(Path.Combine(GetPathToSource(), fileName));
+            await using var fileStreamWriter = new StreamWriter(GetPathToFile(fileName));
             await fileStreamWriter.WriteAsync(code);
         }
 

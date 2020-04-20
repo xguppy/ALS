@@ -32,8 +32,6 @@
                   async: false,
                   beforeSend: (xhr) => 
                   {
-                      let token = sessionStorage.getItem(tokenKey);
-                      xhr.setRequestHeader("Authorization", "Bearer " + token);
                   },
                   success: (disciplines) =>
                   {
@@ -84,8 +82,6 @@
                     async: false,
                     beforeSend: (xhr) =>
                     {
-                        let token = sessionStorage.getItem(tokenKey);
-                        xhr.setRequestHeader("Authorization", "Bearer " + token);
                         xhr.setRequestHeader("variantId", evt.target.dataset.id);
                     },
                     success: (result) =>
@@ -114,8 +110,6 @@
                               async: false,
                               beforeSend: (xhr) => 
                               {
-                                  let token = sessionStorage.getItem(tokenKey);
-                                  xhr.setRequestHeader("Authorization", "Bearer " + token);
                                   xhr.setRequestHeader("disciplineId", disciplineId);
                               },
                               success: (result) =>

@@ -52,7 +52,6 @@ namespace ALS.Controllers
         {
             var response = new
             {
-                access_token = _authService.GetAuthData(email, appUser),
                 username = $"{appUser.Name} {appUser.Surname} {appUser.Patronymic}",
                 userId = appUser.Id,
                 roles = appUser.UserRoles.Select(ur => ur.Role.RoleName.ToString())
@@ -61,6 +60,7 @@ namespace ALS.Controllers
             // сериализация ответа
             Response.StatusCode = 200;
             Response.ContentType = "application/json";
+            HttpContext.Session.SetString("Token", _authService.GetAuthData(email, appUser));
             await Response.WriteAsync(JsonConvert.SerializeObject(response, new JsonSerializerSettings { Formatting = Formatting.Indented }));
         }
 

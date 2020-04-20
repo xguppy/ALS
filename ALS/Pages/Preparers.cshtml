@@ -43,8 +43,6 @@
                         url: '/api/Preparer/getall',
                         beforeSend: (xhr) => 
                         {
-                            let token = sessionStorage.getItem(tokenKey);
-                            xhr.setRequestHeader("Authorization", "Bearer " + token);
                         },
                         success: (checkers) =>
                         {
@@ -96,8 +94,6 @@
                 url: '/api/Preparer/get',
                 beforeSend: (xhr) => 
                 {
-                    let token = sessionStorage.getItem(tokenKey);
-                    xhr.setRequestHeader("Authorization", "Bearer " + token);
                     xhr.setRequestHeader("nameComponent", nameChecker);
                 },
                 success: (textChecker) =>
@@ -122,8 +118,6 @@
                     url: '/api/Preparer/Delete',
                     beforeSend: (xhr) => 
                     {
-                        let token = sessionStorage.getItem(tokenKey);
-                        xhr.setRequestHeader("Authorization", "Bearer " + token);
                         xhr.setRequestHeader("nameComponent", nameChecker);
                     },
                     success: (textChecker) =>
@@ -159,8 +153,6 @@
                       async: false,
                       beforeSend: (xhr) =>
                       {
-                          let token = sessionStorage.getItem(tokenKey);
-                          xhr.setRequestHeader("Authorization", "Bearer " + token);
                       },
                       success: (result) =>
                       {

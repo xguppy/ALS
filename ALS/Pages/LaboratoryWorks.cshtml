@@ -147,8 +147,6 @@
             type: 'GET',
             url: '/api/LaboratoryWorks/CheckAuth',
             beforeSend: (xhr) => {
-                let token = sessionStorage.getItem(tokenKey);
-                xhr.setRequestHeader("Authorization", "Bearer " + token);
             },
             success: () => {
                 // :)
@@ -218,8 +216,7 @@
                 dataType: "json",
                 data: JSON.stringify(lwDto),
                 beforeSend: (xhr) => {
-                    let token = sessionStorage.getItem(tokenKey);
-                    xhr.setRequestHeader("Authorization", "Bearer " + token);
+
                 },
                 success: (response) => {
                     document.location.reload(true);
@@ -259,8 +256,6 @@
                 dataType: "json",
                 data: JSON.stringify(lwDto),
                 beforeSend: (xhr) => {
-                    let token = sessionStorage.getItem(tokenKey);
-                    xhr.setRequestHeader("Authorization", "Bearer " + token);
                     xhr.setRequestHeader("laboratoryWorkId", $("#myModalUpdate").find("input[id='hiddenId']").val());
                 },
                 success: (d) => {
@@ -287,8 +282,6 @@
                     type: 'POST',
                     url: '/api/LaboratoryWorks/Delete',
                     beforeSend: (xhr) => {
-                        let token = sessionStorage.getItem(tokenKey);
-                        xhr.setRequestHeader("Authorization", "Bearer " + token);
                         xhr.setRequestHeader('laboratoryWorkId', lwId);
                     },
                     success: (t) => {

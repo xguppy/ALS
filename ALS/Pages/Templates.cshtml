@@ -84,7 +84,6 @@
     window.onload = function () {
         $('#hiddenUserId').val(sessionStorage.getItem(userId));
     };*/
-    let tokenKey = "accessToken";
 
     function sendSolution(evt)
     {
@@ -106,8 +105,6 @@
                     async: false,
                     beforeSend: (xhr) =>
                     {
-                        let token = sessionStorage.getItem(tokenKey);
-                        xhr.setRequestHeader("Authorization", "Bearer " + token);
                         xhr.setRequestHeader("themeid", value);
                     },
                     success: (result) =>
@@ -128,8 +125,6 @@
             url: '/api/TemplateLWS/CheckAuth',
             beforeSend: (xhr) => 
             {
-                let token = sessionStorage.getItem(tokenKey);
-                xhr.setRequestHeader("Authorization", "Bearer " + token);
             },
             success: (_) =>
             {
@@ -164,8 +159,6 @@
                 type: 'GET',
                 url: '/api/TemplateLWS/ReadFile',
                 beforeSend: (xhr) => {
-                    let token = sessionStorage.getItem(tokenKey);
-                    xhr.setRequestHeader("Authorization", "Bearer " + token);
                     xhr.setRequestHeader('path', pathFile);
                 },
                 success: (response) => {
@@ -208,8 +201,6 @@
                 dataType: "json",
                 data: JSON.stringify(datas),
                 beforeSend: (xhr) => {
-                    let token = sessionStorage.getItem(tokenKey);
-                    xhr.setRequestHeader("Authorization", "Bearer " + token);
                 },
                 success: (data) => {
                     //document.location.reload(true);
@@ -233,8 +224,6 @@
                 dataType: "json",
                 data: JSON.stringify(tdto),
                 beforeSend: (xhr) => {
-                    let token = sessionStorage.getItem(tokenKey);
-                    xhr.setRequestHeader("Authorization", "Bearer " + token);
                     //xhr.setRequestHeader("groupId", $('#EditGroupId').val());
                     xhr.setRequestHeader("templateId", twlId);
                 },
@@ -257,8 +246,6 @@
                     type: 'POST',
                     url: '/api/TemplateLWS/Delete',
                     beforeSend: (xhr) => {
-                        let token = sessionStorage.getItem(tokenKey);
-                        xhr.setRequestHeader("Authorization", "Bearer " + token);
                         xhr.setRequestHeader('templateId', data);
                     },
                     success: (t) => {

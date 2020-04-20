@@ -23,10 +23,14 @@ namespace ALS.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll() =>
             Ok(await Task.Run(ComponentList.GetList));
-        
+
         [HttpGet]
-        public async Task<IActionResult> Get([FromHeader] string nameComponent) =>
-            Ok(await ComponentList.GetText($"{nameComponent}.cs"));
+        public FileResult Get([FromQuery] string nameComponent)
+        {
+            var fileName = $"{nameComponent}.cs";
+            var dataBytes = System.IO.File.ReadAllBytes(ComponentList.GetPathToFile(fileName));
+            return File(dataBytes, "text/plain", fileName);
+        }
 
         [HttpPost]
         public async Task<IActionResult> Delete([FromHeader] string nameComponent)
