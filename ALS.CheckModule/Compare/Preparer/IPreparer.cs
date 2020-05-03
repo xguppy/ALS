@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace ALS.CheckModule.Compare.Preparer
 {
     /// <summary>
@@ -6,6 +8,6 @@ namespace ALS.CheckModule.Compare.Preparer
     /// </summary>
     public interface IPreparer
     {
-        void Prepare(string pathToUserProgram);
+        void Prepare(string pathToUserProgram, string pathToModelProgram, List<string> input, ref bool isStdInput);
     }
 }

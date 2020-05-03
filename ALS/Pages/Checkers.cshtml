@@ -56,6 +56,10 @@
                                 let tdRemoveChecker = document.createElement('td');
                                 tr.appendChild(tdRemoveChecker);
                                 let removeCheckerBtn = document.createElement('button');
+                                if(checker === 'AbsoluteChecker')
+                                {
+                                    removeCheckerBtn.disabled = true;
+                                }
                                 removeCheckerBtn.className = "btn btn-danger remove-item";
                                 removeCheckerBtn.addEventListener('click', function() {
                                   RemoveChecker(checker);
@@ -94,10 +98,7 @@
                     },
                     error: (checkerFail) =>
                     {
-                        document.body.innerHTML = '';
-                        alert('Нет доступа');
-                        history.go(-1);
-                        
+                        alert(checkerFail.responseText);
                     }
                  }
              );

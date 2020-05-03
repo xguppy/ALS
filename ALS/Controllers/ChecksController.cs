@@ -30,7 +30,7 @@ namespace ALS.Controllers
         {
             _db = db;
         }
-
+        
         [HttpPost]
         public async Task<IActionResult> Check(IFormFileCollection uploadedSources, [FromHeader] int variantId)
         {
@@ -117,16 +117,11 @@ namespace ALS.Controllers
                             SolutionId = solution.SolutionId
                         };
                         await _db.TestRuns.AddAsync(testRun);
-                        
-                        if (solution.IsSolved && result.IsCorrect != true)
-                        {
-                            solution.IsSolved = false;
-                        }
                     }
 
                     var countCompleteTest = resultTests.Count(rt => rt.IsCorrect);
                     var currMark = assignedVar.Mark;
-                    Rate(evaluation, countCompleteTest, resultTests.Count, ref currMark);
+                    solution.IsSolved = Rate(evaluation, countCompleteTest, resultTests.Count, ref currMark);
                     assignedVar.Mark = currMark;
                     await _db.SaveChangesAsync();
                     //Выведем количество верных тестовых прогонов и комментарии к ним
@@ -186,10 +181,8 @@ namespace ALS.Controllers
             //Сохраним все файлы в директорию пользовательского решения
             foreach (var file in sources)
             {
-                using (var fileStream = new FileStream(Path.Combine(directorySave, file.FileName), FileMode.Create))
-                {
-                    await file.CopyToAsync(fileStream);
-                }
+                await using var fileStream = new FileStream(Path.Combine(directorySave, file.FileName), FileMode.Create);
+                await file.CopyToAsync(fileStream);
             }
         }
         
@@ -202,23 +195,30 @@ namespace ALS.Controllers
             }
             return testsLog.ToString();
         }
-
-        private static void Rate(Evaluation evaluation, int testComplete, int sumTest, ref int currentMark)
+        
+        private static bool Rate(Evaluation evaluation, int testComplete, int sumTest, ref int currentMark)
         {
             switch (evaluation)
             {
                 case Evaluation.Strict:
                     currentMark = sumTest == testComplete ? 1 : 0;
-                    break;
+                    return currentMark == 1;
                 case Evaluation.NotStrict:
                     currentMark = testComplete;
-                    break;
+                    return IsSolved(testComplete, sumTest);
                 case Evaluation.Penalty:
                     currentMark -= sumTest - testComplete;
-                    break;
+                    return IsSolved(testComplete, sumTest);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(evaluation), evaluation, "Выбранная стратегия оценивания отсутствует");
             }
         }
+        /// <summary>
+        /// Если больше 70% верно, то засчитываем задачу
+        /// </summary>
+        /// <param name="testComplete">Пройденные тесты</param>
+        /// <param name="sumTest">Всего тестов</param>
+        /// <returns>Решена ли задача</returns>
+        private static bool IsSolved(int testComplete, int sumTest) => (testComplete / sumTest) * 100 > 70;
     }
 }

@@ -35,10 +35,20 @@ namespace ALS.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete([FromHeader] string nameComponent)
         {
-            var backUpComponentCode = await ComponentList.Delete($"{nameComponent}.cs");
             var noError = false;
+            string backUpComponentCode;
             try
             {
+                backUpComponentCode = await ComponentList.Delete($"{nameComponent}.cs");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+            
+            try
+            {
+                
                 noError = await ComponentList.ReloadActions();
             }
             catch (Exception e)

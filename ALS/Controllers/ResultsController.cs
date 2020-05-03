@@ -21,7 +21,12 @@ namespace ALS.Controllers
         {
             _db = db;
         }
-        
+
+        [HttpGet]
+        public async Task<IActionResult> GetSolutions([FromHeader] int labId, [FromHeader] int userId)
+        {
+            throw new NotImplementedException();
+        }
         
         [HttpGet]
         public async Task<IActionResult> GetTestRuns([FromHeader]int solutionId)

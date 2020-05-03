@@ -18,7 +18,6 @@ namespace ALS.CheckModule.Compare
         private static readonly CheckerList CheckerList = new CheckerList();
         private static readonly FinaliterList FinaliterList = new FinaliterList();
         private ResultRun _userResult;
-        
         /// <summary>
         /// 
         /// </summary>
@@ -28,8 +27,8 @@ namespace ALS.CheckModule.Compare
         public Comparer(string pathModel, string pathUser, List<string> inputData)
         {
             _userResult.Input = inputData;
-            _model = new ProcessProgram(pathModel, inputData, false);
-            _user = new ProcessProgram(pathUser, inputData, true);
+            _model = new ProcessProgram(pathModel, _userResult.Input, false);
+            _user = new ProcessProgram(pathUser, _userResult.Input, true);
         }
         /// <summary>
         /// Сранение программ
@@ -37,7 +36,10 @@ namespace ALS.CheckModule.Compare
         /// <param name="constrains">Ограничения</param>
         public async Task<ResultRun> CompareAsync(Constrains constrains)
         {
-            PreparerList.Get(constrains.Preparer)?.Prepare(_user.PathToProgram);
+            var isStdInput = true;
+            PreparerList.Get(constrains.Preparer)?.Prepare(_user.PathToProgram, _model.PathToProgram, _userResult.Input, ref isStdInput);
+            _user.IsStdInput = isStdInput;
+            _model.IsStdInput = isStdInput;
             //Начнём и подождём завершения
             var okUserProg = await _user.Execute(constrains.Time);
             var okModelProg = await _model.Execute(constrains.Time);
@@ -58,7 +60,7 @@ namespace ALS.CheckModule.Compare
             _userResult.Output = GetOutput(_user);
             var modelOutput = GetOutput(_model);
             CheckerList.Get(constrains.Checker).Check(modelOutput, _user.PathToProgram, _model.PathToProgram, ref _userResult);
-            FinaliterList.Get(constrains.Finaliter)?.Finalite(_user.PathToProgram);
+            FinaliterList.Get(constrains.Finaliter)?.Finalite(_user.PathToProgram, _model.PathToProgram);
             return _userResult;
         }
         /// <summary>

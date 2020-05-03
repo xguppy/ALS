@@ -21,17 +21,6 @@
         <tbody id="tbodyContent">
     </table>
 </div>
-<div id="checkerModal" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header"><h4 class="modal-title">Текст завершителя</h4><button class="close" type="button" data-dismiss="modal">×</button>
-            </div>
-            <div id="checkerTextContent" class="modal-body">
-            </div>
-            <div class="modal-footer"><button class="btn btn-default" type="button" data-dismiss="modal">Закрыть</button></div>
-        </div>
-    </div>
-</div>
 
 <script>
     CreateTable();
@@ -64,11 +53,13 @@
                                 });
                                 getCodeBtn.innerText = "Получить код";
                                 tdGetCode.appendChild(getCodeBtn);
-                                getCodeBtn.setAttribute('data-target', '#checkerModal');
-                                getCodeBtn.setAttribute('data-toggle', 'modal');
                                 let tdRemoveChecker = document.createElement('td');
                                 tr.appendChild(tdRemoveChecker);
                                 let removeCheckerBtn = document.createElement('button');
+                                if(checker === 'AbsoluteFinaliter')
+                                {
+                                    removeCheckerBtn.disabled = true;
+                                }
                                 removeCheckerBtn.className = "btn btn-danger remove-item";
                                 removeCheckerBtn.addEventListener('click', function() {
                                   RemoveChecker(checker);
@@ -88,27 +79,7 @@
             );
     }
   function ReadCodeChecker(nameChecker) {
-        $.ajax(
-             {
-                type: 'GET',
-                url: '/api/finaliter/get',
-                beforeSend: (xhr) => 
-                {
-                    xhr.setRequestHeader("nameComponent", nameChecker);
-                },
-                success: (textChecker) =>
-                {
-                    document.getElementById('checkerTextContent').innerText = textChecker;
-                },
-                error: (checkerFail) =>
-                {
-                    document.body.innerHTML = '';
-                    alert('Нет доступа');
-                    history.go(-1);
-                    
-                }
-             }
-         )
+        window.open('/api/Finaliters/Get?nameComponent=' + nameChecker);
   }
   
   function RemoveChecker(nameChecker) {
@@ -127,10 +98,7 @@
                     },
                     error: (checkerFail) =>
                     {
-                        document.body.innerHTML = '';
-                        alert('Нет доступа');
-                        history.go(-1);
-                        
+                        alert(checkerFail.responseText);
                     }
                  }
              );

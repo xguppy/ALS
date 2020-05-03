@@ -34,12 +34,18 @@ function ShowInfo()
 ShowInfo();
 $('#submitLogin').click(function (e) {
                 e.preventDefault();
+                let emailVal = $('#emailLogin').val().trim();
+                let passwordVal = $('#passwordLogin').val().trim();
+                if(emailVal === '' || passwordVal === '')
+                {
+                    alert('Введите логин и/или пароль');
+                    return;
+                }
                 let loginData = {
                     grant_type: 'Password',
-                    Email: $('#emailLogin').val(),
-                    Password: $('#passwordLogin').val()
+                    Email: emailVal,
+                    Password: passwordVal
                 };
-     
                 $.ajax({
                     type: 'POST',
                     url: '/api/users/login',
