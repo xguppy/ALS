@@ -5,6 +5,9 @@ using System.Text;
 using ALS.AntiPlagModule.Services;
 using ALS.AntiPlagModule.Services.LexerFactory;
 using ALS.AntiPlagModule.Services.LexerService;
+using ALS.CheckModule.Compare.Checker;
+using ALS.CheckModule.Compare.Finaliter;
+using ALS.CheckModule.Compare.Preparer;
 using ALS.CheckModule.Processes;
 using ALS.EntityСontext;
 using ALS.Services;
@@ -12,7 +15,6 @@ using ALS.Services.AuthService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -114,6 +116,7 @@ namespace ALS
 
             CreateNeedDirectory();
             SetupDatabase(dbContext);
+            PreloadComponents();
         }
         /// <summary>
         /// Создание требуемых для приложения директорий если их нет в системе
@@ -304,6 +307,15 @@ namespace ALS
                 
                 context.SaveChanges();
             }
+        }
+        /// <summary>
+        /// Метод для первичной сборки
+        /// </summary>
+        private async void PreloadComponents()
+        {
+            await new CheckerList().ReloadActions();
+            await new PreparerList().ReloadActions();
+            await new FinaliterList().ReloadActions();
         }
     }
 }

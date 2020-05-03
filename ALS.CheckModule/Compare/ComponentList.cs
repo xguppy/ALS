@@ -12,16 +12,7 @@ namespace ALS.CheckModule.Compare
         private static CheckModuleLoadContext _loadContext;
         private static WeakReference _weakReference;
         private static ComponentAssemblyManager _manager = new ComponentAssemblyManager();
-        static ComponentList()
-        {
-            var result = ModuleGovernor.BuildModule(GetComponentName()).Result;
-            if (!result)
-            {
-                throw new Exception($"Невозможно инициализировать компоненты {GetComponentName()}");
-            }
-            ModuleGovernor.AllowBuild();
-            FillActions();
-        }
+        
         protected abstract string TemplateComponent { get; set; }
         
         protected abstract string GetPathToSource();
@@ -46,6 +37,7 @@ namespace ALS.CheckModule.Compare
                 await _manager.Unload(_weakReference, _loadContext);
             }
             var result = await ModuleGovernor.BuildModule(GetComponentName());
+            ModuleGovernor.AllowBuild();
             if(result)
             {
                 _loadContext = new CheckModuleLoadContext();
