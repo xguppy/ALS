@@ -123,37 +123,16 @@ namespace ALS
         /// </summary>
         void CreateNeedDirectory()
         {
-            if (!Directory.Exists("sourceCodeUser"))
+            var necessaryDirectories = new[] {"sourceCodeUser", "uploads", "sourceCodeModel", "executeUser", "executeModel", "tmp", "modelTestingFiled"  };
+            foreach (var item in necessaryDirectories)
             {
-                Directory.CreateDirectory("sourceCodeUser");
-            }
-
-            if (!Directory.Exists("uploads"))
-            {
-                Directory.CreateDirectory("uploads");
-            }
-
-            if (!Directory.Exists("sourceCodeModel"))
-            {
-                Directory.CreateDirectory("sourceCodeModel");
-            }
-
-            if (!Directory.Exists("executeUser"))
-            {
-                Directory.CreateDirectory("executeUser");
-            }
-
-            if (!Directory.Exists("executeModel"))
-            {
-                Directory.CreateDirectory("executeModel");
-            }
-
-            if (!Directory.Exists("tmp"))
-            {
-                Directory.CreateDirectory("tmp");
+                if (!Directory.Exists(item))
+                {
+                    Directory.CreateDirectory(item);
+                }
             }
         }
-
+        
         void SetupDatabase(ApplicationContext context)
         {
             // check and add roles

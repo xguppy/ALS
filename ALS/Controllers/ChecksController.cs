@@ -58,9 +58,15 @@ namespace ALS.Controllers
 
                     //Возьмём пути для исполняемых файлов
                     var programFileUser = CreateExecuteDirectories(assignedVar.Variant.VariantId, variantId, userIdentifier);
+                    
 
                     var programFileModel = new Uri((await _db.Variants.FirstOrDefaultAsync(var => var.VariantId == variantId)).LinkToModel).AbsolutePath;
-                    
+                    //Создадим директорию для запуска эталонной программы программы
+                    var moveModelProgram = Path.Combine(Environment.CurrentDirectory, "modelTestingFiled", $"{userIdentifier}_{variantId}");
+                    Directory.CreateDirectory(moveModelProgram);
+                    //Новая файл в директории
+                    var newPathProgram = Path.Combine(moveModelProgram, Path.GetFileName(programFileModel));
+                    System.IO.File.Copy(programFileModel, newPathProgram);
                     //Скомпилируем программу пользователя
                     var compiler = new ProcessCompiler(solutionDirectory, programFileUser);
                     var isCompile = await compiler.Execute(10000);
@@ -73,6 +79,7 @@ namespace ALS.Controllers
                         lastSol.IsSolved = false;
                         lastSol.CompilerFailsNumbers++;
                         _db.Solutions.Update(lastSol);
+                        Directory.Delete(moveModelProgram, true);
                         await _db.SaveChangesAsync();
                         return BadRequest(compiler.CompileState);
                     }
@@ -90,7 +97,7 @@ namespace ALS.Controllers
                     List<ResultRun> resultTests;
                     try
                     {
-                        var verification = new Verification(programFileUser, programFileModel, constrains);
+                        var verification = new Verification(programFileUser, newPathProgram, constrains);
                         resultTests = await verification.RunTests(inputDatas);
                     }
                     catch (Exception e)
@@ -101,6 +108,8 @@ namespace ALS.Controllers
                     {
                         //В любом случае удалим ненужный исполняемый файл
                         System.IO.File.Delete(programFileUser);
+                        //и директорию с моделью
+                        Directory.Delete(moveModelProgram, true);
                     }
 
                     //Сохраним сейчас чтобы добавить тестовые прогоны в БД
