@@ -5,15 +5,13 @@
     Layout = "_Layout";
     ViewData["Title"] = "Домашняя страница";
 }
-
-<form class="loginForm">
-    <label>Введите email</label>
+<form class="loginForm" style="margin-left: 30%">
+    <label>Введите email:</label> <br />
     <input type="email" id="emailLogin" required /> <br />
-    <label>Введите пароль</label>
-    <input type="password" id="passwordLogin" required /> <br />
-    <input type="submit" class="btn btn-success" id="submitLogin" value="Логин" />
+    <label>Введите пароль:</label> <br />
+    <input type="password" id="passwordLogin" required /> <br /> <br />
+    <input type="submit" class="btn btn-success" id="submitLogin" value="Логин" style="margin-left: 8%" />
 </form>
-
 <script>
 function ShowInfo()
 {
