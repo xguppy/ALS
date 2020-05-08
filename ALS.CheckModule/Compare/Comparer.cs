@@ -37,7 +37,7 @@ namespace ALS.CheckModule.Compare
         public async Task<ResultRun> CompareAsync(Constrains constrains)
         {
             var isStdInput = true;
-            PreparerList.Get(constrains.Preparer)?.Prepare(_user.PathToProgram, _model.PathToProgram, _userResult.Input, ref isStdInput);
+            await Task.Run(() =>PreparerList.Get(constrains.Preparer)?.Prepare(_user.PathToProgram, _model.PathToProgram, _userResult.Input, ref isStdInput));
             _user.IsStdInput = isStdInput;
             _model.IsStdInput = isStdInput;
             //Начнём и подождём завершения
@@ -59,8 +59,8 @@ namespace ALS.CheckModule.Compare
             
             _userResult.Output = GetOutput(_user);
             var modelOutput = GetOutput(_model);
-            CheckerList.Get(constrains.Checker).Check(modelOutput, _user.PathToProgram, _model.PathToProgram, ref _userResult);
-            FinaliterList.Get(constrains.Finaliter)?.Finalite(_user.PathToProgram, _model.PathToProgram);
+            await Task.Run(() => CheckerList.Get(constrains.Checker).Check(modelOutput, _user.PathToProgram, _model.PathToProgram, ref _userResult));
+            await Task.Run(() => FinaliterList.Get(constrains.Finaliter)?.Finalite(_user.PathToProgram, _model.PathToProgram));
             return _userResult;
         }
         /// <summary>
