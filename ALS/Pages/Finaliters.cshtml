@@ -9,6 +9,7 @@
 <h3>Завершитель </h3>
 <div style="margin-bottom: 1%">
     <input onchange="sendSolution(this)" class="btn btn-primary edit-item" type="file" accept=".cs"/>
+    <span id="loader"></span>
 </div>
 <div class="container">
     <table style="width: 100%" class="table table-hover" border="1">
@@ -89,10 +90,12 @@
                     url: '/api/finaliter/Delete',
                     beforeSend: (xhr) => 
                     {
+                        $('#loader').get()[0].innerHtml = "<b>Идёт процесс удаления</b>";
                         xhr.setRequestHeader("nameComponent", nameChecker);
                     },
                     success: (textChecker) =>
                     {
+                        $('#loader').get()[0].innerHtml = "";
                         CreateTable();
                         alert(textChecker);
                     },
@@ -121,9 +124,11 @@
                       async: false,
                       beforeSend: (xhr) =>
                       {
+                          $('#loader').get()[0].innerHtml = "<b>Идёт загрузка</b>";
                       },
                       success: (result) =>
                       {
+                          $('#loader').get()[0].innerHtml = "";
                           CreateTable();
                           alert(result);
                       },

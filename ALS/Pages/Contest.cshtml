@@ -82,6 +82,8 @@
                     async: false,
                     beforeSend: (xhr) =>
                     {
+                        let field = evt.target.parentElement;
+                        field.innerHTML = "<b>Идёт обработка</b>";
                         xhr.setRequestHeader("variantId", evt.target.dataset.id);
                     },
                     success: (result) =>
