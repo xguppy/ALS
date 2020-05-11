@@ -5,7 +5,7 @@
     ViewData["Title"] = "Themes";
 }
 
-<h1>Themes</h1>
+<h1>Темы лабораторных работ</h1>
 
 <div class="container">
     <table class="table table-hover">
@@ -20,14 +20,15 @@
         <tbody id="containerBody">
             @foreach (var item in Model.Themes)
             {
-                <tr>
-                    <td>@item.ThemeId</td>
-                    <td>@item.Name</td>
-                    <td>
-                        <input type="button" id="buttonDelete" value="Удалить" onclick="deleteTheme(@item.ThemeId)" /> |
-                        <input type="button" id="buttonUpdate" value="Изменить" onclick="openModalUpdate(@item.ThemeId, '@item.Name')" />
-                    </td>
-                </tr>
+            <tr>
+                <td>@item.ThemeId</td>
+                <td>@item.Name</td>
+                <td>@item.DisciplineCipher</td>
+                <td>
+                    <input type="button" id="buttonDelete" value="Удалить" onclick="deleteTheme(@item.ThemeId)" /> |
+                    <input type="button" id="buttonUpdate" value="Изменить" onclick="openModalUpdate(@item.ThemeId, '@item.Name')" />
+                </td>
+            </tr>
             }
         </tbody>
     </table>

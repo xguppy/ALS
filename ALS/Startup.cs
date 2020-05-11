@@ -37,7 +37,9 @@ namespace ALS
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            services.AddMvc()
+                .AddNewtonsoftJson()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             services.AddEntityFrameworkNpgsql().AddDbContext<ApplicationContext>(options => options.UseNpgsql(Configuration.GetConnectionString("AlsDatabase")));
             
             services.AddSingleton<IAuthService>(new AuthService(Configuration));
@@ -208,34 +210,34 @@ namespace ALS
 
             if (!context.Themes.Any())
             {
-                context.Themes.Add(new Theme { Name = "Тема 1"});
-                context.Themes.Add(new Theme { Name = "Тема 2" });
+                context.Themes.Add(new Theme { Name = "простые взаимодействие с числами", DisciplineCipher = "pr1"  });
+                context.Themes.Add(new Theme { Name = "условные операторы", DisciplineCipher = "pr1" });
                 context.SaveChanges();
             }
             if (!context.TemplateLaboratoryWorks.Any())
             {
-                context.TemplateLaboratoryWorks.Add(new TemplateLaboratoryWork { TemplateTask = @"C:/Users/kampukter/source/repos/ALS/ALS.GeneratorModule/Docs/Exp.txt", ThemeId = 1 });
-                context.TemplateLaboratoryWorks.Add(new TemplateLaboratoryWork { TemplateTask = @"C:/Users/kampukter/source/repos/ALS/ALS.GeneratorModule/Docs/Exp3.txt", ThemeId = 1 });
-                context.TemplateLaboratoryWorks.Add(new TemplateLaboratoryWork { TemplateTask = @"C:/Users/kampukter/source/repos/ALS/ALS.GeneratorModule/Docs/Exp.txt", ThemeId = 2 });
-                context.TemplateLaboratoryWorks.Add(new TemplateLaboratoryWork { TemplateTask = @"C:/Users/kampukter/source/repos/ALS/ALS.GeneratorModule/Docs/Exp2.txt", ThemeId = 2 });
+                context.TemplateLaboratoryWorks.Add(new TemplateLaboratoryWork { TemplateTask = @"C:/Users/kampukter/source/repos/ALS/ALS.GeneratorModule/Tasks/task1.gentemp", ThemeId = 1 });
+                //context.TemplateLaboratoryWorks.Add(new TemplateLaboratoryWork { TemplateTask = @"C:/Users/kampukter/source/repos/ALS/ALS.GeneratorModule/Docs/Exp3.txt", ThemeId = 1 });
+                //context.TemplateLaboratoryWorks.Add(new TemplateLaboratoryWork { TemplateTask = @"C:/Users/kampukter/source/repos/ALS/ALS.GeneratorModule/Docs/Exp.txt", ThemeId = 2 });
+                //context.TemplateLaboratoryWorks.Add(new TemplateLaboratoryWork { TemplateTask = @"C:/Users/kampukter/source/repos/ALS/ALS.GeneratorModule/Docs/Exp2.txt", ThemeId = 2 });
                 context.SaveChanges();
             }
 
             if (!context.LaboratoryWorks.Any())
             {
-                context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 9, ThemeId = 2, Name = "lr1", Description = "lr1_description", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
-                context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 9, ThemeId = 1, Name = "lr2", Description = "Вывести четные элементы", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
-                context.LaboratoryWorks.Add(new LaboratoryWork { TemplateLaboratoryWorkId = 1, UserId = 8, ThemeId = 2, Name = "lr3", Description = "descrition", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1" });
-                context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 2, ThemeId = 1, Name = "lr1", Description = "lr1_description", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
-                context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 2, ThemeId = 1, Name = "lr2", Description = "Вывести четные элементы", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
-                context.LaboratoryWorks.Add(new LaboratoryWork { TemplateLaboratoryWorkId = 3, UserId = 2, ThemeId = 2, Name = "lr3", Description = "descrition", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1" });
+                //context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 9, ThemeId = 2, Name = "lr1", Description = "lr1_description", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
+                context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 9, ThemeId = 1, Name = "ЛР1 - работа с числами", Description = "Вывести четные элементы", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
+                context.LaboratoryWorks.Add(new LaboratoryWork { TemplateLaboratoryWorkId = 1, UserId = 9, ThemeId = 2, Name = "ЛР2 - работа с условными операторами", Description = "сделайте что-нибудь с выражениями", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1" });
+                //context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 2, ThemeId = 1, Name = "lr1", Description = "lr1_description", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
+                //context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 2, ThemeId = 1, Name = "lr2", Description = "Вывести четные элементы", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
+                //context.LaboratoryWorks.Add(new LaboratoryWork { TemplateLaboratoryWorkId = 3, UserId = 2, ThemeId = 2, Name = "lr3", Description = "descrition", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1" });
                 context.SaveChanges();
             }
             if (!context.Variants.Any())
             {
-                context.Variants.Add(new Variant { VariantNumber = 1, LaboratoryWorkId = 5, Description = "var descr" });
-                context.Variants.Add(new Variant { VariantNumber = 2, LaboratoryWorkId = 5, Description = "Тест" });
-                context.Variants.Add(new Variant { VariantNumber = 1, LaboratoryWorkId = 6, LinkToModel = Path.Combine(Environment.CurrentDirectory, "executeModel", $"{ProcessCompiler.CreatePath(2, 1)}.exe"), Description = "В стандартный поток ввода принимаются 10 целых чисел. Вывести в стандартный поток вывода только чётные числа.", InputDataRuns = "[{\"Name\":\"тест1\",\"Data\":[\"#rnd(1 | 20 | int | 10)\"]},{\"Name\":\"тест2\",\"Data\":[\"#rnd(1 | 20 | int | 10)\"]},{\"Name\":\"тест3\",\"Data\":[\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"7\",\"8\",\"9\",\"10\"]}]"});
+                context.Variants.Add(new Variant { VariantNumber = 1, LaboratoryWorkId = 1, Description = "var descr" });
+                context.Variants.Add(new Variant { VariantNumber = 2, LaboratoryWorkId = 1, Description = "Тест" });
+                context.Variants.Add(new Variant { VariantNumber = 1, LaboratoryWorkId = 2, LinkToModel = Path.Combine(Environment.CurrentDirectory, "executeModel", $"{ProcessCompiler.CreatePath(2, 1)}.exe"), Description = "В стандартный поток ввода принимаются 10 целых чисел. Вывести в стандартный поток вывода только чётные числа.", InputDataRuns = "[{\"Name\":\"тест1\",\"Data\":[\"#rnd(1 | 20 | int | 10)\"]},{\"Name\":\"тест2\",\"Data\":[\"#rnd(1 | 20 | int | 10)\"]},{\"Name\":\"тест3\",\"Data\":[\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"7\",\"8\",\"9\",\"10\"]}]"});
                 context.SaveChanges();
             }
 
