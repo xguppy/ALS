@@ -22,7 +22,6 @@ namespace ALS.EntityСontext
         public Evaluation Evaluation { get; set; }
         public int UserId { get; set; }
         [Required]
-        [StringLength(256, MinimumLength=5)]
         [Column(TypeName = "jsonb")]
         public string Constraints { get; set; }
         public User User { get; set; }

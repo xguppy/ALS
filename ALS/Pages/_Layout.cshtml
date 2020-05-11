@@ -54,6 +54,9 @@
             <li class="nav-item" id="finaliter">
                 <a class="nav-link" href="~/Finaliters">Завершители</a>
             </li>
+            <li class="nav-item" id="results">
+                <a class="nav-link" href="~/Results">Результаты</a>
+            </li>
         </ul>
         <div class="userInfo" style="display:none;">
             Вы вошли как: <span class="userName"></span>
@@ -77,6 +80,7 @@
     let checkers = $('#checker');
     let preparers = $('#preparer');
     let finaliters = $('#finaliter');
+    let results = $('#results');
             $('#logOut').click(function (e) {
                 e.preventDefault();
                 $('.loginForm').css('display', 'block');
@@ -100,6 +104,7 @@
         checkers.css('display', 'none');
         preparers.css('display', 'none');
         finaliters.css('display', 'none');
+        results.css('display', 'none');
         let roles = JSON.parse(sessionStorage.getItem('roles'));
         if (roles == null) return;
         if (roles.includes('Teacher')) {
@@ -111,6 +116,7 @@
             checkers.css('display', 'block');
             preparers.css('display', 'block');
             finaliters.css('display', 'block');
+            results.css('display', 'block');
         }
         if (roles.includes('Admin')) {
             group.css('display', 'block');

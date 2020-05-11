@@ -88,10 +88,15 @@ namespace ALS.Controllers
                     var gen = new GenFunctions();
                     var inputDatas = gen.GetTestsFromJson(assignedVar.Variant.InputDataRuns);
                     
-                    //Получим её ограничения
-                    var constrains = JsonConvert.DeserializeObject<Constrains>(
+                    //Получим ограничения лабы
+                    var constrainsLab = JsonConvert.DeserializeObject<Constrains>(
                         assignedVar.Variant.LaboratoryWork.Constraints,
                         new JsonSerializerSettings {DefaultValueHandling = DefaultValueHandling.Populate});
+                    //Получим ограничения варианта
+                    var constrainsVar = JsonConvert.DeserializeObject<Constrains>(assignedVar.Variant.Constraints,
+                        new JsonSerializerSettings {DefaultValueHandling = DefaultValueHandling.Populate});
+                    //Перезапишем ограничениями варианта если они не нулл
+                    var constrains = OverridingConstrains(constrainsLab, constrainsVar);
                     
                     //Прогоним по тестам
                     List<ResultRun> resultTests;
@@ -229,5 +234,15 @@ namespace ALS.Controllers
         /// <param name="sumTest">Всего тестов</param>
         /// <returns>Решена ли задача</returns>
         private static bool IsSolved(int testComplete, int sumTest) => (testComplete / sumTest) * 100 > 70;
+
+        private static Constrains OverridingConstrains(Constrains labConstrains, Constrains varConstrains)
+        {
+            varConstrains.Checker ??= labConstrains.Checker;
+            varConstrains.Finaliter ??= labConstrains.Finaliter;
+            varConstrains.Preparer ??= labConstrains.Preparer;
+            varConstrains.Memory = varConstrains.Memory == 0 ? labConstrains.Memory : varConstrains.Memory;
+            varConstrains.Time = varConstrains.Time == 0 ? labConstrains.Time : varConstrains.Time;
+            return varConstrains;
+        }
     }
 }
