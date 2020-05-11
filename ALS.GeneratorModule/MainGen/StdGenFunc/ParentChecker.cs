@@ -4,8 +4,9 @@ using System.Text;
 using Generator.MainGen.Parametr;
 using NLua;
 
-namespace Generator.MainGen.ForGenFunc
+namespace Generator.MainGen.StdGenFunc
 {
+    // DEPRECATED
     public class ParentChecker : AFunc
     {
         private Lua _lua;
@@ -16,10 +17,10 @@ namespace Generator.MainGen.ForGenFunc
             _lua.State.Encoding = Encoding.UTF8;
         }
 
-        public override string Run(Param param, List<Param> parametrs = null)
+        public override string Run(Param param)
         {
-            string raw = param.RawData;
-            var args = GetArgs(param.RawData, parametrs);
+            /*string raw = param.RawData;
+            var args = GetArgs(param.RawData);
             if (args.Length < 2) throw new Exception($"func #{FuncsEnum.parent} takes 2+ parametrs (value | nameOfParent| posOfParam(| posOfParam...)) | строка = [ {param} ]");
             param.RawData = param.Value = args[0];
             StringBuilder str = new StringBuilder(args[1]);
@@ -56,8 +57,8 @@ namespace Generator.MainGen.ForGenFunc
             catch (Exception ex)
             {
                 throw new Exception($"Error in #parent string = |{raw}|   | message = {ex.Message} |");
-            }
-            return res.ToString();
+            }*/
+            return "ParentChecker is deprecated";
         }
     }
 }

@@ -188,7 +188,7 @@
             Name: $('#i1Name').val(),
             Description: $('#i1Description').val(),
             //Evaluation: $('#s1Evaluation').val(),
-            Evaluation: 1,
+            Evaluation: 1, // захардклдить
             DisciplineCipher: $('#s1DisciplineCipher').val(),
             UserId: sessionStorage.getItem(userId),
             Constraints: $('#i1Constraints').val(),
@@ -201,7 +201,6 @@
             alert('Одно из полей не заполнено!');
             return;
         }
-
 
         $.ajax(
             {
@@ -230,7 +229,7 @@
             ThemeId: $('#s2ThemeId').val(),
             Name: $('#i2Name').val(),
             Description: $('#i2Description').val(),
-            Evaluation: 1,
+            Evaluation: 1, // захардкодить
             DisciplineCipher: $('#s2DisciplineCipher').val(),
             UserId: $('#hiddenUserId').val(), 
             Constraints: $('#i2Constraints').val(),

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Generator.MainGen.Parametr;
 
-namespace Generator.MainGen.ForGenFunc
+namespace Generator.MainGen.StdGenFunc
 {
     public class Rnd : AFunc
     {
@@ -26,10 +26,10 @@ namespace Generator.MainGen.ForGenFunc
             return str;
         }
 
-        public override string Run(Param param, List<Param> parametrs = null)
+        public override string Run(Param param)
         {
             _rawstr = param.RawData;
-            var args = GetArgs(param.RawData, parametrs);
+            var args = GetArgs(param.RawData);
 
             if (args.Length < 3) throw new Exception($"Функция #{FuncsEnum.rnd} принимает 3(4) параметра ( минимум | максимум | тип (| количество) )| строка = [ {param} ]");
 

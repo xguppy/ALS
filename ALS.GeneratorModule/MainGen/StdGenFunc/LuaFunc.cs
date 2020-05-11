@@ -4,7 +4,7 @@ using System.Text;
 using Generator.MainGen.Parametr;
 using NLua;
 
-namespace Generator.MainGen.ForGenFunc
+namespace Generator.MainGen.StdGenFunc
 {
     public class LuaFunc : AFunc
     {
@@ -16,9 +16,9 @@ namespace Generator.MainGen.ForGenFunc
             _lua.State.Encoding = Encoding.UTF8;
         }
 
-        public override string Run(Param param, List<Param> parametrs = null)
+        public override string Run(Param param)
         {
-            var args = GetArgs(param.RawData, parametrs);
+            var args = GetArgs(param.RawData);
             if (args.Length != 1) throw new Exception($"Функция #{FuncsEnum.lua} только 1 параметр| строка = [ {param} ]");
             StringBuilder s = new StringBuilder(args[0]);
             if (s[0] == '\"' && s[s.Length - 1] == '\"')

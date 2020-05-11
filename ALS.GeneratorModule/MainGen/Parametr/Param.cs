@@ -11,24 +11,33 @@ namespace Generator.MainGen.Parametr
         public string Value { get; set; }
         public string Name { get; set; }
         public string RawData { get; set; }
-        public int Position { get; set; }
+        public string FunctionName { get; set; }
+        public int Position { get; set; } // DEPRECATED
 
         public Param(string raw, int pos, string name, List<Param> parametrs = null)
         {
+            Init(raw, pos, name, parametrs);
+            FunctionName = default;
+        }
+
+        public void Init(string raw, int pos, string name, List<Param> parametrs = null)
+        {
             raw = SubstituteValues(raw, parametrs);
+            name = SubstituteValues(name, parametrs);
             RawData = raw;
             Value = raw;
-            Position = pos;
+            Position = pos; // DEPRECATED
             Name = name;
         }
 
         public string GetFuncName()
         {
             int s = RawData.IndexOf('#');
-            if (s == -1) return "just string";
+            if (s == -1) return FuncsEnum.justString.ToString();
             int f = RawData.IndexOf('(');
-            if (f == -1) return "just string";
-            return RawData.Substring(s+1, f-s-1);
+            if (f == -1) return FuncsEnum.justString.ToString();
+            FunctionName = RawData.Substring(s + 1, f - s - 1);
+            return FunctionName;
         }
 
         private string SubstituteValues(string raw, List<Param> parametrs)
@@ -46,7 +55,7 @@ namespace Generator.MainGen.Parametr
 
         public override string ToString()
         {
-            return $"{Name} : {RawData}";
+            return $"{Name} : {Value}";
         }
     }
 }

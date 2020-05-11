@@ -5,160 +5,52 @@ namespace Generator
 {
     public class GenTree
     {
-        private Random _random =  new Random();
-        private List<Tree> _trees;
-        private bool _powismorethenone = false;
-        private int _numberOfVar = 1;
-        private int _countOfVars = 0;
-
-        public Tree Next(int itCount, int countOfVars = 1)
+        private Random _rnd = new Random();
+        private void SignNode(Tree tree)
         {
-            int curr = 0;
-            Tree t = new Tree(null);
-            _trees = new List<Tree>() { t };
-            _countOfVars = countOfVars;
-            GenArithmExprVer3(itCount, 0, ref curr);
-            return t;
+            tree.State = State.Sign;
+            tree.Left = new Tree(tree);
+            tree.Right = new Tree(tree);
+        }
+        private Tree FunctionNode(Tree tree)
+        {
+            tree.State = State.Func;
+            tree.Left = new Tree(tree);
+            return tree.Left;
         }
 
-        public string GetNewVar()
+        private void ContiniousGen(Tree tree, int depth)
         {
-            string res = $"x{_numberOfVar}";
-            _numberOfVar = ((_numberOfVar + 1) % (_countOfVars+1));
-            if (_numberOfVar == 0) _numberOfVar++;
+            if (depth < 2) return;
 
-            return res;
+            var left = _rnd.Next(1, depth);
+            var right = depth - left;
+            GenNewTree(tree.Left, left, 0);
+            GenNewTree(tree.Right, right, 0);
         }
 
-        // golden middle
-        private void GenArithmExprVer3(int itCount, int num, ref int curr)
+        private void GenNewTree(Tree tree, int hard, int curr)
         {
-            if (curr == itCount) return;
-
-            var res = _random.Next(0, 100);
-            var tree = _trees[num];
-            if (Elems.Funcs.Length > 0 && res < 25)
+            if (curr < hard)
             {
-                tree.Value = $"{Elems.Funcs[_random.Next(0, Elems.Funcs.Length)]}";
-                tree.Left = new Tree(tree);
-                curr++;
-                _trees.Add(tree.Left);
-                tree.State = State.Func;
-            }
-            else if (Elems.Signs.Length > 0)
-            {
-                int gran = _powismorethenone ? 1 : 0;
-                tree.Value = Elems.Signs[_random.Next(0, Elems.Signs.Length - gran)];
-                tree.State = State.Sign;
-                tree.Left = new Tree(tree, GetNewVar());
-                tree.Right = new Tree(tree, GetNewVar());
-
-                if (!_powismorethenone) _powismorethenone = tree.Value == "^";
-
-                Tree newTree = tree.Right;
-                if (_random.Next(0, 100) < 50)
+                if (Elems.Signs.Count > 0 && _rnd.Next(0, 101) < 70)
                 {
-                    newTree = tree.Left;
+                    SignNode(tree);
+                    ContiniousGen(tree, hard - ++curr);
                 }
-
-                curr++;
-                _trees.Add(newTree);
+                else
+                    GenNewTree(FunctionNode(tree), hard, ++curr);
             }
-
-            if (curr % 15 == 0) _trees.RemoveAll(x => !x.IsLeaf());
-
-            int nextTree = -1;
-            while (true)
-            {
-                nextTree = _random.Next(0, _trees.Count);
-                if (_trees[nextTree].IsLeaf())
-                {
-                    break;
-                }
-            }
-
-            GenArithmExprVer3(itCount, nextTree, ref curr);
         }
 
-        // old and slow
-        private void GenArithmExprVer2(int itCount, int num, ref int curr)
+        public Tree Run(int hard)
         {
-            if (curr == itCount) return;
-
-            var res = _random.Next(0, 100);
-            var tree = _trees[num];
-
-            if (res < 25)
-            {
-                tree.Value = $"{Elems.Funcs[_random.Next(0, Elems.Funcs.Length)]}";
-                tree.Left = new Tree(tree);
-                curr++;
-                _trees.Add(tree.Left);
-                tree.State = State.Func;
-                //GenArithmExpr(itCount, tree.Left, ref curr);
-            }
-            else
-            {
-                tree.Value = Elems.Signs[_random.Next(0, Elems.Signs.Length)];
-                tree.State = State.Sign;
-                tree.Left = new Tree(tree);
-                tree.Right = new Tree(tree);
-
-                Tree newTree = tree.Right;
-                if (_random.Next(0, 100) < 50)
-                {
-                    newTree = tree.Left;
-                }
-
-                curr++;
-                _trees.Add(newTree);
-            }
-
-            int nextTree = -1;
-            while (true)
-            {
-                nextTree = _random.Next(0, _trees.Count);
-                if (_trees[nextTree].IsLeaf())
-                {
-                    break;
-                }
-            }
-
-            GenArithmExprVer2(itCount, nextTree, ref curr);
-        }
-
-        // old, fast but is boring
-        private void GenArithmExpr(int itCount, Tree tree, ref int curr)
-        {
-            if (curr == itCount) return;
-
-            var res = _random.Next(0, 100);
-
-            if (res < 25)
-            {
-                tree.Value = $"{Elems.Funcs[_random.Next(0, Elems.Funcs.Length)]}";
-                tree.Left = new Tree(tree);
-                curr++;
-                tree.State = State.Func;
-                GenArithmExpr(itCount, tree.Left, ref curr);
-            }
-            else
-            {
-                tree.Value = Elems.Signs[_random.Next(0, Elems.Signs.Length)];
-                tree.State = State.Sign;
-                tree.Left  = new Tree(tree);
-                tree.Right = new Tree(tree);
-                
-                Tree newTree = tree.Right;
-                if (_random.Next(0, 100) < 50)
-                {
-                    newTree = tree.Left;
-                }
-
-                curr++;
-                GenArithmExpr(itCount, newTree, ref curr);
-            }
-
+            var tree = new Tree(null);
+            tree.Left = new Tree(tree);
+            tree.State = State.Root;
+            tree.Value = "ROOT";
+            GenNewTree(tree.Left, hard, 0);
+            return tree;
         }
     }
 }

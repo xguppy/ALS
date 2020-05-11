@@ -14,12 +14,12 @@ namespace Generator.MainGen
 {
     public class Gen
     {
-        private IParser _pr;
-        private IParamsContainer _paramsContainer;
+        private Parser _pr;
+        private ParamsContainer _paramsContainer;
         private List<Param> _parametrs;
         private GenFunctions _genFunctions = new GenFunctions();
 
-        public Gen(IParser pr, IParamsContainer paramsContainer)
+        public Gen(Parser pr, ParamsContainer paramsContainer)
         {
             _pr = pr;
             _paramsContainer = paramsContainer;

@@ -8,6 +8,7 @@ namespace Generator.MainGen
         getAEcode,
         parent,
         lua,
+        luaExtension,
         justString
     }
 }
