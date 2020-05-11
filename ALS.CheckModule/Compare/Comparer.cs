@@ -18,7 +18,6 @@ namespace ALS.CheckModule.Compare
         private static readonly CheckerList CheckerList = new CheckerList();
         private static readonly FinaliterList FinaliterList = new FinaliterList();
         private ResultRun _userResult;
-        
         /// <summary>
         /// 
         /// </summary>
@@ -28,8 +27,8 @@ namespace ALS.CheckModule.Compare
         public Comparer(string pathModel, string pathUser, List<string> inputData)
         {
             _userResult.Input = inputData;
-            _model = new ProcessProgram(pathModel, inputData, false);
-            _user = new ProcessProgram(pathUser, inputData, true);
+            _model = new ProcessProgram(pathModel, _userResult.Input, false);
+            _user = new ProcessProgram(pathUser, _userResult.Input, true);
         }
         /// <summary>
         /// Сранение программ
@@ -37,7 +36,10 @@ namespace ALS.CheckModule.Compare
         /// <param name="constrains">Ограничения</param>
         public async Task<ResultRun> CompareAsync(Constrains constrains)
         {
-            PreparerList.Get(constrains.Preparer)?.Prepare(_user.PathToProgram);
+            var isStdInput = true;
+            await Task.Run(() =>PreparerList.Get(constrains.Preparer)?.Prepare(_user.PathToProgram, _model.PathToProgram, _userResult.Input, ref isStdInput));
+            _user.IsStdInput = isStdInput;
+            _model.IsStdInput = isStdInput;
             //Начнём и подождём завершения
             var okUserProg = await _user.Execute(constrains.Time);
             var okModelProg = await _model.Execute(constrains.Time);
@@ -57,8 +59,8 @@ namespace ALS.CheckModule.Compare
             
             _userResult.Output = GetOutput(_user);
             var modelOutput = GetOutput(_model);
-            CheckerList.Get(constrains.Checker).Check(modelOutput, _user.PathToProgram, _model.PathToProgram, ref _userResult);
-            FinaliterList.Get(constrains.Finaliter).Finalite(_user.PathToProgram);
+            await Task.Run(() => CheckerList.Get(constrains.Checker).Check(modelOutput, _user.PathToProgram, _model.PathToProgram, ref _userResult));
+            await Task.Run(() => FinaliterList.Get(constrains.Finaliter)?.Finalite(_user.PathToProgram, _model.PathToProgram));
             return _userResult;
         }
         /// <summary>
@@ -67,14 +69,12 @@ namespace ALS.CheckModule.Compare
         private static List<string> GetOutput(ProcessExecute prog)
         {
             var output = new List<string>();
-            
-            using (var fs = prog.Output)
+
+            using var fs = prog.Output;
+            while (!fs.EndOfStream)
             {
-                while (!fs.EndOfStream)
-                {
-                    var line = fs.ReadLine()?.Split(' ').SelectMany(elem => elem.Split()).Where(elem => elem != String.Empty);
-                    output.AddRange(line);
-                }
+                var line = fs.ReadLine()?.Split(' ').SelectMany(elem => elem.Split()).Where(elem => elem != String.Empty);
+                output.AddRange(line);
             }
 
             return output;

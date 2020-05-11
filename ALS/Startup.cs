@@ -5,6 +5,9 @@ using System.Text;
 using ALS.AntiPlagModule.Services;
 using ALS.AntiPlagModule.Services.LexerFactory;
 using ALS.AntiPlagModule.Services.LexerService;
+using ALS.CheckModule.Compare.Checker;
+using ALS.CheckModule.Compare.Finaliter;
+using ALS.CheckModule.Compare.Preparer;
 using ALS.CheckModule.Processes;
 using ALS.EntityСontext;
 using ALS.Services;
@@ -12,7 +15,6 @@ using ALS.Services.AuthService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -73,7 +75,7 @@ namespace ALS
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApplicationContext dbContext)
         {
-            if (env.ApplicationName == Environments.Development)
+            if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -114,43 +116,23 @@ namespace ALS
 
             CreateNeedDirectory();
             SetupDatabase(dbContext);
+            PreloadComponents();
         }
         /// <summary>
         /// Создание требуемых для приложения директорий если их нет в системе
         /// </summary>
         void CreateNeedDirectory()
         {
-            if (!Directory.Exists("sourceCodeUser"))
+            var necessaryDirectories = new[] {"sourceCodeUser", "uploads", "sourceCodeModel", "executeUser", "executeModel", "tmp", "modelTestingFiled"  };
+            foreach (var item in necessaryDirectories)
             {
-                Directory.CreateDirectory("sourceCodeUser");
-            }
-
-            if (!Directory.Exists("uploads"))
-            {
-                Directory.CreateDirectory("uploads");
-            }
-
-            if (!Directory.Exists("sourceCodeModel"))
-            {
-                Directory.CreateDirectory("sourceCodeModel");
-            }
-
-            if (!Directory.Exists("executeUser"))
-            {
-                Directory.CreateDirectory("executeUser");
-            }
-
-            if (!Directory.Exists("executeModel"))
-            {
-                Directory.CreateDirectory("executeModel");
-            }
-
-            if (!Directory.Exists("tmp"))
-            {
-                Directory.CreateDirectory("tmp");
+                if (!Directory.Exists(item))
+                {
+                    Directory.CreateDirectory(item);
+                }
             }
         }
-
+        
         void SetupDatabase(ApplicationContext context)
         {
             // check and add roles
@@ -304,6 +286,15 @@ namespace ALS
                 
                 context.SaveChanges();
             }
+        }
+        /// <summary>
+        /// Метод для первичной сборки
+        /// </summary>
+        private async void PreloadComponents()
+        {
+            await new CheckerList().ReloadActions();
+            await new PreparerList().ReloadActions();
+            await new FinaliterList().ReloadActions();
         }
     }
 }

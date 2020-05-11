@@ -4,6 +4,8 @@ namespace ALS.CheckModule.Compare.Preparer
 {
     public class PreparerList: ComponentList<IPreparer>
     {
+        protected override string TemplateComponent { get; set; } = "AbsolutePreparer.cs";
+
         protected override string GetPathToSource()
             => Path.Combine(ModuleGovernor.GetPathToModule(GetComponentName()));
 
@@ -11,6 +13,5 @@ namespace ALS.CheckModule.Compare.Preparer
         {
             return name == null ? null : Actions[name];
         }
-        
     }
 }

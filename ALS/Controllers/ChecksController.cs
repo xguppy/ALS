@@ -30,7 +30,7 @@ namespace ALS.Controllers
         {
             _db = db;
         }
-
+        
         [HttpPost]
         public async Task<IActionResult> Check(IFormFileCollection uploadedSources, [FromHeader] int variantId)
         {
@@ -58,9 +58,15 @@ namespace ALS.Controllers
 
                     //Возьмём пути для исполняемых файлов
                     var programFileUser = CreateExecuteDirectories(assignedVar.Variant.VariantId, variantId, userIdentifier);
+                    
 
                     var programFileModel = new Uri((await _db.Variants.FirstOrDefaultAsync(var => var.VariantId == variantId)).LinkToModel).AbsolutePath;
-                    
+                    //Создадим директорию для запуска эталонной программы программы
+                    var moveModelProgram = Path.Combine(Environment.CurrentDirectory, "modelTestingFiled", $"{userIdentifier}_{variantId}");
+                    Directory.CreateDirectory(moveModelProgram);
+                    //Новая файл в директории
+                    var newPathProgram = Path.Combine(moveModelProgram, Path.GetFileName(programFileModel));
+                    System.IO.File.Copy(programFileModel, newPathProgram);
                     //Скомпилируем программу пользователя
                     var compiler = new ProcessCompiler(solutionDirectory, programFileUser);
                     var isCompile = await compiler.Execute(10000);
@@ -73,6 +79,7 @@ namespace ALS.Controllers
                         lastSol.IsSolved = false;
                         lastSol.CompilerFailsNumbers++;
                         _db.Solutions.Update(lastSol);
+                        Directory.Delete(moveModelProgram, true);
                         await _db.SaveChangesAsync();
                         return BadRequest(compiler.CompileState);
                     }
@@ -90,7 +97,7 @@ namespace ALS.Controllers
                     List<ResultRun> resultTests;
                     try
                     {
-                        var verification = new Verification(programFileUser, programFileModel, constrains);
+                        var verification = new Verification(programFileUser, newPathProgram, constrains);
                         resultTests = await verification.RunTests(inputDatas);
                     }
                     catch (Exception e)
@@ -101,6 +108,8 @@ namespace ALS.Controllers
                     {
                         //В любом случае удалим ненужный исполняемый файл
                         System.IO.File.Delete(programFileUser);
+                        //и директорию с моделью
+                        Directory.Delete(moveModelProgram, true);
                     }
 
                     //Сохраним сейчас чтобы добавить тестовые прогоны в БД
@@ -117,16 +126,11 @@ namespace ALS.Controllers
                             SolutionId = solution.SolutionId
                         };
                         await _db.TestRuns.AddAsync(testRun);
-                        
-                        if (solution.IsSolved && result.IsCorrect != true)
-                        {
-                            solution.IsSolved = false;
-                        }
                     }
 
                     var countCompleteTest = resultTests.Count(rt => rt.IsCorrect);
                     var currMark = assignedVar.Mark;
-                    Rate(evaluation, countCompleteTest, resultTests.Count, ref currMark);
+                    solution.IsSolved = Rate(evaluation, countCompleteTest, resultTests.Count, ref currMark);
                     assignedVar.Mark = currMark;
                     await _db.SaveChangesAsync();
                     //Выведем количество верных тестовых прогонов и комментарии к ним
@@ -186,10 +190,8 @@ namespace ALS.Controllers
             //Сохраним все файлы в директорию пользовательского решения
             foreach (var file in sources)
             {
-                using (var fileStream = new FileStream(Path.Combine(directorySave, file.FileName), FileMode.Create))
-                {
-                    await file.CopyToAsync(fileStream);
-                }
+                await using var fileStream = new FileStream(Path.Combine(directorySave, file.FileName), FileMode.Create);
+                await file.CopyToAsync(fileStream);
             }
         }
         
@@ -202,23 +204,30 @@ namespace ALS.Controllers
             }
             return testsLog.ToString();
         }
-
-        private static void Rate(Evaluation evaluation, int testComplete, int sumTest, ref int currentMark)
+        
+        private static bool Rate(Evaluation evaluation, int testComplete, int sumTest, ref int currentMark)
         {
             switch (evaluation)
             {
                 case Evaluation.Strict:
                     currentMark = sumTest == testComplete ? 1 : 0;
-                    break;
+                    return currentMark == 1;
                 case Evaluation.NotStrict:
                     currentMark = testComplete;
-                    break;
+                    return IsSolved(testComplete, sumTest);
                 case Evaluation.Penalty:
                     currentMark -= sumTest - testComplete;
-                    break;
+                    return IsSolved(testComplete, sumTest);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(evaluation), evaluation, "Выбранная стратегия оценивания отсутствует");
             }
         }
+        /// <summary>
+        /// Если больше 70% верно, то засчитываем задачу
+        /// </summary>
+        /// <param name="testComplete">Пройденные тесты</param>
+        /// <param name="sumTest">Всего тестов</param>
+        /// <returns>Решена ли задача</returns>
+        private static bool IsSolved(int testComplete, int sumTest) => (testComplete / sumTest) * 100 > 70;
     }
 }

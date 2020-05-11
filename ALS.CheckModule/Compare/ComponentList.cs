@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.Loader;
 using System.Threading.Tasks;
 
 namespace ALS.CheckModule.Compare
@@ -14,18 +12,22 @@ namespace ALS.CheckModule.Compare
         private static CheckModuleLoadContext _loadContext;
         private static WeakReference _weakReference;
         private static ComponentAssemblyManager _manager = new ComponentAssemblyManager();
-        static ComponentList()
-        {
-            var result = ModuleGovernor.BuildModule(GetComponentName()).Result;
-            if (!result)
-            {
-                throw new Exception($"Невозможно инициализировать компоненты {GetComponentName()}");
-            }
-            ModuleGovernor.AllowBuild();
-            FillActions();
-        }
+        
+        protected abstract string TemplateComponent { get; set; }
+        
         protected abstract string GetPathToSource();
-        public abstract T Get(string name);
+
+        public virtual T Get(string name)
+        {
+            //Если компонент не задан применим стандартный
+            name ??= TemplateComponent.Split('.')[0];
+            //Если компонента нет в словаре бросим исключение
+            if (!Actions.ContainsKey(name))
+            {
+                throw new Exception("Выбранного компонента не существует");
+            }
+            return Actions[name];
+        }
         protected static string GetComponentName() => typeof(T).Name.Remove(0, 1);
         public async Task<bool> ReloadActions()
         {
@@ -35,6 +37,7 @@ namespace ALS.CheckModule.Compare
                 await _manager.Unload(_weakReference, _loadContext);
             }
             var result = await ModuleGovernor.BuildModule(GetComponentName());
+            ModuleGovernor.AllowBuild();
             if(result)
             {
                 _loadContext = new CheckModuleLoadContext();
@@ -69,6 +72,10 @@ namespace ALS.CheckModule.Compare
         
         public async Task<string> Delete(string fileName)
         {
+            if (!IsDeletable(fileName))
+            {
+                throw new Exception("Компонент невозможно удалить");
+            }
             var sourceCode = await GetText(fileName);
             File.Delete(GetPathToFile(fileName));
             return sourceCode;
@@ -78,11 +85,8 @@ namespace ALS.CheckModule.Compare
 
             private async Task<string> GetText(string fileName)
         {
-            string sourceCode;
-            using (var fileStreamReader = new StreamReader(GetPathToFile(fileName)))
-            {
-                sourceCode = await fileStreamReader.ReadToEndAsync();
-            }
+            using var fileStreamReader = new StreamReader(GetPathToFile(fileName));
+            var sourceCode = await fileStreamReader.ReadToEndAsync();
             return sourceCode;
         }
         
@@ -91,7 +95,8 @@ namespace ALS.CheckModule.Compare
             await using var fileStreamWriter = new StreamWriter(GetPathToFile(fileName));
             await fileStreamWriter.WriteAsync(code);
         }
-
         
+        private bool IsDeletable(string filename)
+            => filename != TemplateComponent;
     }
 }

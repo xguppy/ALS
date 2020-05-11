@@ -9,6 +9,7 @@
 <h3>Чекеры </h3>
 <div style="margin-bottom: 1%">
     <input onchange="sendSolution(this)" class="btn btn-primary edit-item" type="file" accept=".cs"/>
+    <span id="loader"></span>
 </div>
 <div class="container">
     <table style="width: 100%" class="table table-hover" border="1">
@@ -56,6 +57,10 @@
                                 let tdRemoveChecker = document.createElement('td');
                                 tr.appendChild(tdRemoveChecker);
                                 let removeCheckerBtn = document.createElement('button');
+                                if(checker === 'AbsoluteChecker')
+                                {
+                                    removeCheckerBtn.disabled = true;
+                                }
                                 removeCheckerBtn.className = "btn btn-danger remove-item";
                                 removeCheckerBtn.addEventListener('click', function() {
                                   RemoveChecker(checker);
@@ -85,19 +90,18 @@
                     url: '/api/Checker/Delete',
                     beforeSend: (xhr) => 
                     {
+                        $('#loader').get()[0].innerHtml = "<b>Идёт процесс удаления</b>";
                         xhr.setRequestHeader("nameComponent", nameChecker);
                     },
                     success: (textChecker) =>
                     {
+                        $('#loader').get()[0].innerHtml = "";
                         CreateTable();
                         alert(textChecker);
                     },
                     error: (checkerFail) =>
                     {
-                        document.body.innerHTML = '';
-                        alert('Нет доступа');
-                        history.go(-1);
-                        
+                        alert(checkerFail.responseText);
                     }
                  }
              );
@@ -120,9 +124,11 @@
                       async: false,
                       beforeSend: (xhr) =>
                       {
+                          $('#loader').get()[0].innerHtml = "<b>Идёт загрузка</b>";
                       },
                       success: (result) =>
                       {
+                          $('#loader').get()[0].innerHtml = "";
                           CreateTable();
                           alert(result);
                       },

@@ -7,6 +7,7 @@ using ALS.EntityСontext;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ALS.Controllers
 {
@@ -21,24 +22,30 @@ namespace ALS.Controllers
         {
             _db = db;
         }
-        
-        
+
+        [HttpGet]
+        public async Task<IActionResult> GetSolutions([FromHeader] int labId, [FromHeader] int userId)
+            => Ok(await Task.Run(() => _db.Solutions.Include(sol => sol.AssignedVariant)
+                .ThenInclude(aw => aw.Variant)
+                .Where(sol => sol.AssignedVariant.UserId == userId)
+                .Where(sol => sol.AssignedVariant.Variant.LaboratoryWorkId == labId)));
+
         [HttpGet]
         public async Task<IActionResult> GetTestRuns([FromHeader]int solutionId)
-        {
-            return Ok(await Task.Run(() => _db.Solutions.Where(sol => sol.SolutionId == solutionId).Select(sol => sol.TestRuns)));
-        }
+            => Ok(await Task.Run(() => _db.Solutions.Where(sol => sol.SolutionId == solutionId).Select(sol => sol.TestRuns)));
 
         [HttpGet]
         public async Task<FileResult> GetCode([FromQuery]int solutionId)
         {
-            throw new NotImplementedException();
-            /*var sourceCodePath = await Task.Run(() =>
+            var sourceCodePath = await Task.Run(() =>
                 _db.Solutions.Where(sol => sol.SolutionId == solutionId).Select(sol => sol.SourceCode).Single());
-            var fileName = $"{Directory}";
+            var dirInfo = new DirectoryInfo(sourceCodePath);
+            var fileName = $"{dirInfo.Parent.Name}_{dirInfo.Parent.Parent.Name}_{dirInfo.Name}.zip";
             var resultDirectory = Path.Combine(Environment.CurrentDirectory, "tmp", fileName);
             ZipFile.CreateFromDirectory(sourceCodePath, resultDirectory);
-            return File();*/
+            var dataBytes = await System.IO.File.ReadAllBytesAsync(resultDirectory);
+            System.IO.File.Delete(resultDirectory);
+            return File(dataBytes, "application/zip", fileName);
         }
     }
 }

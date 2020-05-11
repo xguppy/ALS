@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ALS.CheckModule.Compare.Finaliter;
 
 namespace ALS.CheckModule.Processes
 {
@@ -13,7 +14,10 @@ namespace ALS.CheckModule.Processes
         /// Мониторинг ресурсов процесса
         /// </summary>
         private readonly ProcessMonitor _monitor;
-
+        /// <summary>
+        /// Использовать ли стандартный ввод
+        /// </summary>
+        public bool IsStdInput { get; set; } = true;
         /// <summary>
         /// Конструктор программы 
         /// </summary>
@@ -35,16 +39,13 @@ namespace ALS.CheckModule.Processes
         /// Время потраченное на выполнение процесса
         /// </summary>
         public int Time => _monitor.Time;
-        /// <summary>
-        /// Максимальное количество затраченной памяти
-        /// </summary>
+        public string PathToProgram => AppProcess.StartInfo.FileName;
         public long Memory => _monitor.Memory;
         /// <summary>
         /// 
         /// </summary>
         /// <param name="timeMilliseconds">Время исполнения</param>
         /// <returns></returns>
-        public string PathToProgram => AppProcess.StartInfo.FileName;
         public override async Task<bool> Execute(int timeMilliseconds)
         {
             var result = false;
@@ -54,9 +55,12 @@ namespace ALS.CheckModule.Processes
                 {
                     InitExecute();
                     _monitor?.Start();
-                    foreach (var elem in _inputData)
+                    if (IsStdInput)
                     {
-                        Input = elem;
+                        foreach (var elem in _inputData)
+                        {
+                            Input = elem;
+                        }    
                     }
                     result = AppProcess.WaitForExit(timeMilliseconds);
                     _monitor?.Stop();
