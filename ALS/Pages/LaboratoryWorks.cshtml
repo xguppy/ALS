@@ -8,9 +8,9 @@
 <h3>Лабораторные работы </h3>
 
 <div class="container">
-    <table class="table table-hover">
+    <table style="width: 100%" class="table table-hover" border="1">
         <tr>
-            <td>Id</td>
+            <td>#</td>
             <td>Название</td>
             <td>Тема</td>
             <td>Номер шаблона</td>
@@ -35,16 +35,15 @@
                 }
                 <td>@item.Description</td>
                 <td>@item.User.Name @item.User.Surname</td>
-                <td>
-                    <input type="button" id="buttonDelete" value="Удалить" onclick="deleteLw(@item.LaboratoryWorkId, @item.UserId)" /> |
-                    @{  /*<input type="button" id="buttonUpdate" value="Изменить" onclick="openModalUpdate(@item.TemplateLaboratoryWorkId, @item.ThemeId,'@item.DisciplineCipher', '@item.Name', '@item.Description', '@item.Constraints')" />*/
-                    }<input type="button" id="buttonUpdate" value="Изменить" onclick="openModalUpdate(@item.LaboratoryWorkId, @item.UserId, @templateId,
-                            @item.ThemeId, '@item.DisciplineCipher','@item.Name', '@item.Description', '@item.Constraints')" />
+                <td>                    
+                    <input type="button" id="buttonUpdate" class="btn btn-primary edit-item" value="Редактировать" onclick="openModalUpdate(@item.LaboratoryWorkId, @item.UserId, @templateId,
+                            @item.ThemeId, '@item.DisciplineCipher','@item.Name', '@item.Description', '@item.Constraints')" />                            
+                    <input type="button" id="buttonDelete" class="btn btn-danger remove-item" value="Удалить" onclick="deleteLw(@item.LaboratoryWorkId, @item.UserId)" />
                 </td>
             </tr>
         }
     </table>
-    <input id="buttonCreate" type="submit" value="Создать" onclick="openModalCreate()" />
+    <input id="buttonCreate" class="btn btn-info btn-lg" type="submit" value="Создать" onclick="openModalCreate()" />
 </div>
 
 <div id="myModalCreate" class="modal fade bd-example-modal-lg">
@@ -55,37 +54,37 @@
             </div>
             <div class="modal-body">
                 <form method="post">
-                    <p>
-                        <label>ID Шаблон : </label>
-                        @Html.DropDownList("TemplateId", Model.TemplateLWs, new { id = "s1TemplateId" })
+                    <p class="form-group row">
+                        <label class="col-sm-2 col-form-label font-weight-bold">ID Шаблон</label>
+                        @Html.DropDownList("TemplateId", Model.TemplateLWs, new { @class = "form-control col-sm-10", id = "s1TemplateId" })
                     </p>
-                    <p>
-                        <label>Тема : </label>
-                        @Html.DropDownList("ThemeId", Model.Themes, new { id = "s1ThemeId" })
+                    <p class="form-group row">
+                        <label class="col-sm-2 col-form-label font-weight-bold">Тема</label>
+                        @Html.DropDownList("ThemeId", Model.Themes, new { @class = "form-control col-sm-10", id = "s1ThemeId" })
                     </p>
-                    <p>
-                        <label>Дисциплина : </label>
-                        @Html.DropDownList("DisciplineCipher", Model.Disciplines, new { id = "s1DisciplineCipher" })
+                    <p class="form-group row">
+                        <label class="col-sm-2 col-form-label font-weight-bold">Дисциплина</label>
+                        @Html.DropDownList("DisciplineCipher", Model.Disciplines, new { @class = "form-control col-sm-10", id = "s1DisciplineCipher" })
                     </p>
                     @{/*<p>
                               <label>Оценка : </label>
                               @Html.DropDownList("Evaluation", Model.Evaluations, new { @id = "s1Evaluation" })
                           </p>*/
                     }
-                    <p>
-                        <label>Название : </label>
-                        @Html.TextBox("Name", null, new { id = "i1Name" })
+                    <p class="form-group row">
+                        <label class="col-sm-2 col-form-label font-weight-bold">Название</label>
+                        @Html.TextBox("Name", null, new { @class = "form-control col-sm-10", id = "i1Name"})
                     </p>
                     <p>
-                        <label>Описание : </label>
-                        <textarea id="i1Description" name="i1Description" cols="50" rows="10"></textarea>
+                        <label class="col-form-label font-weight-bold">Описание</label>
+                        <textarea id="i1Description" class="form-control",  name="i1Description"></textarea>
                     </p>
                     <p>
-                        <label>Ограничения (JSON) : </label>
+                        <label class="col-form-label font-weight-bold">Ограничения (JSON)</label>
                         @{string primer = "{\n\t\"Memory\": 4096000, \n\t\"Time\": 60000\n}";}
-                        <textarea id="i1Constraints" name="i1Constraints" cols="50"> @primer </textarea>
+                        <textarea id="i1Constraints" class = "form-control", name="i1Constraints"> @primer </textarea>
                     </p>
-                    <p><input type="button" value="Отправить" id="submitCreate" onclick="create()" /></p>
+                    <p><input type="button" class="btn btn-info btn-lg" value="Отправить" id="submitCreate" onclick="create()" /></p>
                 </form>
             </div>
             <div class="modal-footer"><button class="btn btn-default" type="button" data-dismiss="modal">Закрыть</button></div>
@@ -101,33 +100,33 @@
             </div>
             <div class="modal-body">
                 <form method="post">
-                    <p>
-                        <label>ID Шаблон : </label>
-                        @Html.DropDownList("TemplateId", Model.TemplateLWs, new { id = "s2TemplateId" })
+                    <p class="form-group row">
+                        <label class="col-sm-2 col-form-label font-weight-bold">ID Шаблон</label>
+                        @Html.DropDownList("TemplateId", Model.TemplateLWs, new { @class = "form-control col-sm-10", id = "s2TemplateId" })
+                    </p>
+                    <p class="form-group row">
+                        <label class="col-sm-2 col-form-label font-weight-bold">Тема</label>
+                        @Html.DropDownList("ThemeId", Model.Themes, new { @class = "form-control col-sm-10", id = "s2ThemeId" })
+                    </p>
+                    <p class="form-group row">
+                        <label class="col-sm-2 col-form-label font-weight-bold">Дисциплина</label>
+                        @Html.DropDownList("DisciplineCipher", Model.Disciplines, new { @class = "form-control col-sm-10", id = "s2DisciplineCipher" })
+                    </p>
+                    <p class="form-group row">
+                        <label class="col-sm-2 col-form-label font-weight-bold">Название</label>
+                        @Html.TextBox("Name", null, new { @class = "form-control col-sm-10", id = "i2Name" })
                     </p>
                     <p>
-                        <label>Тема : </label>
-                        @Html.DropDownList("ThemeId", Model.Themes, new { id = "s2ThemeId" })
+                        <label class="col-form-label font-weight-bold">Описание</label>
+                        <textarea class="form-control" id="i2Description" name="i2Description"></textarea>
                     </p>
                     <p>
-                        <label>Дисциплина : </label>
-                        @Html.DropDownList("DisciplineCipher", Model.Disciplines, new { id = "s2DisciplineCipher" })
-                    </p>
-                    <p>
-                        <label>Название : </label>
-                        @Html.TextBox("Name", null, new { id = "i2Name" })
-                    </p>
-                    <p>
-                        <label>Описание : </label>
-                        <textarea id="i2Description" name="i2Description" cols="50" rows="10"></textarea>
-                    </p>
-                    <p>
-                        <label>Ограничения (JSON) : </label>
-                        <textarea id="i2Constraints" name="i2Constraints" cols="50"></textarea>
+                        <label class="col-form-label font-weight-bold">Ограничения (JSON)</label>
+                        <textarea class="form-control" id="i2Constraints" name="i2Constraints"></textarea>
                     </p>
                     <input id="hiddenId" name="hiddenId" hidden>
                     <input id="hiddenUserId" name="hiddenUserId" hidden>
-                    <p><input type="button" value="Отправить" id="submitUpdate" onclick="updateLw()" /></p>
+                    <p><input type="button" class="btn btn-info btn-lg" value="Отправить" id="submitUpdate" onclick="updateLw()" /></p>
                 </form>
             </div>
             <div class="modal-footer"><button class="btn btn-default" type="button" data-dismiss="modal">Закрыть</button></div>

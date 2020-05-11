@@ -6,14 +6,13 @@
 }
 
 <h1>Темы лабораторных работ</h1>
-
 <div class="container">
-    <table class="table table-hover">
+    <table id="themestable" style="width: 100%" class="table table-hover" border="1">
         <thead>
             <tr>
-                <td>Id</td>
+                <td>#</td>
                 <td>Имя темы</td>
-                <td>Действия</td>
+                <td>Дисциплина</td>
             </tr>
         </thead>
 
@@ -25,29 +24,33 @@
                 <td>@item.Name</td>
                 <td>@item.DisciplineCipher</td>
                 <td>
-                    <input type="button" id="buttonDelete" value="Удалить" onclick="deleteTheme(@item.ThemeId)" /> |
-                    <input type="button" id="buttonUpdate" value="Изменить" onclick="openModalUpdate(@item.ThemeId, '@item.Name')" />
+                    <input type="button" id="buttonUpdate" class="btn btn-primary edit-item" value="Редактировать" onclick="openModalUpdate(@item.ThemeId, '@item.Name', '@item.DisciplineCipher')" />
+                    <input type="button" id="buttonDelete" class="btn btn-danger remove-item" value="Удалить" onclick="deleteTheme(@item.ThemeId)" />
                 </td>
             </tr>
             }
         </tbody>
     </table>
-    <input id="buttonCreate" type="submit" value="Создать" onclick="openModalCreate()" />
+    <input id="buttonCreate" class="btn btn-info btn-lg" type="submit" value="Создать" onclick="openModalCreate()" />
 </div>
 
 <div id="myModalCreate" class="modal fade bd-example-modal-lg">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Создание лабораторной работы</h4><button class="close" type="button" data-dismiss="modal">×</button>
+                <h4 class="modal-title">Создание темы лабораторной работы</h4><button class="close" type="button" data-dismiss="modal">×</button>
             </div>
             <div class="modal-body">
                 <form method="post">
-                    <p>
-                        <label>Название : </label>
-                        @Html.TextBox("Name", null, new { id = "i1themename" })
+                    <p class="form-group row">
+                        <label class="col-sm-2 col-form-label font-weight-bold">Название</label>
+                        @Html.TextBox("Name", null, new { @class = "form-control col-sm-10",id = "i1themename"})
                     </p>
-                    <p><input type="button" value="Отправить" id="submitCreate" onclick="createTheme()" /></p>
+                    <p class="form-group row">
+                        <label class="col-sm-2 col-form-label font-weight-bold">Дисциплина</label>
+                        @Html.DropDownList("DisciplineCipher", Model.Disciplines, new { @class = "form-control col-sm-10",id = "s1DisciplineCipher" })
+                    </p>
+                    <p><input type="button" class="btn btn-info btn-lg" value="Отправить" id="submitCreate" onclick="createTheme()" /></p>
                 </form>
             </div>
             <div class="modal-footer"><button class="btn btn-default" type="button" data-dismiss="modal">Закрыть</button></div>
@@ -63,11 +66,15 @@
             </div>
             <div class="modal-body">
                 <form method="post">
-                    <p>
-                        <label>Название : </label>
-                        @Html.TextBox("Name", null, new { id = "i2themename" })
+                    <p class="form-group row">
+                        <label class="col-sm-2 col-form-label font-weight-bold">Название</label>
+                        @Html.TextBox("Name", null, new { @class = "form-control col-sm-10", id = "i2themename" })
                     </p>
-                    <p><input type="button" value="Отправить" id="submitUpdate" onclick="updateTheme()" /></p>
+                    <p class="form-group row">
+                        <label class="col-sm-2 col-form-label font-weight-bold">Дисциплина</label>
+                        @Html.DropDownList("DisciplineCipher", Model.Disciplines, new { @class = "form-control col-sm-10", id = "s2DisciplineCipher" })
+                    </p>
+                    <p><input type="button" class="btn btn-info btn-lg" value="Отправить" id="submitUpdate" onclick="updateTheme()" /></p>
                 </form>
             </div>
             <div class="modal-footer"><button class="btn btn-default" type="button" data-dismiss="modal">Закрыть</button></div>
@@ -78,7 +85,13 @@
 
 <script>
     let curUpdThemeId = null;
-
+    function addSortEvents() {
+        document.querySelectorAll('#themestable thead td')
+            .forEach(e => e.addEventListener("click", function () {
+                // Here, `this` refers to the element the event was hooked on
+                console.log("clicked")
+            }));
+    }
     // проверка доступа и все
     $.ajax(
         {
@@ -86,7 +99,10 @@
             url: '/api/Themes/CheckAuth',
             beforeSend: (xhr) => {
             },
-            success: () => { },
+            success: () => {
+                //alert('kekw');
+                addSortEvents();
+            },
             error: (fail) => {
                 document.body.innerHTML = '';
                 alert('Нет доступа');
@@ -94,21 +110,14 @@
             }
         });
 
-    function openModalUpdate(themeid, name) {
-        /*if (userIdent != sessionStorage.getItem(userId)) {
-            alert('У вас нет доступа к данной лабораторной работе!');
-            return;
-        }*/
+    function openModalUpdate(themeid, name, disciplinecipher) {
         curUpdThemeId = themeid;
-        $("#myModalUpdate").find("input[id='i2themename']").val(name);        
+        $("#myModalUpdate").find("input[id='i2themename']").val(name);
+        $("#myModalUpdate").find("input[id='s2DisciplineCipher']").val(name);      
         $('#myModalUpdate').modal('show');
     }
 
     function openModalCreate() {
-        /*if (userIdent != sessionStorage.getItem(userId)) {
-            alert('У вас нет доступа к данной лабораторной работе!');
-            return;
-        }*/  
         $('#myModalCreate').modal('show');
     }
 

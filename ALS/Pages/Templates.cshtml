@@ -7,11 +7,11 @@
 
 <h4>@ViewData["Title"]</h4>
 <div class="container">
-    <table class="table table-hover">
+    <table style="width: 100%" class="table table-hover" border="1">
         <tr>
             <td>#</td>
             <td>Тема</td>
-            <td>Путь до файла</td>
+            <td>Имя файла</td>
             <td>Действия</td>
         </tr>
         @foreach (var item in Model.Templates)
@@ -21,13 +21,13 @@
                 <td>@item.Theme.Name</td>
                 <td>@item.TemplateTask.Substring(item.TemplateTask.LastIndexOf('/')+1)</td>
                 <td>
-                    <input type="button" id="buttonDelete" value="Удалить" onclick="deleteTlw(@item.TemplateLaboratoryWorkId)" /> |
-                    <input type="button" id="buttonUpdate" value="Изменить" onclick="updateTlw(@item.TemplateLaboratoryWorkId, @item.ThemeId, '@item.TemplateTask')" />
+                    <input type="button" id="buttonUpdate" class="btn btn-primary edit-item" value="Редактировать" onclick="updateTlw(@item.TemplateLaboratoryWorkId, @item.ThemeId, '@item.TemplateTask')" />
+                    <input type="button" id="buttonDelete" class="btn btn-danger remove-item" value="Удалить" onclick="deleteTlw(@item.TemplateLaboratoryWorkId)" />
                 </td>
             </tr>
         }
     </table>
-    <input id="buttonCreate" type="submit" value="Создать" onclick="openModalCreate()" />
+    <input id="buttonCreate" class="btn btn-info btn-lg" type="submit" value="Создать" onclick="openModalCreate()" />
 </div>
 
 <div id="myModal" class="modal fade bd-example-modal-lg">
@@ -38,17 +38,17 @@
             </div>
             <div class="modal-body">
                 <form method="post">
-                    <label>Тема : </label>
-                    @Html.DropDownList("ThemeId", Model.Themes, new { @id = "newThemeId" })
+                    <p class="form-group row">
+                        <label class="col-sm-2 col-form-label font-weight-bold">Тема</label>
+                        @Html.DropDownList("ThemeId", Model.Themes, new { @class = "form-control col-sm-10", @id = "newThemeId" })
+                    </p>
                     <input id="hiddenId" name="hiddenId" value="1" hidden>
+                    <input id="path" class="form-control col-sm-10" name="path" value="1" hidden>
                     <p>
-                        <label>Путь до файла : </label>
-                        <input id="path" name="path" value="1">
+                        <label class="col-form-label font-weight-bold">Содержимое</label>
+                        <textarea id="textAreaModel" class="form-control" name="textAreaModel" rows="30"></textarea>
                     </p>
-                    <p>
-                        <textarea id="textAreaModel" name="textAreaModel" cols="80" rows="30"></textarea>
-                    </p>
-                    <p><input type="button" value="Отправить" id="submitUpdate" onclick="update()" /></p>
+                    <p><input type="button" class="btn btn-info btn-lg" value="Отправить" id="submitUpdate" onclick="update()" /></p>
                 </form>
             </div>
             <div class="modal-footer"><button class="btn btn-default" type="button" data-dismiss="modal">Закрыть</button></div>
@@ -64,12 +64,12 @@
             </div>
             <div class="modal-body">
                 <form method="post" enctype="multipart/form-data">
-                    <div class="form-group">
-                        <label class="control-label">Тема</label>
-                        <select id="selectThemeId" name="themeId" asp-items="@Model.Themes"></select>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label font-weight-bold">Тема</label>
+                        <select class="form-control col-sm-10" id="selectThemeId" name="themeId" asp-items="@Model.Themes"></select>
                     </div>
-                    <div id="fileselecting" class="form-group">
-                        <label class="control-label">Файл с шаблоном</label>
+                    <div id="fileselecting" class="form-group row">
+                        <label class="col-sm-2 col-form-label font-weight-bold">Файл с шаблоном</label>
                     </div>
                 </form>
             </div>
