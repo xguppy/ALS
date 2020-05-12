@@ -37,7 +37,7 @@
                 <td>@item.User.Name @item.User.Surname</td>
                 <td>                    
                     <input type="button" id="buttonUpdate" class="btn btn-primary edit-item" value="Редактировать" onclick="openModalUpdate(@item.LaboratoryWorkId, @item.UserId, @templateId,
-                            @item.ThemeId, '@item.DisciplineCipher','@item.Name', '@item.Description', '@item.Constraints')" />                            
+                            @item.ThemeId, '@item.DisciplineCipher','@item.Name', '@item.Description', '@item.Constraints', '@((int)item.Evaluation)')" />                            
                     <input type="button" id="buttonDelete" class="btn btn-danger remove-item" value="Удалить" onclick="deleteLw(@item.LaboratoryWorkId, @item.UserId)" />
                 </td>
             </tr>
@@ -66,23 +66,35 @@
                         <label class="col-sm-2 col-form-label font-weight-bold">Дисциплина</label>
                         @Html.DropDownList("DisciplineCipher", Model.Disciplines, new { @class = "form-control col-sm-10", id = "s1DisciplineCipher" })
                     </p>
-                    @{/*<p>
-                              <label>Оценка : </label>
-                              @Html.DropDownList("Evaluation", Model.Evaluations, new { @id = "s1Evaluation" })
-                          </p>*/
-                    }
+                    <p class="form-group row">
+                        <label class="col-sm-2 col-form-label font-weight-bold">Оценка</label>
+                        @Html.DropDownList("Evaluation", Model.Evaluations, new { @class = "form-control col-sm-10", @id = "s1Evaluation" })
+                    </p>
                     <p class="form-group row">
                         <label class="col-sm-2 col-form-label font-weight-bold">Название</label>
-                        @Html.TextBox("Name", null, new { @class = "form-control col-sm-10", id = "i1Name"})
+                        @Html.TextBox("Name", null, new { @class = "form-control col-sm-10", id = "i1Name" })
                     </p>
                     <p>
                         <label class="col-form-label font-weight-bold">Описание</label>
-                        <textarea id="i1Description" class="form-control",  name="i1Description"></textarea>
+                        <textarea id="i1Description" class="form-control" , name="i1Description"></textarea>
                     </p>
                     <p>
                         <label class="col-form-label font-weight-bold">Ограничения (JSON)</label>
-                        @{string primer = "{\n\t\"Memory\": 4096000, \n\t\"Time\": 60000\n}";}
-                        <textarea id="i1Constraints" class = "form-control", name="i1Constraints"> @primer </textarea>
+                        <table class="table table-bordered">
+                            <tr>
+                                <td>
+                                    <div class="form-group row">
+                                        <label id="mem1" class="col-form-label font-weight-bold">Память - 4096000</label>
+                                        <input type="range" class="form-control-range" id="i1ControlRange1" min="2096000" max="6096000" value="4096000" step="10000" />
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label id="time1" class="col-form-label font-weight-bold">Время - 60000</label>
+                                        <input type="range" class="form-control-range" id="i1ControlRange2" min="10000" max="90000" value="60000" step="10000" />
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
                     </p>
                     <p><input type="button" class="btn btn-info btn-lg" value="Отправить" id="submitCreate" onclick="create()" /></p>
                 </form>
@@ -113,6 +125,10 @@
                         @Html.DropDownList("DisciplineCipher", Model.Disciplines, new { @class = "form-control col-sm-10", id = "s2DisciplineCipher" })
                     </p>
                     <p class="form-group row">
+                        <label class="col-sm-2 col-form-label font-weight-bold">Оценка</label>
+                        @Html.DropDownList("Evaluation", Model.Evaluations, new { @class = "form-control col-sm-10", @id = "s2Evaluation" })
+                    </p>
+                    <p class="form-group row">
                         <label class="col-sm-2 col-form-label font-weight-bold">Название</label>
                         @Html.TextBox("Name", null, new { @class = "form-control col-sm-10", id = "i2Name" })
                     </p>
@@ -122,7 +138,21 @@
                     </p>
                     <p>
                         <label class="col-form-label font-weight-bold">Ограничения (JSON)</label>
-                        <textarea class="form-control" id="i2Constraints" name="i2Constraints"></textarea>
+                        <table class="table table-bordered">
+                            <tr>
+                                <td>
+                                    <div class="form-group row">
+                                        <label id="mem2" class="col-form-label font-weight-bold">Память - 4096000</label>
+                                        <input type="range" class="form-control-range" id="i2ControlRange1" min="2096000" max="6096000" value="4096000" step="10000" />
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label id="time2" class="col-form-label font-weight-bold">Время - 60000</label>
+                                        <input type="range" class="form-control-range" id="i2ControlRange2" min="10000" max="90000" value="60000" step="10000" />
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
                     </p>
                     <input id="hiddenId" name="hiddenId" hidden>
                     <input id="hiddenUserId" name="hiddenUserId" hidden>
@@ -137,6 +167,28 @@
 
 <script>
 
+    let mem2s = document.getElementById("i2ControlRange1");
+    let time2s = document.getElementById("i2ControlRange2");
+    let mem1s = document.getElementById("i1ControlRange1");
+    let time1s = document.getElementById("i1ControlRange2");
+    let mem2 = document.getElementById("mem2");
+    let time2 = document.getElementById("time2");
+    let mem1 = document.getElementById("mem1");
+    let time1 = document.getElementById("time1");
+
+    function updateVals() {
+        mem2.innerHTML = `Память - ${mem2s.value}`;
+        time2.innerHTML = `Время - ${time2s.value}`;
+    }
+
+    function initSliders() {
+
+        mem2s.oninput = () => { mem2.innerHTML = `Память - ${mem2s.value}`; } 
+        time2s.oninput = () => { time2.innerHTML = `Время - ${time2s.value}`; }
+        mem1s.oninput = () => { mem1.innerHTML = `Память - ${mem1s.value}`; }
+        time1s.oninput = () => { time1.innerHTML = `Время - ${time1s.value}`; } 
+    }
+
     // проверка доступа и все
     $.ajax(
         {
@@ -146,6 +198,7 @@
             },
             success: () => {
                 // :)
+                initSliders();
             },
             error: (fail) => {
                 document.body.innerHTML = '';
@@ -159,20 +212,25 @@
     }
 
     //function openModalUpdate(tmpId, themeId, cipher, name, descr, constr) {
-    function openModalUpdate(lwId,userIdent,tmpId, themeId, cipher, name, descr, constr) {
+    function openModalUpdate(lwId,userIdent,tmpId, themeId, cipher, name, descr, constr, evaluation) {
         if (userIdent != sessionStorage.getItem(userId)) {
             alert('У вас нет доступа к данной лабораторной работе!');
             return;
         }
-
+        console.log(evaluation)
         // дроп даун шаблон
         $("#myModalUpdate").find("select[id='s2TemplateId']").val(tmpId);
         $("#myModalUpdate").find("select[id='s2ThemeId']").val(themeId);
         $("#myModalUpdate").find("select[id='s2DisciplineCipher']").val(cipher);
+        $("#myModalUpdate").find("select[id='s2Evaluation']").val(evaluation);
         //------------------
         $("#myModalUpdate").find("input[id='i2Name']").val(name);
         $("#myModalUpdate").find("textarea[id='i2Description']").val(descr);
-        $("#myModalUpdate").find("textarea[id='i2Constraints']").val(constr);
+        //$("#myModalUpdate").find("textarea[id='i2Constraints']").val(constr);
+        constr = JSON.parse(constr)
+        mem2s.value = constr.Memory
+        time2s.value = constr.Time
+        updateVals();
         $("#myModalUpdate").find("input[id='hiddenId']").val(lwId);
         $("#myModalUpdate").find("input[id='hiddenUserId']").val(userIdent);
         
@@ -186,11 +244,11 @@
             ThemeId: $('#s1ThemeId').val(),
             Name: $('#i1Name').val(),
             Description: $('#i1Description').val(),
-            //Evaluation: $('#s1Evaluation').val(),
-            Evaluation: 1, // захардклдить
+            Evaluation: $('#s1Evaluation').val(),
+            //Evaluation: 1, // захардклдить
             DisciplineCipher: $('#s1DisciplineCipher').val(),
             UserId: sessionStorage.getItem(userId),
-            Constraints: $('#i1Constraints').val(),
+            Constraints: `{"Memory": ${mem1s.value}, "Time": ${time1s.value}}`//$('#i1Constraints').val(),
         }
 
 
@@ -231,7 +289,7 @@
             Evaluation: 1, // захардкодить
             DisciplineCipher: $('#s2DisciplineCipher').val(),
             UserId: $('#hiddenUserId').val(), 
-            Constraints: $('#i2Constraints').val(),
+            Constraints: `{"Memory": ${mem2s.value}, "Time": ${time2s.value}}`//$('#i2Constraints').val(),
         }
 
         if (lwDto.Name.length == 0 ||
