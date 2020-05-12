@@ -30,7 +30,7 @@ namespace ALS.Controllers
         [HttpPost]
         public async Task Login([FromBody] UserLoginDTO model)
         {
-            User appUser = _db.Users.Include(user => user.UserRoles).ThenInclude(ur => ur.Role).FirstOrDefault(u => u.Email == model.Email);
+            var appUser = _db.Users.Include(user => user.UserRoles).ThenInclude(ur => ur.Role).FirstOrDefault(u => u.Email == model.Email);
             if (appUser != null && _authService.ValidateUserPassword(appUser.PwHash, model.Password))
             {
                 await SendIdentityResponse(model.Email, appUser);
@@ -38,7 +38,7 @@ namespace ALS.Controllers
             else
             {
                 Response.StatusCode = 400;
-                await Response.WriteAsync("Invalid login or password");
+                await Response.WriteAsync("Неправильный логин или пароль");
             }
         }
         
@@ -67,7 +67,7 @@ namespace ALS.Controllers
         [HttpPost]
         public async Task Register([FromBody] UserRegisterDTO model)
         {
-            User appUser = new User { Email = model.Email, Name = model.Name, Surname = model.Surname, Patronymic = model.Patronymic, PwHash = _authService.GetHashedPassword(model.Password), GroupId = model.GroupId };
+            var appUser = new User { Email = model.Email, Name = model.Name, Surname = model.Surname, Patronymic = model.Patronymic, PwHash = _authService.GetHashedPassword(model.Password), GroupId = model.GroupId };
 
             try
             {
@@ -78,7 +78,7 @@ namespace ALS.Controllers
             catch (Exception)
             {
                 Response.StatusCode = 400;
-                await Response.WriteAsync("Invalid user data");
+                await Response.WriteAsync("Неверные данные пользователя");
             }
         }
 
@@ -91,16 +91,7 @@ namespace ALS.Controllers
                 return Ok(_db.Users.Where(user => user.GroupId == groupId).Select(user => new {user.Id, user.Name, user.Surname, user.Patronymic}));
             }
 
-            return BadRequest("There are no students in this group");
+            return BadRequest("Пользователи в группе отсутствуют");
         }
-        
-        [HttpGet]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task Test()
-        {
-            var curUser = User.FindFirst(ClaimTypes.Name).Value;
-            await Response.WriteAsync($"Hello, {curUser}!");
-        }
-
     }
 }

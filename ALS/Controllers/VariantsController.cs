@@ -23,7 +23,7 @@ namespace ALS.Controllers
     public class VariantsController : ControllerBase
     {
         private readonly ApplicationContext _db;
-        private Gen _gen;
+        private readonly Gen _gen;
 
         public VariantsController(ApplicationContext db)
         {
@@ -35,8 +35,7 @@ namespace ALS.Controllers
         {
             ResultData resOfGen = null;
             var path = _db.TemplateLaboratoryWorks
-                    .Where(twl => twl.TemplateLaboratoryWorkId == templateId)
-                    .FirstOrDefault().TemplateTask;
+                .FirstOrDefault(twl => twl.TemplateLaboratoryWorkId == templateId).TemplateTask;
             // если условия соблюдены, генерируем данные
             if (path != null) resOfGen = await _gen.Run(new Uri(path).AbsolutePath, model.LaboratoryWorkId, model.VariantNumber, true);
             // успешная генерация
@@ -114,7 +113,7 @@ namespace ALS.Controllers
                     // выходим
                     return BadRequest(ex.Message);
                 }
-                Variant variant = new Variant {VariantNumber = model.VariantNumber, LaboratoryWorkId = model.LaboratoryWorkId, Description = model.Description, LinkToModel = model.LinkToModel, InputDataRuns = model.InputDataRuns };
+                Variant variant = new Variant {VariantNumber = model.VariantNumber, LaboratoryWorkId = model.LaboratoryWorkId, Description = model.Description, LinkToModel = model.LinkToModel, InputDataRuns = model.InputDataRuns, Constraints = model.Constraints};
                 try
                 {
                     await _db.Variants.AddAsync(variant);
@@ -126,7 +125,7 @@ namespace ALS.Controllers
                 }
                 return Ok(model);
             }
-            return BadRequest("Not Privilege");
+            return BadRequest("Нет прав для проведения изменений");
         }
 
         [HttpPost]
@@ -162,6 +161,7 @@ namespace ALS.Controllers
                         variantUpdate.InputDataRuns = model.InputDataRuns;
                         variantUpdate.LinkToModel = model.LinkToModel;
                         variantUpdate.VariantNumber = model.VariantNumber;
+                        variantUpdate.Constraints = model.Constraints;
                         _db.Variants.Update(variantUpdate);
                         await _db.SaveChangesAsync();
                     }
@@ -171,10 +171,10 @@ namespace ALS.Controllers
                     }
                     return Ok(varId);
                 }
-                return NotFound("Variant not found");
+                return NotFound("Вариант не найдент");
             }
 
-            return BadRequest("Not Privilege");
+            return BadRequest("Нет прав для проведения изменений");
         }
 
         [HttpPost]
@@ -199,10 +199,10 @@ namespace ALS.Controllers
                     }
                     return Ok();
                 }
-                return NotFound("Variant not found");
+                return NotFound("Вариант не найден");
             }
 
-            return BadRequest("Not Privilege");
+            return BadRequest("Нет прав для удаления");
         }
     }
 }
