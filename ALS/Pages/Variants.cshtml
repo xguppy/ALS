@@ -12,8 +12,8 @@
         <td>Лабораторная работа</td>
         <td>Номер варианта</td>    
         <td>Описание</td>
-        <td>Ссылка на модель (эталонная программа)</td>
-        <td>Входные данные</td>
+        @{/*<td>Ссылка на модель (эталонная программа)</td>
+        <td>Входные данные</td>*/}
         <td>Действие</td>
         </thead>
         <tbody id="tbodyContent">
@@ -22,23 +22,65 @@
 
 <button class="btn btn-info btn-lg" type="button" data-toggle="modal" data-target="#myModal">Добавить вариант</button>
 <div id="myModal" class="modal fade">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header"><h4 class="modal-title">Новый вариант</h4><button class="close" type="button" data-dismiss="modal">×</button>
             </div>
             <div class="modal-body">
                 @using (Html.BeginForm("Create", "Variants", FormMethod.Post))
                 {
-                    <p>@Html.Label("Лабораторная работа:\t")
-                    <select name="LaboratoryWorkId" id="newLaboratoryWork"></select></p>
-                    @Html.Label("Номер варианта:\t")
-                    @Html.TextBox("Number", "1", new {id = "newNumber"})
-                    @Html.Label("Описание варианта:\t")
-                    @Html.TextArea("Description", "desc", new {id = "newDescription"})
-                    @Html.Label("Ссылка на модель:\t")
-                    @Html.TextArea("Link", @"file:///C:/Users/kampukter/source/repos/ALS/ALS.GeneratorModule/Docs/Exp.txt", new {id = "newLink"})
-                    @Html.Label("Входные данные:\t")
-                    @Html.TextArea("InputData", "[{\"Data\": [\"#rnd(1 | 20 | int | 10)\"], \"Name\": \"тест1\"}, {\"Data\": [\"#rnd(1 | 20 | int | 10)\"], \"Name\": \"тест2\"}, {\"Data\": [\"1\", \"2\", \"3\", \"4\", \"5\", \"6\", \"7\", \"8\", \"9\", \"10\"], \"Name\": \"тест3\"}]", new {id = "newInputData"})
+                    <p class="form-group row">
+                        <label class="col-sm-2 col-form-label font-weight-bold">Лабораторная работа</label>
+                        <select class="form-control col-sm-9" name="LaboratoryWorkId" id="newLaboratoryWork"></select>
+                    </p>
+                    <p class="form-group row">
+                        <label class="col-sm-2 col-form-label font-weight-bold">Номер варианта</label>
+                        <input class="form-control col-sm-5" id="newNumber" name="Number" type="number" min="1" value="1" />
+                    </p>
+                    <div id="generationPart">
+                        <p class="form-group">
+                            <label class="col-form-label font-weight-bold">Описание варианта</label>
+                            @Html.TextArea("Description", "описание", new { @class = "form-control", id = "newDescription" })
+                        </p>
+                        <p class="form-group">
+                            <label class="col-form-label font-weight-bold">Ссылка на модель</label>
+                            @Html.TextArea("Link", @"file:///C:/Users/kampukter/source/repos/ALS/ALS.GeneratorModule/Docs/Exp.txt", new { @class = "form-control", id = "newLink" })
+                        </p>
+                        <p class="form-group">
+                            <label class="col-form-label font-weight-bold">Входные данные</label>
+                            @Html.TextArea("InputData", "[{\"Data\": [\"#rnd(1 | 20 | int | 10)\"], \"Name\": \"тест1\"}, {\"Data\": [\"#rnd(1 | 20 | int | 10)\"], \"Name\": \"тест2\"}, {\"Data\": [\"1\", \"2\", \"3\", \"4\", \"5\", \"6\", \"7\", \"8\", \"9\", \"10\"], \"Name\": \"тест3\"}]", new { @class = "form-control", id = "newInputData" })
+                        </p>
+                    </div>
+                    <p>
+                        <label class="col-form-label font-weight-bold">Ограничения (JSON)</label>
+                        <table class="table table-bordered">
+                            <tr>
+                                <td>
+                                    <div class="form-group row">
+                                        <label id="memLabelCreate" class="col-sm-2 col-form-label font-weight-bold">Память - 4096000</label>
+                                        <input type="range" class="col-sm-10 form-control-range" id="memInputCreate" min="2096000" max="6096000" value="4096000" step="10000" />
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label id="timeLabelCreate" class="col-sm-2 col-form-label font-weight-bold">Время - 60000</label>
+                                        <input type="range" class="col-sm-10 form-control-range" id="timeInputCreate" min="10000" max="90000" value="60000" step="10000" />
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 col-form-label font-weight-bold">Чекер</label>
+                                        @Html.DropDownList("Checker", new List<SelectListItem>(), new { @class = "form-control col-sm-9", @id = "sCheckerCreate" })
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 col-form-label font-weight-bold">Подготовщик</label>
+                                        @Html.DropDownList("Preparer", new List<SelectListItem>(), new { @class = "form-control col-sm-9", @id = "sPreparerCreate" })
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 col-form-label font-weight-bold">Финализатор</label>
+                                        @Html.DropDownList("Finaliter", new List<SelectListItem>(), new { @class = "form-control col-sm-9", @id = "sFinaliterCreate" })
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </p>
                     <p><input type="button" class="btn btn-dark" value="Отправить" onclick="createVariant()" /></p>
                 }
             </div>
@@ -48,26 +90,65 @@
 </div>
 
 <div id="edit" class="modal fade">
-    <div class="modal-dialog">
+    <div class="modal-dialog  modal-lg">
         <div class="modal-content">
             <div class="modal-header"><h4 class="modal-title">Редактирование варианта</h4><button class="close" type="button" data-dismiss="modal">×</button>
             </div>
             <div class="modal-body">
                 @using (Html.BeginForm("Update", "Variants", FormMethod.Post))
                 {
-                    <p>
-                    @Html.Label("Лабораторная работа:\t")
-                    <select name="LaboratoryWorkId" id="EditLaboratoryWork"></select>
+
+                    <p class="form-group row">
+                        <label class="col-sm-2 col-form-label font-weight-bold">Лабораторная работа</label>
+                        <select class="form-control col-sm-9" name="LaboratoryWorkId" id="EditLaboratoryWork"></select>
                     </p>
-                    @Html.Label("Номер варианта:\t")
-                    @Html.TextBox("Number", null, new {id = "EditNumber"})
-                    @Html.Label("Описание варианта:\t")
-                    @Html.TextArea("Description", null, new {id = "EditDescription"})
-                    @Html.Label("Ссылка на модель:\t")
-                    @Html.TextArea("Link", null, new {id = "EditLink"})
-                    @Html.Label("Входные данные:\t")
-                    @Html.TextArea("InputData", null, new {id = "EditInputData"})
-                    @Html.Hidden("variantId", null, new {id = "EditVariantId"})
+                    <p class="form-group row">
+                        <label class="col-sm-2 col-form-label font-weight-bold">Номер варианта</label>
+                        <input class="form-control col-sm-5" id="EditNumber" name="Number" type="number" min="1" value="1" />
+                    </p>
+                    <p class="form-group">
+                        <label class="col-form-label font-weight-bold">Описание варианта</label>
+                        @Html.TextArea("Description", null, new { @class = "form-control", id = "EditDescription" })
+                    </p>
+                    <p class="form-group">
+                        <label class="col-form-label font-weight-bold">Ссылка на модель</label>
+                        @Html.TextArea("Link", null, new { @class = "form-control", id = "EditLink" })
+                    </p>
+                    <p class="form-group">
+                        <label class="col-form-label font-weight-bold">Входные данные</label>
+                        @Html.TextArea("InputData", null, new { @class = "form-control", id = "EditInputData" })
+                    </p>
+                    <p>
+                        <label class="col-form-label font-weight-bold">Ограничения (JSON)</label>
+                        <table class="table table-bordered">
+                            <tr>
+                                <td>
+                                    <div class="form-group row">
+                                        <label id="memLabelEdit" class="col-sm-2 col-form-label font-weight-bold">Память - 4096000</label>
+                                        <input type="range" class="col-sm-10 form-control-range" id="memInputEdit" min="2096000" max="6096000" value="4096000" step="10000" />
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label id="timeLabelEdit" class="col-sm-2 col-form-label font-weight-bold">Время - 60000</label>
+                                        <input type="range" class="col-sm-10 form-control-range" id="timeInputEdit" min="10000" max="90000" value="60000" step="10000" />
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 col-form-label font-weight-bold">Чекер</label>
+                                        @Html.DropDownList("Checker", new List<SelectListItem>(), new { @class = "form-control col-sm-9", @id = "sCheckerEdit" })
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 col-form-label font-weight-bold">Подготовщик</label>
+                                        @Html.DropDownList("Preparer", new List<SelectListItem>(), new { @class = "form-control col-sm-9", @id = "sPreparerEdit" })
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 col-form-label font-weight-bold">Финализатор</label>
+                                        @Html.DropDownList("Finaliter", new List<SelectListItem>(), new { @class = "form-control col-sm-9", @id = "sFinaliterEdit" })
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </p>
+                    @Html.Hidden("variantId", null, new { id = "EditVariantId" })
                     <p><input type="button" class="btn btn-dark" value="Отправить" onclick="editVariant()" /></p>
                 }
             </div>
@@ -82,179 +163,253 @@
         {
             type: 'GET',
             url: '/api/variants/getall',
-            beforeSend: (xhr) => 
-            {
+            beforeSend: (xhr) => {
             },
-            success: (variants) =>
-            {
+            success: (variants) => {
                 let tbdy = document.getElementById('tbodyContent');
-                for (let variant of variants)
-                {
+                for (let variant of variants) {
                     let tr = document.createElement('tr');
-                    for(let prop in variant)
-                    {
-                        if(prop !== 'variantId' && prop !== 'laboratoryWorkId')
-                        {
+                    for (let prop in variant) {
+                        if (prop !== 'variantId' && prop !== 'laboratoryWorkId') {
                             let td = document.createElement('td');
-                            if(variant[prop] != null)
+                            if (variant[prop] != null)
                                 td.appendChild(document.createTextNode(variant[prop]));
-                            if(prop === 'name')
+                            if (prop === 'name')
                                 td.dataset.id = variant.laboratoryWorkId;
+                            // оставил для вывода лишь имя, вариант и описание
+                            if (prop !== 'name' && prop !== 'description' && prop !== 'variantNumber')
+                                td.hidden = true;
                             tr.appendChild(td);
                         }
                     }
                     let td = document.createElement('td');
                     td.dataset.id = variant.variantId;
                     td.innerHTML = '<button style="margin-right: 5%" data-toggle="modal" onclick="editPrepareVariant(this)" data-target="#edit" class="btn btn-primary edit-item">Редактировать</button>' +
-                     '<button onclick="removeVariant('+ variant.variantId +')" class="btn btn-danger remove-item">Удалить</button>';
+                        '<button onclick="removeVariant(' + variant.variantId + ')" class="btn btn-danger remove-item">Удалить</button>';
                     tr.appendChild(td);
                     tbdy.appendChild(tr);
                 }
+                updateConstrains(); // обновляет ограничения в соответствии с ЛР и убирает поля которые будут перезаписаны генератором
+                addSelectItems('checker', 'sCheckerCreate', false);
+                addSelectItems('checker', 'sCheckerEdit', false);
+                addSelectItems('preparer', 'sPreparerCreate', true);
+                addSelectItems('preparer', 'sPreparerEdit', true);
+                addSelectItems('finaliter', 'sFinaliterCreate', true);
+                addSelectItems('finaliter', 'sFinaliterEdit', true);
+                initSliders();
             },
-            error: (varFail) =>
-            {
+            error: (varFail) => {
                 document.body.innerHTML = '';
                 alert('Нет доступа');
                 history.go(-1);
             }
         }
     );
-    
+
     $.ajax(
-            {
+        {
+            type: 'GET',
+            url: '/api/laboratoryworks/getall',
+            beforeSend: (xhr) => {
+            },
+            success: (lws) => {
+                let selectCreate = document.getElementById('newLaboratoryWork');
+                let selectUpdate = document.getElementById('EditLaboratoryWork');
+                for (let lw of lws) {
+                    let opt = document.createElement('option');
+                    opt.dataset.id = lw.laboratoryWorkId;
+                    opt.innerText = lw.name;
+                    selectCreate.appendChild(opt.cloneNode(true));
+                    selectUpdate.appendChild(opt);
+                }
+            },
+            error: (labFail) => {
+                console.log(labFail);
+                document.body.innerHTML = '';
+                alert('Нет доступа');
+                history.go(-1);
+            }
+        }
+    );
+
+    function initSliders(updatevalues = false) {
+        memSlider = document.getElementById('memInputCreate');
+        timeSlider = document.getElementById('timeInputCreate');
+        memSliderEdit = document.getElementById('memInputEdit');
+        timeSliderEdit = document.getElementById('timeInputEdit');
+        if (updatevalues) {
+            document.getElementById('memLabelCreate').innerHTML = `Память - ${memSlider.value}`;
+            document.getElementById('timeLabelCreate').innerHTML = `Время - ${timeSlider.value}`;
+            document.getElementById('memLabelEdit').innerHTML = `Память - ${memSliderEdit.value}`;
+            document.getElementById('timeLabelEdit').innerHTML = `Время - ${timeSliderEdit.value}`;
+        }
+        else {
+            memSlider.oninput = () => { document.getElementById('memLabelCreate').innerHTML = `Память - ${memSlider.value}`; }
+            timeSlider.oninput = () => { document.getElementById('timeLabelCreate').innerHTML = `Время - ${timeSlider.value}`; }
+            memSliderEdit.oninput = () => { document.getElementById('memLabelEdit').innerHTML = `Память - ${memSliderEdit.value}`; }
+            timeSliderEdit.oninput = () => { document.getElementById('timeLabelEdit').innerHTML = `Время - ${timeSliderEdit.value}`; }
+        }
+    }
+
+    function addSelectItems(path, selectid, nullable) {
+        $.ajax({
+            type: 'GET',
+            url: `/api/${path}/getall`,
+            beforeSend: (xhr) => {
+            },
+            success: (items) => {
+                let s = document.getElementById(selectid);
+                if (nullable) items.push('null');
+                for (let item of items) {
+                    let opt = document.createElement('option');
+                    opt.value = item;
+                    opt.innerHTML = item;
+                    s.appendChild(opt);
+                }
+            },
+            error: (fail) => {
+                alert(fail.responseText);
+            }
+        });
+    }
+
+    function updateConstrains() {
+        let sCreate = document.getElementById("newLaboratoryWork");
+        let divgenpart = document.getElementById("generationPart");
+
+        sCreate.addEventListener("change", function () {
+            id = $('#newLaboratoryWork option:selected')[0].dataset.id
+            $.ajax({
                 type: 'GET',
-                url: '/api/laboratoryworks/getall',
-                beforeSend: (xhr) => 
-                {
+                url: `/api/LaboratoryWorks/get`,
+                beforeSend: (xhr) => {
+                    xhr.setRequestHeader("laboratoryWorkId", id);
                 },
-                success: (lws) =>
-                {
-                    let selectCreate = document.getElementById('newLaboratoryWork');
-                    let selectUpdate = document.getElementById('EditLaboratoryWork');
-                    for (let lw of lws)
-                    {
-                        let opt = document.createElement('option');
-                        opt.dataset.id = lw.laboratoryWorkId;
-                        opt.innerText = lw.name;
-                        selectCreate.appendChild(opt.cloneNode(true));
-                        selectUpdate.appendChild(opt);
-                    }
+                success: (item) => {
+                    divgenpart.hidden = (item.templateLaboratoryWorkId !== null);
+                    constr = JSON.parse(item.constraints);
+                    $("#myModal").find("select[id='sCheckerCreate']").val(`${constr.Checker}`);
+                    $("#myModal").find("select[id='sPreparerCreate']").val(`${constr.Preparer}`);
+                    $("#myModal").find("select[id='sFinaliterCreate']").val(`${constr.Finaliter}`);
+                    $("#myModal").find("input[id='memInputCreate']").val(constr.Memory);
+                    $("#myModal").find("input[id='timeInputCreate']").val(constr.Time);
+                    initSliders(true);
                 },
-                error: (labFail) =>
-                {
-                    console.log(labFail);
-                    document.body.innerHTML = '';
-                    alert('Нет доступа');
-                    history.go(-1);
+                error: (fail) => {
+                    alert(fail.responseText);
+                }
+            });
+        });
+    }
+
+    function createVariant() {
+        let variant = {
+            LaboratoryWorkId: $('#newLaboratoryWork option:selected')[0].dataset.id,
+            VariantNumber: $('#newNumber').val(),
+            Description: $('#newDescription').val(),
+            LinkToModel: $('#newLink').val(),
+            InputDataRuns: $('#newInputData').val(),
+            Constraints: `{"Memory": ${document.getElementById("memInputCreate").value},"Time": ${document.getElementById("timeInputCreate").value},"Preparer": "${document.getElementById("sPreparerCreate").value}","Checker" : "${document.getElementById("sCheckerCreate").value}","Finaliter" : "${document.getElementById("sFinaliterCreate").value}"}`
+        };
+        $.ajax(
+            {
+                type: 'POST',
+                url: '/api/variants/create',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: JSON.stringify(variant),
+                beforeSend: (xhr) => {
+                },
+                success: (g) => {
+                    document.location.reload(true);
+                },
+                error: (response) => {
+                    console.log(response);
+                    alert('Не удалось добавить вариант');
                 }
             }
         );
-    
-    function createVariant() {
-              let variant = {
-                           LaboratoryWorkId: $('#newLaboratoryWork option:selected')[0].dataset.id,
-                           VariantNumber: $('#newNumber').val(),
-                           Description: $('#newDescription').val(),
-                           LinkToModel: $('#newLink').val(),
-                           InputDataRuns: $('#newInputData').val()
-                           };
-              $.ajax(
-                  {
-                      type: 'POST',
-                      url: '/api/variants/create',
-                      contentType:  "application/json; charset=utf-8",
-                      dataType: "json",
-                      data: JSON.stringify(variant),
-                      beforeSend: (xhr) =>
-                      {
-                      },
-                      success: (g) =>
-                      {
-                          document.location.reload(true);
-                      },
-                      error: (response) =>
-                      {
-                          console.log(response);
-                          alert('Не удалось добавить вариант');
-                      }
-                  }
-                );
     }
-      function removeVariant(variantId) {
-                    if(confirm("Вы точно хотите удалить этот вариант?"))
-                    {
-                        $.ajax(
-                            {
-                                type: 'POST',
-                                url: '/api/variants/delete',
-                                beforeSend: (xhr) =>
-                                {
-                                     xhr.setRequestHeader("variantId", variantId)
-                                },
-                                success: (g) =>
-                                {
-                                    document.location.reload(true);
-                                },
-                                error: (response) =>
-                                {
-                                    console.log(response);
-                                    alert('Вариант решают студенты =)');
-                                }
-                            }
-                          );
+    function removeVariant(variantId) {
+        if (confirm("Вы точно хотите удалить этот вариант?")) {
+            $.ajax(
+                {
+                    type: 'POST',
+                    url: '/api/variants/delete',
+                    beforeSend: (xhr) => {
+                        xhr.setRequestHeader("variantId", variantId)
+                    },
+                    success: (g) => {
+                        document.location.reload(true);
+                    },
+                    error: (response) => {
+                        console.log(response);
+                        alert('Вариант решают студенты =)');
                     }
-      }
-      
-      function editPrepareVariant(obj) {
-                let id = $(obj).parent("td").data('id');
-            
-                let inputData = $(obj).parent("td").prev("td").text();
-                
-                let link = $(obj).parent("td").prev("td").prev("td").text();
-                
-                let description = $(obj).parent("td").prev("td").prev("td").prev("td").text();
-                
-                let numberVar = $(obj).parent("td").prev("td").prev("td").prev("td").prev("td").text();
-                
-                let name = $(obj).parent("td").prev("td").prev("td").prev("td").prev("td").prev("td").text();
-                
-                $("#edit").find("input[id='EditNumber']").val(numberVar);
-                $("#EditDescription").val(description);
-                $("#EditLink").val(link);
-                $("#EditInputData").val(inputData);
-                $("#edit").find("input[type='hidden']").val(id);
-                $("#edit").find("select[id='EditLaboratoryWork']").val(name);
-      }
-      
-      function editVariant() {
-             let variant = {
-                            LaboratoryWorkId: $('#EditLaboratoryWork option:selected')[0].dataset.id,
-                            VariantNumber: $('#EditNumber').val(),
-                            Description: $('#EditDescription').val(),
-                            LinkToModel: $('#EditLink').val(),
-                            InputDataRuns: $('#EditInputData').val()
-                            };
-                   $.ajax(
-                       {
-                           type: 'POST',
-                           url: '/api/variants/update',
-                           contentType:  "application/json; charset=utf-8",
-                           dataType: "json",
-                           data: JSON.stringify(variant),
-                           beforeSend: (xhr) =>
-                           {
-                                xhr.setRequestHeader("varId", $('#EditVariantId').val());
-                           },
-                           success: (g) =>
-                           {
-                               document.location.reload(true);
-                           },
-                           error: (response) =>
-                           {
-                               console.log(response);
-                               alert('Не удалось обновить группу');
-                           }
-                       }
-                     );   
-      }
+                }
+            );
+        }
+    }
+
+    function editPrepareVariant(obj) {
+        let id = $(obj).parent("td").data('id');
+
+        let constraintsjson = $(obj).parent("td").prev("td").text();
+
+        let inputData = $(obj).parent("td").prev("td").prev("td").text();
+
+        let link = $(obj).parent("td").prev("td").prev("td").prev("td").text();
+
+        let description = $(obj).parent("td").prev("td").prev("td").prev("td").prev("td").text();
+
+        let numberVar = $(obj).parent("td").prev("td").prev("td").prev("td").prev("td").prev("td").text();
+
+        let name = $(obj).parent("td").prev("td").prev("td").prev("td").prev("td").prev("td").prev("td").text();
+
+        if (constraintsjson.length > 0) {
+            let constr = JSON.parse(constraintsjson);
+            $("#edit").find("select[id='sCheckerEdit']").val(`${constr.Checker}`);
+            $("#edit").find("select[id='sPreparerEdit']").val(`${constr.Preparer}`);
+            $("#edit").find("select[id='sFinaliterEdit']").val(`${constr.Finaliter}`);
+            $("#edit").find("input[id='memInputEdit']").val(constr.Memory);
+            $("#edit").find("input[id='timeInputEdit']").val(constr.Time);
+            initSliders(true);
+        }
+
+        $("#edit").find("input[id='EditNumber']").val(numberVar);
+        $("#EditDescription").val(description);
+        $("#EditLink").val(link);
+        $("#EditInputData").val(inputData);
+        $("#edit").find("input[type='hidden']").val(id);
+        $("#edit").find("select[id='EditLaboratoryWork']").val(name);
+    }
+
+    function editVariant() {
+        let variant = {
+            LaboratoryWorkId: $('#EditLaboratoryWork option:selected')[0].dataset.id,
+            VariantNumber: $('#EditNumber').val(),
+            Description: $('#EditDescription').val(),
+            LinkToModel: $('#EditLink').val(),
+            InputDataRuns: $('#EditInputData').val()
+        };
+        $.ajax(
+            {
+                type: 'POST',
+                url: '/api/variants/update',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: JSON.stringify(variant),
+                beforeSend: (xhr) => {
+                    xhr.setRequestHeader("varId", $('#EditVariantId').val());
+                },
+                success: (g) => {
+                    document.location.reload(true);
+                },
+                error: (response) => {
+                    console.log(response);
+                    alert('Не удалось обновить группу');
+                }
+            }
+        );
+    }
 </script>

@@ -54,7 +54,7 @@ namespace ALS.Controllers
             var userId = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
             if (await _db.LaboratoryWorks.Where(w =>  w.UserId == userId).FirstOrDefaultAsync() != null)
             {
-                return Ok(await Task.Run(() => _db.Variants.Include(variant => variant.LaboratoryWork).Select(v => new {v.VariantId, v.LaboratoryWorkId, v.LaboratoryWork.Name, v.VariantNumber, v.Description, v.LinkToModel, v.InputDataRuns }).ToList()));
+                return Ok(await Task.Run(() => _db.Variants.Include(variant => variant.LaboratoryWork).Select(v => new {v.VariantId, v.LaboratoryWorkId, v.LaboratoryWork.Name, v.VariantNumber, v.Description, v.LinkToModel, v.InputDataRuns, v.Constraints }).ToList()));
             }
             
             return BadRequest("Not Privilege");
