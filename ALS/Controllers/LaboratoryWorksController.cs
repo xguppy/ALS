@@ -76,11 +76,12 @@ namespace ALS.Controllers
             var laboratoryWork = 
                 new LaboratoryWork { TemplateLaboratoryWorkId = model.TemplateLaboratoryWorkId == -1 ? null : model.TemplateLaboratoryWorkId, ThemeId = model.ThemeId, Name = model.Name, Description = model.Description, Evaluation = model.Evaluation, DisciplineCipher  = model.DisciplineCipher, UserId = model.UserId, Constraints = model.Constraints};
 
-            if (laboratoryWork.TemplateLaboratoryWorkId != null &&
+            // тема ЛР будет перезаписывать тему шаблона
+            /*if (laboratoryWork.TemplateLaboratoryWorkId != null &&
                 laboratoryWork.ThemeId != _db.TemplateLaboratoryWorks.FirstOrDefault(x => x.TemplateLaboratoryWorkId == laboratoryWork.TemplateLaboratoryWorkId).ThemeId)
             {
                 return BadRequest("Темы лабораторный работы не принадлежит теме шаблона");
-            }
+            }*/
 
             try
             {
@@ -104,11 +105,12 @@ namespace ALS.Controllers
             var curUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             if (laboratoryWorkUpdate != null)
             {
-                if (model.TemplateLaboratoryWorkId != null &&
+                // тема ЛР будет перезаписывать тему шаблона
+                /*if (model.TemplateLaboratoryWorkId != null &&
                 model.ThemeId != _db.TemplateLaboratoryWorks.FirstOrDefault(x => x.TemplateLaboratoryWorkId == model.TemplateLaboratoryWorkId).ThemeId)
                 {
                     return BadRequest("Theme of laboratory work not equal theme TemplateLaboratoryWork");
-                }
+                }*/
 
                 try
                 {

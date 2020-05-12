@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using ALS.EntityСontext;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace ALS.Pages
 {
@@ -21,16 +23,21 @@ namespace ALS.Pages
         public LaboratoryWorksModel(ApplicationContext context)
         {
             _context = context;
+            // руссификация Evaluation
+            var folderDetails = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\EvaluationRU.json");
+            var json = System.IO.File.ReadAllText(folderDetails);
+            var evaluationsRU = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+
             foreach (Evaluation item in Enum.GetValues(typeof(Evaluation)))
             {
-                Evaluations.Add(new SelectListItem { Value = ((int)item).ToString(), Text = item.ToString() });
+                Evaluations.Add(new SelectListItem { Value = ((int)item).ToString(), Text = evaluationsRU[item.ToString()] });
             }
         }
 
         public async Task OnGetAsync()
         {
             LaboratoryWorks = await Task.Run( () => _context.LaboratoryWorks
-                                            .Include(x => x.Theme) // можно ли сразу 2 сущности включить ?
+                                            .Include(x => x.Theme)
                                             .Include(x => x.User)
                                             .Include(x => x.TemplateLaboratoryWork)
                                             .Where( _ => true)

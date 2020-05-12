@@ -216,7 +216,7 @@ namespace ALS
             }
             if (!context.TemplateLaboratoryWorks.Any())
             {
-                context.TemplateLaboratoryWorks.Add(new TemplateLaboratoryWork { TemplateTask = @"C:/Users/kampukter/source/repos/ALS/ALS.GeneratorModule/Tasks/task1.gentemp", ThemeId = 1 });
+                context.TemplateLaboratoryWorks.Add(new TemplateLaboratoryWork { TemplateTask = @"C:/Users/kampukter/source/repos/ALS/ALS.GeneratorModule/Tasks/task1.gentemp", ThemeId = 2 });
                 //context.TemplateLaboratoryWorks.Add(new TemplateLaboratoryWork { TemplateTask = @"C:/Users/kampukter/source/repos/ALS/ALS.GeneratorModule/Docs/Exp3.txt", ThemeId = 1 });
                 //context.TemplateLaboratoryWorks.Add(new TemplateLaboratoryWork { TemplateTask = @"C:/Users/kampukter/source/repos/ALS/ALS.GeneratorModule/Docs/Exp.txt", ThemeId = 2 });
                 //context.TemplateLaboratoryWorks.Add(new TemplateLaboratoryWork { TemplateTask = @"C:/Users/kampukter/source/repos/ALS/ALS.GeneratorModule/Docs/Exp2.txt", ThemeId = 2 });
@@ -226,8 +226,8 @@ namespace ALS
             if (!context.LaboratoryWorks.Any())
             {
                 //context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 9, ThemeId = 2, Name = "lr1", Description = "lr1_description", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
-                context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 9, ThemeId = 1, Name = "ЛР1 - работа с числами", Description = "Вывести четные элементы", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1", Evaluation=Evaluation.Strict});
-                context.LaboratoryWorks.Add(new LaboratoryWork { TemplateLaboratoryWorkId = 1, UserId = 9, ThemeId = 2, Name = "ЛР2 - работа с условными операторами", Description = "сделайте что-нибудь с выражениями", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1", Evaluation = Evaluation.Strict });
+                context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 9, ThemeId = 1, Name = "ЛР1 - работа с числами", Description = "Вывести четные элементы", Constraints = "{\"Memory\": 4096000,\"Time\": 60000,\"Preparer\": \"null\",\"Checker\" : \"AbsoluteChecker\",\"Finaliter\" : \"null\"}", DisciplineCipher = "pr1", Evaluation=Evaluation.Strict});
+                context.LaboratoryWorks.Add(new LaboratoryWork { TemplateLaboratoryWorkId = 1, UserId = 9, ThemeId = 2, Name = "ЛР2 - работа с условными операторами", Description = "сделайте что-нибудь с выражениями", Constraints = "{\"Memory\": 4096000,\"Time\": 60000,\"Preparer\": \"null\",\"Checker\" : \"AbsoluteChecker\",\"Finaliter\" : \"null\"}", DisciplineCipher = "pr1", Evaluation = Evaluation.Strict });
                 //context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 2, ThemeId = 1, Name = "lr1", Description = "lr1_description", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
                 //context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 2, ThemeId = 1, Name = "lr2", Description = "Вывести четные элементы", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
                 //context.LaboratoryWorks.Add(new LaboratoryWork { TemplateLaboratoryWorkId = 3, UserId = 2, ThemeId = 2, Name = "lr3", Description = "descrition", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1" });

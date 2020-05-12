@@ -84,13 +84,25 @@
                             <tr>
                                 <td>
                                     <div class="form-group row">
-                                        <label id="mem1" class="col-form-label font-weight-bold">Память - 4096000</label>
-                                        <input type="range" class="form-control-range" id="i1ControlRange1" min="2096000" max="6096000" value="4096000" step="10000" />
+                                        <label id="mem1" class="col-sm-2 col-form-label font-weight-bold">Память - 4096000</label>
+                                        <input type="range" class="col-sm-10 form-control-range" id="i1ControlRange1" min="2096000" max="6096000" value="4096000" step="10000" />
                                     </div>
 
                                     <div class="form-group row">
-                                        <label id="time1" class="col-form-label font-weight-bold">Время - 60000</label>
-                                        <input type="range" class="form-control-range" id="i1ControlRange2" min="10000" max="90000" value="60000" step="10000" />
+                                        <label id="time1" class="col-sm-2 col-form-label font-weight-bold">Время - 60000</label>
+                                        <input type="range" class="col-sm-10 form-control-range" id="i1ControlRange2" min="10000" max="90000" value="60000" step="10000" />
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 col-form-label font-weight-bold">Чекер</label>
+                                        @Html.DropDownList("Checker", new List<SelectListItem>(), new { @class = "form-control col-sm-10", @id = "s1checker" })
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 col-form-label font-weight-bold">Подготовщик</label>
+                                        @Html.DropDownList("Preparer", new List<SelectListItem>(), new { @class = "form-control col-sm-10", @id = "s1preparer" })
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 col-form-label font-weight-bold">Финализатор</label>
+                                        @Html.DropDownList("Finaliter", new List<SelectListItem>(), new { @class = "form-control col-sm-10", @id = "s1finaliter" })
                                     </div>
                                 </td>
                             </tr>
@@ -142,13 +154,25 @@
                             <tr>
                                 <td>
                                     <div class="form-group row">
-                                        <label id="mem2" class="col-form-label font-weight-bold">Память - 4096000</label>
-                                        <input type="range" class="form-control-range" id="i2ControlRange1" min="2096000" max="6096000" value="4096000" step="10000" />
+                                        <label id="mem2" class="col-sm-2 col-form-label font-weight-bold">Память - 4096000</label>
+                                        <input type="range" class="col-sm-10 form-control-range" id="i2ControlRange1" min="2096000" max="6096000" value="4096000" step="10000" />
                                     </div>
 
                                     <div class="form-group row">
-                                        <label id="time2" class="col-form-label font-weight-bold">Время - 60000</label>
-                                        <input type="range" class="form-control-range" id="i2ControlRange2" min="10000" max="90000" value="60000" step="10000" />
+                                        <label id="time2" class="col-sm-2 col-form-label font-weight-bold">Время - 60000</label>
+                                        <input type="range" class="col-sm-10 form-control-range" id="i2ControlRange2" min="10000" max="90000" value="60000" step="10000" />
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 col-form-label font-weight-bold">Чекер</label>
+                                        @Html.DropDownList("Checker", new List<SelectListItem>(), new { @class = "form-control col-sm-10", @id = "s2checker" })
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 col-form-label font-weight-bold">Подготовщик</label>
+                                        @Html.DropDownList("Preparer", new List<SelectListItem>(), new { @class = "form-control col-sm-10", @id = "s2preparer" })
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 col-form-label font-weight-bold">Финализатор</label>
+                                        @Html.DropDownList("Finaliter", new List<SelectListItem>(), new { @class = "form-control col-sm-10", @id = "s2finaliter" })
                                     </div>
                                 </td>
                             </tr>
@@ -199,6 +223,12 @@
             success: () => {
                 // :)
                 initSliders();
+                addSelectItems('checker', 's1checker', false);
+                addSelectItems('checker', 's2checker', false);
+                addSelectItems('preparer', 's1preparer', true);
+                addSelectItems('preparer', 's2preparer', true);
+                addSelectItems('finaliter', 's1finaliter', true);
+                addSelectItems('finaliter', 's2finaliter', true);
             },
             error: (fail) => {
                 document.body.innerHTML = '';
@@ -207,17 +237,39 @@
             }
         });
 
-    function openModalCreate() {
+    function addSelectItems(path, selectid, nullable){
+        $.ajax({
+            type: 'GET',
+            url: `/api/${path}/getall`,
+            beforeSend: (xhr) => {
+            },
+            success: (items) => {
+                let s = document.getElementById(selectid);
+                if (nullable) items.push('null');
+                for (let item of items) {
+                    let opt = document.createElement('option');
+                    opt.value = item;
+                    opt.innerHTML = item;
+                    s.appendChild(opt);
+                }
+            },
+            error: (fail) => {
+                alert(fail.responseText);
+            }
+        });
+    }
+
+
+    function openModalCreate() {        
         $('#myModalCreate').modal('show');
     }
 
     //function openModalUpdate(tmpId, themeId, cipher, name, descr, constr) {
-    function openModalUpdate(lwId,userIdent,tmpId, themeId, cipher, name, descr, constr, evaluation) {
+    function openModalUpdate(lwId, userIdent, tmpId, themeId, cipher, name, descr, constrains, evaluation) {
         if (userIdent != sessionStorage.getItem(userId)) {
             alert('У вас нет доступа к данной лабораторной работе!');
             return;
         }
-        console.log(evaluation)
         // дроп даун шаблон
         $("#myModalUpdate").find("select[id='s2TemplateId']").val(tmpId);
         $("#myModalUpdate").find("select[id='s2ThemeId']").val(themeId);
@@ -227,7 +279,10 @@
         $("#myModalUpdate").find("input[id='i2Name']").val(name);
         $("#myModalUpdate").find("textarea[id='i2Description']").val(descr);
         //$("#myModalUpdate").find("textarea[id='i2Constraints']").val(constr);
-        constr = JSON.parse(constr)
+        let constr = JSON.parse(constrains)
+        $("#myModalUpdate").find("select[id='s2checker']").val(`${constr.Checker}`);
+        $("#myModalUpdate").find("select[id='s2preparer']").val(`${constr.Preparer}`);
+        $("#myModalUpdate").find("select[id='s2finaliter']").val(`${constr.Finaliter}`);
         mem2s.value = constr.Memory
         time2s.value = constr.Time
         updateVals();
@@ -248,9 +303,8 @@
             //Evaluation: 1, // захардклдить
             DisciplineCipher: $('#s1DisciplineCipher').val(),
             UserId: sessionStorage.getItem(userId),
-            Constraints: `{"Memory": ${mem1s.value}, "Time": ${time1s.value}}`//$('#i1Constraints').val(),
+            Constraints: `{"Memory": ${mem1s.value},"Time": ${time1s.value},"Preparer": "${document.getElementById("s1preparer").value}","Checker" : "${document.getElementById("s1checker").value}","Finaliter" : "${document.getElementById("s1finaliter").value}"}`//$('#i1Constraints').val(),
         }
-
 
         if (lwDto.Name.length == 0 ||
             lwDto.Description.length == 0 ||
@@ -272,8 +326,8 @@
                 success: (response) => {
                     document.location.reload(true);
                 },
-                error: (response) => {
-                    alert(response.responseText);
+                error: (fail) => {
+                    alert(fail.responseText);
                 }
             }
         );
@@ -286,10 +340,10 @@
             ThemeId: $('#s2ThemeId').val(),
             Name: $('#i2Name').val(),
             Description: $('#i2Description').val(),
-            Evaluation: 1, // захардкодить
+            Evaluation: $('#s2Evaluation').val(), // захардкодить
             DisciplineCipher: $('#s2DisciplineCipher').val(),
             UserId: $('#hiddenUserId').val(), 
-            Constraints: `{"Memory": ${mem2s.value}, "Time": ${time2s.value}}`//$('#i2Constraints').val(),
+            Constraints: `{"Memory": ${mem2s.value},"Time": ${time2s.value},"Preparer": "${document.getElementById("s2preparer").value}","Checker" : "${document.getElementById("s2checker").value}","Finaliter" : "${document.getElementById("s2finaliter").value}"}`//$('#i2Constraints').val(),
         }
 
         if (lwDto.Name.length == 0 ||
@@ -312,9 +366,8 @@
                 success: (d) => {
                     document.location.reload(true);
                 },
-                error: (response) => {
-                    console.log(response);
-                    alert('Не удалось обновить лабораторную работу');
+                error: (fail) => {
+                    alert(`Не удалось обновить лабораторную работу : ${fail.responseText}`);
                 }
             }
         );
