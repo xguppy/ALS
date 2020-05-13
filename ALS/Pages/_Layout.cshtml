@@ -1,6 +1,4 @@
-﻿@using System.Security.Claims
-@using ALS.EntityСontext
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -16,6 +14,10 @@
 <!--меню-->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="~/index">ALS</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
@@ -45,17 +47,20 @@
             <li class="nav-item" id="themes">
                 <a class="nav-link" href="~/Themes">Темы</a>
             </li>
-            <li class="nav-item" id="checker">
-                <a class="nav-link" href="~/Checkers">Чекеры</a>
+            <li class="nav-item dropdown" id="component">
+                <a class="nav-link dropdown-toggle" href="#" id="ComponentsDown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Компоненты</a>
+                <div class="dropdown-menu" aria-labelledby="ComponentsDown">
+                    <a class="dropdown-item" href="~/Checkers">Чекеры</a>
+                    <a class="dropdown-item" href="~/Preparers">Подготовители</a>
+                    <a class="dropdown-item" href="~/Finaliters">Завершители</a>
+                </div>
             </li>
-            <li class="nav-item" id="preparer">
-                <a class="nav-link" href="~/Preparers">Подготовители</a>
-            </li>
-            <li class="nav-item" id="finaliter">
-                <a class="nav-link" href="~/Finaliters">Завершители</a>
-            </li>
-            <li class="nav-item" id="results">
-                <a class="nav-link" href="~/Results">Результаты</a>
+            <li class="nav-item dropdown" id="results">
+                <a class="nav-link dropdown-toggle" href="#" id="ResultsDown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Результаты</a>
+                <div class="dropdown-menu" aria-labelledby="ResultsDown">
+                    <a class="dropdown-item" href="~/Results">Решения</a>
+                    <a class="dropdown-item" href="~/Journal">Журнал</a>
+                </div>
             </li>
         </ul>
         <div class="userInfo" style="display:none;">
@@ -77,9 +82,7 @@
     let aw = $('#assignvariant');
     let contest = $('#contest');
     let themes = $('#themes');
-    let checkers = $('#checker');
-    let preparers = $('#preparer');
-    let finaliters = $('#finaliter');
+    let components = $('#component');
     let results = $('#results');
             $('#logOut').click(function (e) {
                 e.preventDefault();
@@ -101,9 +104,7 @@
         aw.css('display', 'none');
         contest.css('display', 'none');
         themes.css('display', 'none');
-        checkers.css('display', 'none');
-        preparers.css('display', 'none');
-        finaliters.css('display', 'none');
+        components.css('display', 'none');
         results.css('display', 'none');
         let roles = JSON.parse(sessionStorage.getItem('roles'));
         if (roles == null) return;
@@ -113,17 +114,13 @@
             lw.css('display', 'block');
             aw.css('display', 'block');
             themes.css('display', 'block');
-            checkers.css('display', 'block');
-            preparers.css('display', 'block');
-            finaliters.css('display', 'block');
+            components.css('display', 'block');
             results.css('display', 'block');
         }
         if (roles.includes('Admin')) {
             group.css('display', 'block');
             speciality.css('display', 'block');
-            checkers.css('display', 'block');
-            preparers.css('display', 'block');
-            finaliters.css('display', 'block');
+            components.css('display', 'block');
         }
         if (roles.includes('Student')) {
             contest.css('display', 'block');
