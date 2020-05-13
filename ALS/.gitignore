@@ -28,6 +28,8 @@ executeUser/
 sourceCodeUser/
 executeModel/
 sourceCodeModel/
+modelTestingFiled/
+tmp/
 # Client Side Library
 wwwroot/lib/
 # Visual Studio 2015 cache/options directory

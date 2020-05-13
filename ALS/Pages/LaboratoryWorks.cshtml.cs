@@ -24,7 +24,7 @@ namespace ALS.Pages
         {
             _context = context;
             // руссификация Evaluation
-            var folderDetails = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot\\EvaluationRU.json");
+            var folderDetails = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "EvaluationRU.json");
             var json = System.IO.File.ReadAllText(folderDetails);
             var evaluationsRU = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
 
