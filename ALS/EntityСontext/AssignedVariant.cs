@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace ALS.EntityСontext
@@ -7,7 +8,7 @@ namespace ALS.EntityСontext
         public int AssignedVariantId { get; set; }
         public int UserId { get; set; }
         public int VariantId { get; set; }
-        
+        public DateTime AssignDateTime { get; set; }
         public int Mark { get; set; }
         
         public User User { get; set; }

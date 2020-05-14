@@ -243,18 +243,18 @@ namespace ALS
 
             if (!context.AssignedVariants.Any())
             {
-                context.AssignedVariants.Add(new AssignedVariant {UserId = 3, VariantId = 2});
-                context.AssignedVariants.Add(new AssignedVariant {UserId = 2, VariantId = 2});
-                context.AssignedVariants.Add(new AssignedVariant {UserId = 1, VariantId = 2});
-                context.AssignedVariants.Add(new AssignedVariant {UserId = 1, VariantId = 1});
+                context.AssignedVariants.Add(new AssignedVariant {UserId = 3, VariantId = 2, AssignDateTime = DateTime.Now});
+                context.AssignedVariants.Add(new AssignedVariant {UserId = 2, VariantId = 2, AssignDateTime = DateTime.Now});
+                context.AssignedVariants.Add(new AssignedVariant {UserId = 1, VariantId = 2, AssignDateTime = DateTime.Now});
+                context.AssignedVariants.Add(new AssignedVariant {UserId = 1, VariantId = 1, AssignDateTime = DateTime.Now});
                 
-                context.AssignedVariants.Add(new AssignedVariant {UserId = 4, VariantId = 1});
+                context.AssignedVariants.Add(new AssignedVariant {UserId = 4, VariantId = 1, AssignDateTime = DateTime.Now});
 
-                context.AssignedVariants.Add(new AssignedVariant {UserId = 5, VariantId = 1});
-                context.AssignedVariants.Add(new AssignedVariant {UserId = 5, VariantId = 2});
+                context.AssignedVariants.Add(new AssignedVariant {UserId = 5, VariantId = 1, AssignDateTime = DateTime.Now});
+                context.AssignedVariants.Add(new AssignedVariant {UserId = 5, VariantId = 2, AssignDateTime = DateTime.Now});
 
-                context.AssignedVariants.Add(new AssignedVariant {UserId = 6, VariantId = 1});
-                context.AssignedVariants.Add(new AssignedVariant {UserId = 6, VariantId = 2});
+                context.AssignedVariants.Add(new AssignedVariant {UserId = 6, VariantId = 1, AssignDateTime = DateTime.Now});
+                context.AssignedVariants.Add(new AssignedVariant {UserId = 6, VariantId = 2, AssignDateTime = DateTime.Now});
                 
                 context.SaveChanges();
             }

@@ -57,7 +57,7 @@ namespace ALS.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin, Teacher")]
         public async Task<IActionResult> Create([FromBody] AssignedVariantDTO model)
         {
-            var assignedVariant = new AssignedVariant {UserId = model.UserId, VariantId = model.VariantId};
+            var assignedVariant = new AssignedVariant {UserId = model.UserId, VariantId = model.VariantId, AssignDateTime = DateTime.Now};
             try
             {
                 await _db.AssignedVariants.AddAsync(assignedVariant);
@@ -130,7 +130,7 @@ namespace ALS.Controllers
                     if (assignedVariant == null)
                     {
                         await _db.AssignedVariants.AddAsync(new AssignedVariant
-                            {VariantId = variants[counter].VariantId, UserId = student.Id});
+                            {VariantId = variants[counter].VariantId, UserId = student.Id, AssignDateTime = DateTime.Now});
                     }
                     else
                     {

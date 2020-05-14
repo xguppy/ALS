@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.IO.Compression;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using ALS.EntityСontext;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -47,5 +48,13 @@ namespace ALS.Controllers
             System.IO.File.Delete(resultDirectory);
             return File(dataBytes, "application/zip", fileName);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetResultLab(int labId, int userId) =>
+        Ok(await Task.Run(() => _db.AssignedVariants
+                .Where(av => av.Variant.LaboratoryWorkId == labId && av.UserId == userId)
+                .Select(av => new {av.Variant.VariantNumber, av.AssignDateTime, av.Solutions.FirstOrDefault(sol => sol.IsSolved).SendDate,av.Variant.LaboratoryWork.Constraints, av.Mark})));
+            
+        
     }
 }
