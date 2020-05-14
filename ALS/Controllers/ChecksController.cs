@@ -66,7 +66,7 @@ namespace ALS.Controllers
                     Directory.CreateDirectory(moveModelProgram);
                     //Новая файл в директории
                     var newPathProgram = Path.Combine(moveModelProgram, Path.GetFileName(programFileModel));
-                    System.IO.File.Copy(programFileModel, newPathProgram);
+                    System.IO.File.Copy(programFileModel, newPathProgram, true);
                     //Скомпилируем программу пользователя
                     var compiler = new ProcessCompiler(solutionDirectory, programFileUser);
                     var isCompile = await compiler.Execute(10000);
@@ -84,25 +84,30 @@ namespace ALS.Controllers
                         return BadRequest(compiler.CompileState);
                     }
                     
-                    //Получим входные данные для задачи
-                    var gen = new GenFunctions();
-                    var inputDatas = gen.GetTestsFromJson(assignedVar.Variant.InputDataRuns);
-                    
-                    //Получим ограничения лабы
-                    var constrainsLab = JsonConvert.DeserializeObject<Constrains>(
-                        assignedVar.Variant.LaboratoryWork.Constraints,
-                        new JsonSerializerSettings {DefaultValueHandling = DefaultValueHandling.Populate});
-                    //Получим ограничения варианта
-                    var constrainsVar = JsonConvert.DeserializeObject<Constrains>(assignedVar.Variant.Constraints,
-                        new JsonSerializerSettings {DefaultValueHandling = DefaultValueHandling.Populate});
-                    //Перезапишем ограничениями варианта если они не нулл
-                    var constrains = OverridingConstrains(constrainsLab, constrainsVar);
-                    
                     //Прогоним по тестам
                     List<ResultRun> resultTests;
                     try
                     {
-                        var verification = new Verification(programFileUser, newPathProgram, constrains);
+                        //Получим входные данные для задачи
+                        var gen = new GenFunctions();
+                        var inputDatasP = gen.GetTestsFromJsonNewVersion(assignedVar.Variant.InputDataRuns);
+                        var inputDatas = inputDatasP.Select(ip => ip.Value.Split(',').ToList()).ToList();
+                        //Получим ограничения лабы
+                        var constrainsLab = JsonConvert.DeserializeObject<Constrains>(
+                            assignedVar.Variant.LaboratoryWork.Constraints,
+                            new JsonSerializerSettings {DefaultValueHandling = DefaultValueHandling.Populate});
+                        var variantConstrainsJson = assignedVar.Variant.Constraints;
+                        if (variantConstrainsJson != null)
+                        {
+                            //Получим ограничения варианта
+                            var constrainsVar = JsonConvert.DeserializeObject<Constrains>(
+                                assignedVar.Variant.Constraints,
+                                new JsonSerializerSettings {DefaultValueHandling = DefaultValueHandling.Populate});
+
+                            //Перезапишем ограничениями лабы ограничениями варианта(которые доступны)
+                            constrainsLab = OverridingConstrains(constrainsLab, constrainsVar);
+                        }
+                        var verification = new Verification(programFileUser, newPathProgram, constrainsLab);
                         resultTests = await verification.RunTests(inputDatas);
                     }
                     catch (Exception e)
@@ -111,8 +116,8 @@ namespace ALS.Controllers
                     }
                     finally
                     {
-                        //В любом случае удалим ненужный исполняемый файл
-                        System.IO.File.Delete(programFileUser);
+                        //В любом случае удалим директорию пользователя с исполняемым файлом
+                        Directory.Delete(new DirectoryInfo(programFileUser).Parent.FullName, true);
                         //и директорию с моделью
                         Directory.Delete(moveModelProgram, true);
                     }

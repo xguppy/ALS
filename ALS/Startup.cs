@@ -226,7 +226,7 @@ namespace ALS
             if (!context.LaboratoryWorks.Any())
             {
                 //context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 9, ThemeId = 2, Name = "lr1", Description = "lr1_description", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
-                context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 9, ThemeId = 1, Name = "ЛР1 - работа с числами", Description = "Вывести четные элементы", Constraints = "{\"Memory\": 4096000,\"Time\": 60000,\"Preparer\": \"null\",\"Checker\" : \"AbsoluteChecker\",\"Finaliter\" : \"null\"}", DisciplineCipher = "pr1", Evaluation=Evaluation.Strict});
+                context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 9, ThemeId = 1, Name = "ЛР1 - работа с числами", Description = "Вывести четные элементы", Constraints = "{\"Memory\": 4096000,\"Time\": 60000,\"Checker\" : \"AbsoluteChecker\"}", DisciplineCipher = "pr1", Evaluation=Evaluation.Strict});
                 context.LaboratoryWorks.Add(new LaboratoryWork { TemplateLaboratoryWorkId = 1, UserId = 9, ThemeId = 2, Name = "ЛР2 - работа с условными операторами", Description = "сделайте что-нибудь с выражениями", Constraints = "{\"Memory\": 4096000,\"Time\": 60000,\"Preparer\": \"null\",\"Checker\" : \"AbsoluteChecker\",\"Finaliter\" : \"null\"}", DisciplineCipher = "pr1", Evaluation = Evaluation.Strict });
                 //context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 2, ThemeId = 1, Name = "lr1", Description = "lr1_description", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
                 //context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 2, ThemeId = 1, Name = "lr2", Description = "Вывести четные элементы", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
@@ -237,7 +237,7 @@ namespace ALS
             {
                 context.Variants.Add(new Variant { VariantNumber = 1, LaboratoryWorkId = 1, Description = "var descr" });
                 context.Variants.Add(new Variant { VariantNumber = 2, LaboratoryWorkId = 1, Description = "Тест" });
-                context.Variants.Add(new Variant { VariantNumber = 1, LaboratoryWorkId = 2, LinkToModel = Path.Combine(Environment.CurrentDirectory, "executeModel", $"{ProcessCompiler.CreatePath(2, 1)}.exe"), Description = "В стандартный поток ввода принимаются 10 целых чисел. Вывести в стандартный поток вывода только чётные числа.", InputDataRuns = "[{\"Name\":\"тест1\",\"Data\":[\"#rnd(1 | 20 | int | 10)\"]},{\"Name\":\"тест2\",\"Data\":[\"#rnd(1 | 20 | int | 10)\"]},{\"Name\":\"тест3\",\"Data\":[\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"7\",\"8\",\"9\",\"10\"]}]"});
+                context.Variants.Add(new Variant { VariantNumber = 1, LaboratoryWorkId = 2, LinkToModel = Path.Combine(Environment.CurrentDirectory, "executeModel", $"{ProcessCompiler.CreatePath(2, 1)}.exe"), Description = "В стандартный поток ввода принимаются 10 целых чисел. Вывести в стандартный поток вывода только чётные числа.", InputDataRuns = "[{\"Name\":\"Тест2\",\"Data\":[\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"7\",\"8\",\"9\",\"10\"]},{\"Name\":\"Тест3\",\"Data\":[\"1,2,3,4,5,6,7,8,9,10\"]},{\"Name\":\"Тест4\",\"Data\":[\"#rnd(100, 200, int, 100)\"]}]"});
                 context.SaveChanges();
             }
 

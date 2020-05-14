@@ -23,13 +23,9 @@ namespace ALS.CheckModule.Processes
             var sourceCodeFiles = Directory.GetFiles(nameInputFolderProject)
             .Where(file => {
                 var extension = Path.GetExtension(file);
-                if(extension == ".cpp" || extension == ".h")
-                {
-                    return true;
-                }
-                return false;
+                return extension == ".cpp" || extension == ".h";
             }).Select(file => $"\"{file}\"");
-            AppProcess.StartInfo.FileName = $"\"{pathToCompiler}\"";
+            AppProcess.StartInfo.FileName = $"{pathToCompiler}";
             AppProcess.StartInfo.Arguments = $"{arguments} {String.Join(' ', sourceCodeFiles)} -o \"{nameOutput}\"";
             InitProcess();
         }
