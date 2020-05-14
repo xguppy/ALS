@@ -140,7 +140,7 @@ namespace ALS.Controllers
                 if (variantUpdate != null)
                 {
                     // если лабораторная работа содержит шаблон
-                    try
+                    /*try
                     {
                         var laboratoryWork = await _db.LaboratoryWorks.Where(lw => lw.UserId == userId && lw.LaboratoryWorkId == model.LaboratoryWorkId).FirstOrDefaultAsync();
                         // генерируем описание, ссылку на модель, список входных данных
@@ -153,7 +153,7 @@ namespace ALS.Controllers
                         await Response.WriteAsync(ex.Message);
                         // выходим
                         return BadRequest(ex.Message);
-                    }
+                    }*/
                     try
                     {
                         variantUpdate.Description = model.Description;

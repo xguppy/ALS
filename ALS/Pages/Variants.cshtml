@@ -8,13 +8,13 @@
 <div class="container">
     <table style="width: 100%" class="table table-hover" border="1">
         <thead>
-        <tr>
-        <td>Лабораторная работа</td>
-        <td>Номер варианта</td>    
-        <td>Описание</td>
-        @{/*<td>Ссылка на модель (эталонная программа)</td>
-        <td>Входные данные</td>*/}
-        <td>Действие</td>
+            <tr>
+                <td>Лабораторная работа</td>
+                <td>Номер варианта</td>
+                <td>Описание</td>
+                @{/*<td>Ссылка на модель (эталонная программа)</td>
+                                      <td>Входные данные</td>*/}
+                <td>Действие</td>
         </thead>
         <tbody id="tbodyContent">
     </table>
@@ -24,7 +24,8 @@
 <div id="myModal" class="modal fade">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header"><h4 class="modal-title">Новый вариант</h4><button class="close" type="button" data-dismiss="modal">×</button>
+            <div class="modal-header">
+                <h4 class="modal-title">Новый вариант</h4><button class="close" type="button" data-dismiss="modal">×</button>
             </div>
             <div class="modal-body">
                 @using (Html.BeginForm("Create", "Variants", FormMethod.Post))
@@ -92,7 +93,8 @@
 <div id="edit" class="modal fade">
     <div class="modal-dialog  modal-lg">
         <div class="modal-content">
-            <div class="modal-header"><h4 class="modal-title">Редактирование варианта</h4><button class="close" type="button" data-dismiss="modal">×</button>
+            <div class="modal-header">
+                <h4 class="modal-title">Редактирование варианта</h4><button class="close" type="button" data-dismiss="modal">×</button>
             </div>
             <div class="modal-body">
                 @using (Html.BeginForm("Update", "Variants", FormMethod.Post))
@@ -149,7 +151,7 @@
                         </table>
                     </p>
                     @Html.Hidden("variantId", null, new { id = "EditVariantId" })
-                    <p><input type="button" class="btn btn-dark" value="Отправить" onclick="editVariant()" /></p>
+                    <p><input type="button" class="btn btn-dark" value="Отправить" onclick="" /></p>
                 }
             </div>
             <div class="modal-footer"><button class="btn btn-default" type="button" data-dismiss="modal">Закрыть</button></div>
@@ -157,7 +159,10 @@
     </div>
 </div>
 
-
+<script src="~/lib/markdown-it/markdown-it.min.js"></script>
+<script src="~/lib/KaTeX/katex.min.js"></script>
+<script src="~/lib/markdown-it-katex/markdown-it-katex.js"></script>
+<link rel="stylesheet" href="~/lib/KaTeX/katex.min.css">
 <script>
     $.ajax(
         {
@@ -166,16 +171,23 @@
             beforeSend: (xhr) => {
             },
             success: (variants) => {
+                let md = window.markdownit();
+                md.use(math_plugin);
                 let tbdy = document.getElementById('tbodyContent');
                 for (let variant of variants) {
                     let tr = document.createElement('tr');
+                    variant.rawDescription = variant['description'];
+                    //let rawDescription = variant['description'];
                     for (let prop in variant) {
                         if (prop !== 'variantId' && prop !== 'laboratoryWorkId') {
                             let td = document.createElement('td');
-                            if (variant[prop] != null)
-                                td.appendChild(document.createTextNode(variant[prop]));
+                            if (variant[prop] != null) {
+                                if (prop === 'description') td.innerHTML = md.render(variant[prop]);// + katex.renderToString("");
+                                else td.appendChild(document.createTextNode(variant[prop]));
+                            }
                             if (prop === 'name')
                                 td.dataset.id = variant.laboratoryWorkId;
+
                             // оставил для вывода лишь имя, вариант и описание
                             if (prop !== 'name' && prop !== 'description' && prop !== 'variantNumber')
                                 td.hidden = true;
@@ -354,17 +366,19 @@
     function editPrepareVariant(obj) {
         let id = $(obj).parent("td").data('id');
 
-        let constraintsjson = $(obj).parent("td").prev("td").text();
+        let rawdescription = $(obj).parent("td").prev("td").text();
 
-        let inputData = $(obj).parent("td").prev("td").prev("td").text();
+        let constraintsjson = $(obj).parent("td").prev("td").prev("td").text();
 
-        let link = $(obj).parent("td").prev("td").prev("td").prev("td").text();
+        let inputData = $(obj).parent("td").prev("td").prev("td").prev("td").text();
 
-        let description = $(obj).parent("td").prev("td").prev("td").prev("td").prev("td").text();
+        let link = $(obj).parent("td").prev("td").prev("td").prev("td").prev("td").text();
 
-        let numberVar = $(obj).parent("td").prev("td").prev("td").prev("td").prev("td").prev("td").text();
+        //let description = $(obj).parent("td").prev("td").prev("td").prev("td").prev("td").prev("td").text();
 
-        let name = $(obj).parent("td").prev("td").prev("td").prev("td").prev("td").prev("td").prev("td").text();
+        let numberVar = $(obj).parent("td").prev("td").prev("td").prev("td").prev("td").prev("td").prev("td").text();
+
+        let name = $(obj).parent("td").prev("td").prev("td").prev("td").prev("td").prev("td").prev("td").prev("td").text();
 
         if (constraintsjson.length > 0) {
             let constr = JSON.parse(constraintsjson);
@@ -377,7 +391,7 @@
         }
 
         $("#edit").find("input[id='EditNumber']").val(numberVar);
-        $("#EditDescription").val(description);
+        $("#EditDescription").val(rawdescription);
         $("#EditLink").val(link);
         $("#EditInputData").val(inputData);
         $("#edit").find("input[type='hidden']").val(id);

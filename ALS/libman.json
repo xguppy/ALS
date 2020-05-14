@@ -9,11 +9,29 @@
     {
       "library": "jquery@3.4.1",
       "destination": "wwwroot/lib/jquery/"
-    }
-  ,
+    },
     {
       "library": "popper.js@1.15.0",
       "destination": "wwwroot/lib/popper.js/"
+    },
+    {
+      "library": "markdown-it@10.0.0",
+      "destination": "wwwroot/lib/markdown-it/",
+      "files": [
+        "markdown-it.min.js"
+      ]
+    },
+    {
+      "library": "KaTeX@0.11.1",
+      "destination": "wwwroot/lib/KaTeX/"
+    },
+    {
+      "provider": "filesystem",
+      "library": "./wwwroot/staticlib/markdown-it-katex",
+      "files": [
+        "markdown-it-katex.js"
+      ],
+      "destination": "wwwroot/lib/markdown-it-katex/"
     }
-]
+  ]
 }
