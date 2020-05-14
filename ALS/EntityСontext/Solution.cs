@@ -7,9 +7,9 @@ namespace ALS.EntityСontext
     {
         public int SolutionId { get; set; }
         public int AssignedVariantId { get; set; }
-        public int CompilerFailsNumbers { get; set; }
         public DateTime? SendDate { get; set; }
         public string SourceCode { get; set; }
+        public bool IsCompile { get; set; }
         public bool IsSolved { get; set; }
         
         public List<TestRun> TestRuns { get; set; }

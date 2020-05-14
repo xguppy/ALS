@@ -261,22 +261,22 @@ namespace ALS
             
             if (!context.Solutions.Any())
             {
-                context.Solutions.Add(new Solution { IsSolved = true, AssignedVariantId = 1, CompilerFailsNumbers = 3, SendDate = DateTime.Now.AddDays(2),  SourceCode = "#include <iostream>\n\nint func_arr(int* arr, size_t len);\nvoid input_arr(int* &arr, size_t len);\n\nint main()\n{\n	// Очень важный комментарий\n	// Или не очень\n	cout << \"Программа вывода суммы квадратов вектора\" << endl;\n	int len = 3;\n	int* arr = new int[len];\n	input_arr(arr, len);\n	cout << \"Результат равен \" << func_arr(arr, len) << endl;\n	return 0;\n}\n\nint func_arr(int* arr, size_t len)\n{\n	/*\n	Возвращает сумму квадратов элементов массива\n	*/\n	int res = 0;\n	for (size_t i = 0; i < len; ++i)\n	{\n		res += arr[i] * arr[i];\n	}\n	return res;\n}\n\nvoid input_arr(int* &arr, size_t len)\n{\n	// Ввод массива\n	for (size_t i = 0; i < len; ++i)\n		cin >> arr[i];\n}" });
-                context.Solutions.Add(new Solution { IsSolved = true, AssignedVariantId = 2, CompilerFailsNumbers = 2, SendDate = DateTime.Now.AddDays(1),  SourceCode = "#include <iostream>\n\nint func_arr(int* arr, size_t len);\nvoid input_arr(int* &arr, size_t len);\n\nint main()\n{\n	// Очень важный комментарий\n	// Или не очень\n	cout << \"Программа вывода суммы квадратов вектора\" << endl;\n	int len = 3;\n	int* arr = new int[len];\n	input_arr(arr, len);\n	cout << \"Результат равен \" << func_arr(arr, len) << endl;\n	return 0;\n}\n\nint func_arr(int* arr, size_t len)\n{\n	/*\n	Возвращает сумму квадратов элементов массива\n	*/\n	int res = 0;\n	for (size_t i = 0; i < len; ++i)\n	{\n		res += arr[i] * arr[i];\n	}\n	return res;\n}\n\nvoid input_arr(int* &arr, size_t len)\n{\n	// Ввод массива\n	for (size_t i = 0; i < len; ++i)\n		cin >> arr[i];\n}" });
-                context.Solutions.Add(new Solution { IsSolved = true, AssignedVariantId = 3, CompilerFailsNumbers = 1, SendDate = DateTime.Now,  SourceCode = "#include <iostream>\n\nint func_massiv(int* massiv, size_t size_a)\n{\n	/*\n	Возвращает сумму квадратов элементов массива\n	*/\n	int res = 0;\n	for (size_t i = 0; i < size_a; ++i)\n	{\n		res += massiv[i] * massiv[i];\n	}\n	return res;\n}\n\nvoid input_massiv(int* &massiv, size_t size_a)\n{\n	// Ввод массива\n	for (size_t i = 0; i < size_a; ++i)\n		cin >> massiv[i];\n}\n\nint main()\n{\n	cout << \"Моя(нет) программа вывода суммы квадратов элементов массива\" << endl;\n	int size_a = 3;\n	int* massiv = new int[size_a];\n	input_massiv(massiv, size_a);\n	cout << \"Ответ \" << func_massiv(massiv, size_a) << endl;\n	return 0;\n}\n\n" });
-                context.Solutions.Add(new Solution { IsSolved = false, SendDate = DateTime.Now.AddHours(20), CompilerFailsNumbers = 1, AssignedVariantId = 4});
+                context.Solutions.Add(new Solution { IsSolved = true, AssignedVariantId = 1, IsCompile = true, SendDate = DateTime.Now.AddDays(2)});
+                context.Solutions.Add(new Solution { IsSolved = true, AssignedVariantId = 2, IsCompile = true, SendDate = DateTime.Now.AddDays(1)});
+                context.Solutions.Add(new Solution { IsSolved = true, AssignedVariantId = 3, IsCompile = true, SendDate = DateTime.Now});
+                context.Solutions.Add(new Solution { IsSolved = false, SendDate = DateTime.Now.AddHours(20), IsCompile = true, AssignedVariantId = 4});
                 
                 
-                context.Solutions.Add(new Solution { IsSolved = false, CompilerFailsNumbers = 1, SendDate = DateTime.Now.AddHours(2), AssignedVariantId = 5});
-                context.Solutions.Add(new Solution { IsSolved = false, CompilerFailsNumbers = 2, SendDate = DateTime.Now.AddHours(12), AssignedVariantId = 5});
+                context.Solutions.Add(new Solution { IsSolved = false, IsCompile = true, SendDate = DateTime.Now.AddHours(2), AssignedVariantId = 5});
+                context.Solutions.Add(new Solution { IsSolved = false, IsCompile = false, SendDate = DateTime.Now.AddHours(12), AssignedVariantId = 5});
                 
-                context.Solutions.Add(new Solution { IsSolved = false, CompilerFailsNumbers = 0, SendDate = DateTime.Now.AddHours(10), AssignedVariantId = 6});
-                context.Solutions.Add(new Solution { IsSolved = true, CompilerFailsNumbers = 0, SendDate = DateTime.Now.AddHours(9), AssignedVariantId = 6});
-                context.Solutions.Add(new Solution { IsSolved = false, CompilerFailsNumbers = 0, SendDate = DateTime.Now.AddHours(5), AssignedVariantId = 7});
-                context.Solutions.Add(new Solution { IsSolved = true, CompilerFailsNumbers = 0, SendDate = DateTime.Now.AddHours(17), AssignedVariantId = 7});
+                context.Solutions.Add(new Solution { IsSolved = false, IsCompile = true, SendDate = DateTime.Now.AddHours(10), AssignedVariantId = 6});
+                context.Solutions.Add(new Solution { IsSolved = true, IsCompile = false, SendDate = DateTime.Now.AddHours(9), AssignedVariantId = 6});
+                context.Solutions.Add(new Solution { IsSolved = false, IsCompile = true, SendDate = DateTime.Now.AddHours(5), AssignedVariantId = 7});
+                context.Solutions.Add(new Solution { IsSolved = true, IsCompile = false, SendDate = DateTime.Now.AddHours(17), AssignedVariantId = 7});
                 
-                context.Solutions.Add(new Solution { IsSolved = true, CompilerFailsNumbers = 5, SendDate = DateTime.Now.AddHours(15), AssignedVariantId = 8});
-                context.Solutions.Add(new Solution { IsSolved = true, CompilerFailsNumbers = 5,SendDate = DateTime.Now.AddHours(6), AssignedVariantId = 9});
+                context.Solutions.Add(new Solution { IsSolved = true, IsCompile = true, SendDate = DateTime.Now.AddHours(15), AssignedVariantId = 8});
+                context.Solutions.Add(new Solution { IsSolved = true, IsCompile = false,SendDate = DateTime.Now.AddHours(6), AssignedVariantId = 9});
                 
                 context.SaveChanges();
             }

@@ -54,7 +54,7 @@ namespace ALS.Controllers
                     //Cохраним его код в директорию пользователя
                     await SaveSources(solutionDirectory, uploadedSources);
                     //Создаём новое решение
-                    solution = new Solution {AssignedVariant = assignedVar, IsSolved = true, SendDate = DateTime.Now, SourceCode = solutionDirectory };
+                    solution = new Solution {AssignedVariant = assignedVar, IsSolved = true, SendDate = DateTime.Now, SourceCode = solutionDirectory, IsCompile = true};
 
                     //Возьмём пути для исполняемых файлов
                     var programFileUser = CreateExecuteDirectories(assignedVar.Variant.VariantId, variantId, userIdentifier);
@@ -74,11 +74,9 @@ namespace ALS.Controllers
                     //Если не скомпилировалась заносим, то в последнее решение добавим информацию что программа пользователя не была скомпилированна
                     if (isCompile != true)
                     {
-                        var lastSol = await _db.Solutions.OrderBy(sol => sol.SolutionId).LastOrDefaultAsync(sol => sol.AssignedVariant == assignedVar) ??
-                                      solution;
-                        lastSol.IsSolved = false;
-                        lastSol.CompilerFailsNumbers++;
-                        _db.Solutions.Update(lastSol);
+                        solution.IsCompile = false;
+                        solution.IsSolved = false;
+                        await _db.Solutions.AddAsync(solution);
                         Directory.Delete(moveModelProgram, true);
                         await _db.SaveChangesAsync();
                         return BadRequest(compiler.CompileState);
