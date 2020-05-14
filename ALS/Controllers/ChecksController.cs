@@ -110,6 +110,8 @@ namespace ALS.Controllers
                     }
                     catch (Exception e)
                     {
+                        //Если произошло что-то не хорошее, то не будем понапрасну тратить драгоценные байты хранилища и удали исходные коды пользователя
+                        Directory.Delete(solutionDirectory, true);
                         return BadRequest(e.Message);
                     }
                     finally
