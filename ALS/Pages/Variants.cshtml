@@ -152,7 +152,7 @@
                         </table>
                     </p>
                     @Html.Hidden("variantId", null, new { id = "EditVariantId" })
-                    <p><input type="button" class="btn btn-dark" value="Отправить" onclick="" /></p>
+                    <p><input type="button" class="btn btn-dark" value="Отправить" onclick="editVariant()" /></p>
                 }
             </div>
             <div class="modal-footer"><button class="btn btn-default" type="button" data-dismiss="modal">Закрыть</button></div>
@@ -405,7 +405,9 @@
             VariantNumber: $('#EditNumber').val(),
             Description: $('#EditDescription').val(),
             LinkToModel: $('#EditLink').val(),
-            InputDataRuns: $('#EditInputData').val()
+            InputDataRuns: $('#EditInputData').val(),
+            Constraints: `{"Memory": ${document.getElementById("memInputEdit").value},"Time": ${document.getElementById("timeInputEdit").value},"Preparer": "${document.getElementById("sPreparerEdit").value}","Checker" : "${document.getElementById("sCheckerEdit").value}","Finaliter" : "${document.getElementById("sFinaliterEdit").value}"}`
+
         };
         $.ajax(
             {
