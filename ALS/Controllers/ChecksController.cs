@@ -84,14 +84,14 @@ namespace ALS.Controllers
                     
                     //Прогоним по тестам
                     List<ResultRun> resultTests;
+                    string[] testNames;
                     try
                     {
                         //Получим входные данные для задачи
                         var gen = new GenFunctions();
-                        //var inputDatasP = gen.GetTestsFromJsonNewVersion(assignedVar.Variant.InputDataRuns);
-                        //var inputDatas = inputDatasP.Select(ip => ip.Value.Split(',').ToList()).ToList();
-                        var name_tests = gen.GetTestsFromJson(assignedVar.Variant.InputDataRuns);
-                        var inputDatas = name_tests.Select(t => t.Item2).ToList();
+
+                        var testData = gen.GetTestsFromJson(assignedVar.Variant.InputDataRuns);
+                        testNames = testData.Select(td => td.Item1).ToArray();
                         //Получим ограничения лабы
                         var constrainsLab = JsonConvert.DeserializeObject<Constrains>(
                             assignedVar.Variant.LaboratoryWork.Constraints,
@@ -108,7 +108,7 @@ namespace ALS.Controllers
                             constrainsLab = OverridingConstrains(constrainsLab, constrainsVar);
                         }
                         var verification = new Verification(programFileUser, newPathProgram, constrainsLab);
-                        resultTests = await verification.RunTests(inputDatas);
+                        resultTests = await verification.RunTests(testData.Select(t => t.Item2).ToList());
                     }
                     catch (Exception e)
                     {
@@ -146,7 +146,7 @@ namespace ALS.Controllers
                     assignedVar.Mark = currMark;
                     await _db.SaveChangesAsync();
                     //Выведем количество верных тестовых прогонов и комментарии к ним
-                    return Ok($"{countCompleteTest} / {resultTests.Count} тестов пройдено.{FormattingResultLog(resultTests)}");
+                    return Ok($"{countCompleteTest} / {resultTests.Count} тестов пройдено.{FormattingResultLog(resultTests, testNames)}");
                 }
                 return Ok("Задача уже решена");
             }
@@ -207,12 +207,12 @@ namespace ALS.Controllers
             }
         }
         
-        private static string FormattingResultLog(List<ResultRun> results)
+        private static string FormattingResultLog(List<ResultRun> results, string[] testName)
         {
             var testsLog = new StringBuilder();
             for (var i = 0; i < results.Count; i++)
             {
-                testsLog.Append($"\nТест {i + 1}: {results[i].Comment}");
+                testsLog.Append($"\n{testName[i]}: {results[i].Comment}");
             }
             return testsLog.ToString();
         }
