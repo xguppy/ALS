@@ -90,7 +90,8 @@ namespace ALS.Controllers
                         var gen = new GenFunctions();
                         //var inputDatasP = gen.GetTestsFromJsonNewVersion(assignedVar.Variant.InputDataRuns);
                         //var inputDatas = inputDatasP.Select(ip => ip.Value.Split(',').ToList()).ToList();
-                        var inputDatas = gen.GetTestsFromJson(assignedVar.Variant.InputDataRuns);
+                        var name_tests = gen.GetTestsFromJson(assignedVar.Variant.InputDataRuns);
+                        var inputDatas = name_tests.Select(t => t.Item2).ToList();
                         //Получим ограничения лабы
                         var constrainsLab = JsonConvert.DeserializeObject<Constrains>(
                             assignedVar.Variant.LaboratoryWork.Constraints,

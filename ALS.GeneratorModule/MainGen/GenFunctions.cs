@@ -61,12 +61,12 @@ namespace Generator.MainGen
             return p.Tests(tests);
         }
 
-        public List<List<string>> GetTestsFromJson(string json)
+        public List<(string, List<string>)> GetTestsFromJson(string json)
         {
             var tests = JsonConvert.DeserializeObject<List<DataContainer>>(json);
             ParamsContainer p = new ParamsContainer();
             var t = p.Tests(tests);
-            return t.Select(p => p.Value.Split(',', System.StringSplitOptions.RemoveEmptyEntries).ToList()).ToList();
+            return t.Select(p => (p.Name, p.Value.Split(',', System.StringSplitOptions.RemoveEmptyEntries).ToList())).ToList();
         }
     }
 }
