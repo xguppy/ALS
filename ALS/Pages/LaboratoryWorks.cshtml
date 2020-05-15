@@ -221,7 +221,6 @@
             beforeSend: (xhr) => {
             },
             success: () => {
-                // :)
                 initSliders();
                 addSelectItems('checker', 's1checker', false);
                 addSelectItems('checker', 's2checker', false);
@@ -281,8 +280,8 @@
         //$("#myModalUpdate").find("textarea[id='i2Constraints']").val(constr);
         let constr = JSON.parse(constrains)
         $("#myModalUpdate").find("select[id='s2checker']").val(`${constr.Checker}`);
-        $("#myModalUpdate").find("select[id='s2preparer']").val(`${constr.Preparer}`);
-        $("#myModalUpdate").find("select[id='s2finaliter']").val(`${constr.Finaliter}`);
+        $("#myModalUpdate").find("select[id='s2preparer']").val(`${constr.Preparer === undefined ? "null" : constr.Preparer}`);
+        $("#myModalUpdate").find("select[id='s2finaliter']").val(`${constr.Finaliter === undefined ? "null" : constr.Finaliter}`);
         mem2s.value = constr.Memory
         time2s.value = constr.Time
         updateVals();
@@ -293,17 +292,17 @@
     }
 
     function create() {
-
+        let preparer = document.getElementById("s1preparer").value === "null" ? "" : `,"Preparer": "${document.getElementById("s1preparer").value}"`;
+        let finaliter = document.getElementById("s1finaliter").value === "null" ? "" : `,"Finaliter" : "${document.getElementById("s1finaliter").value}"`;
         let lwDto = {
             TemplateLaboratoryWorkId: $('#s1TemplateId').val(),
             ThemeId: $('#s1ThemeId').val(),
             Name: $('#i1Name').val(),
             Description: $('#i1Description').val(),
             Evaluation: $('#s1Evaluation').val(),
-            //Evaluation: 1, // захардклдить
             DisciplineCipher: $('#s1DisciplineCipher').val(),
             UserId: sessionStorage.getItem(userId),
-            Constraints: `{"Memory": ${mem1s.value},"Time": ${time1s.value},"Preparer": "${document.getElementById("s1preparer").value}","Checker" : "${document.getElementById("s1checker").value}","Finaliter" : "${document.getElementById("s1finaliter").value}"}`//$('#i1Constraints').val(),
+            Constraints: `{"Memory": ${mem1s.value},"Time": ${time1s.value},"Checker" : "${document.getElementById("s1checker").value}"${preparer}${finaliter}}`//$('#i1Constraints').val(),
         }
 
         if (lwDto.Name.length == 0 ||
@@ -335,6 +334,8 @@
 
 
     function updateLw() {
+        let preparer = document.getElementById("s2preparer").value === "null" ? "" : `,"Preparer": "${document.getElementById("s2preparer").value}"`;
+        let finaliter = document.getElementById("s2finaliter").value === "null" ? "" : `,"Finaliter" : "${document.getElementById("s2finaliter").value}"`;
         let lwDto = {
             TemplateLaboratoryWorkId: $('#s2TemplateId').val(),
             ThemeId: $('#s2ThemeId').val(),
@@ -342,8 +343,8 @@
             Description: $('#i2Description').val(),
             Evaluation: $('#s2Evaluation').val(), // захардкодить
             DisciplineCipher: $('#s2DisciplineCipher').val(),
-            UserId: $('#hiddenUserId').val(), 
-            Constraints: `{"Memory": ${mem2s.value},"Time": ${time2s.value},"Preparer": "${document.getElementById("s2preparer").value}","Checker" : "${document.getElementById("s2checker").value}","Finaliter" : "${document.getElementById("s2finaliter").value}"}`//$('#i2Constraints').val(),
+            UserId: $('#hiddenUserId').val(),
+            Constraints: `{"Memory": ${mem2s.value},"Time": ${time2s.value},"Checker" : "${document.getElementById("s2checker").value}"${preparer}${finaliter}}`//$('#i2Constraints').val(),
         }
 
         if (lwDto.Name.length == 0 ||

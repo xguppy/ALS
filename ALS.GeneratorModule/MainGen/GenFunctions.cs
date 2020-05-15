@@ -3,6 +3,7 @@ using Generator.MainGen.Parametr;
 using Generator.Parsing;
 using Newtonsoft.Json;
 using Generator.MainGen.StdGenFunc;
+using System.Linq;
 
 namespace Generator.MainGen
 {
@@ -62,31 +63,10 @@ namespace Generator.MainGen
 
         public List<List<string>> GetTestsFromJson(string json)
         {
-            List<List<string>> result = new List<List<string>>();
-
             var tests = JsonConvert.DeserializeObject<List<DataContainer>>(json);
-
-            foreach (var dc in tests)
-            {
-                if (dc.Data.Count > 1)
-                {
-                    result.Add(dc.Data);
-                }
-                else
-                {
-                    if (dc.Data[0].Contains($"#{FuncsEnum.rnd}"))
-                    {
-                        Param p = new Param(dc.Data[0], -1, "TEMP");
-                        result.Add(new List<string>(_f[0].Run(p).Split('|')));
-                    }
-                    else
-                    {
-                        result.Add(dc.Data);
-                    }
-                }
-            }
-
-            return result;
+            ParamsContainer p = new ParamsContainer();
+            var t = p.Tests(tests);
+            return t.Select(p => p.Value.Split(',', System.StringSplitOptions.RemoveEmptyEntries).ToList()).ToList();
         }
     }
 }

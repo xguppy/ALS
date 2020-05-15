@@ -30,12 +30,12 @@ namespace Generator.MainGen
 
         private string PathToSoulution(string subpath)
         {
-            if (!Directory.Exists($"sourceCodeModel\\{subpath}"))
+            if (!Directory.Exists(Path.Combine("sourceCodeModel", subpath)))
             {
-                Directory.CreateDirectory($"sourceCodeModel\\{subpath}");
+                Directory.CreateDirectory(Path.Combine("sourceCodeModel", subpath));
             }
 
-            return $"sourceCodeModel\\{subpath}";
+            return Path.Combine("sourceCodeModel", subpath);
         }
 
         private async Task<bool> Compile(int lr, int var)

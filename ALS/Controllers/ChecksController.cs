@@ -88,8 +88,9 @@ namespace ALS.Controllers
                     {
                         //Получим входные данные для задачи
                         var gen = new GenFunctions();
-                        var inputDatasP = gen.GetTestsFromJsonNewVersion(assignedVar.Variant.InputDataRuns);
-                        var inputDatas = inputDatasP.Select(ip => ip.Value.Split(',').ToList()).ToList();
+                        //var inputDatasP = gen.GetTestsFromJsonNewVersion(assignedVar.Variant.InputDataRuns);
+                        //var inputDatas = inputDatasP.Select(ip => ip.Value.Split(',').ToList()).ToList();
+                        var inputDatas = gen.GetTestsFromJson(assignedVar.Variant.InputDataRuns);
                         //Получим ограничения лабы
                         var constrainsLab = JsonConvert.DeserializeObject<Constrains>(
                             assignedVar.Variant.LaboratoryWork.Constraints,

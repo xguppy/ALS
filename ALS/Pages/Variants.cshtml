@@ -316,13 +316,15 @@
     }
 
     function createVariant() {
+        let preparer = document.getElementById("sPreparerCreate").value === "null" ? "" : `,"Preparer": "${document.getElementById("sPreparerCreate").value}"`;
+        let finaliter = document.getElementById("sFinaliterCreate").value === "null" ? "" : `,"Finaliter" : "${document.getElementById("sFinaliterCreate").value}"`;
         let variant = {
             LaboratoryWorkId: $('#newLaboratoryWork option:selected')[0].dataset.id,
             VariantNumber: $('#newNumber').val(),
             Description: $('#newDescription').val(),
             LinkToModel: $('#newLink').val(),
             InputDataRuns: $('#newInputData').val(),
-            Constraints: `{"Memory": ${document.getElementById("memInputCreate").value},"Time": ${document.getElementById("timeInputCreate").value},"Preparer": "${document.getElementById("sPreparerCreate").value}","Checker" : "${document.getElementById("sCheckerCreate").value}","Finaliter" : "${document.getElementById("sFinaliterCreate").value}"}`
+            Constraints: `{"Memory": ${document.getElementById("memInputCreate").value},"Time": ${document.getElementById("timeInputCreate").value},"Checker" : "${document.getElementById("sCheckerCreate").value}"${preparer}${finaliter}}`
         };
         $.ajax(
             {
@@ -384,8 +386,8 @@
         if (constraintsjson.length > 0) {
             let constr = JSON.parse(constraintsjson);
             $("#edit").find("select[id='sCheckerEdit']").val(`${constr.Checker}`);
-            $("#edit").find("select[id='sPreparerEdit']").val(`${constr.Preparer}`);
-            $("#edit").find("select[id='sFinaliterEdit']").val(`${constr.Finaliter}`);
+            $("#edit").find("select[id='sPreparerEdit']").val(`${constr.Preparer === undefined ? "null" : constr.Preparer}`);
+            $("#edit").find("select[id='sFinaliterEdit']").val(`${constr.Finaliter === undefined ? "null" : constr.Finaliter}`);
             $("#edit").find("input[id='memInputEdit']").val(constr.Memory);
             $("#edit").find("input[id='timeInputEdit']").val(constr.Time);
             initSliders(true);
@@ -400,13 +402,15 @@
     }
 
     function editVariant() {
+        let preparer = document.getElementById("sPreparerEdit").value === "null" ? "" : `,"Preparer": "${document.getElementById("sPreparerEdit").value}"`;
+        let finaliter = document.getElementById("sFinaliterEdit").value === "null" ? "" : `,"Finaliter" : "${document.getElementById("sFinaliterEdit").value}"`;
         let variant = {
             LaboratoryWorkId: $('#EditLaboratoryWork option:selected')[0].dataset.id,
             VariantNumber: $('#EditNumber').val(),
             Description: $('#EditDescription').val(),
             LinkToModel: $('#EditLink').val(),
             InputDataRuns: $('#EditInputData').val(),
-            Constraints: `{"Memory": ${document.getElementById("memInputEdit").value},"Time": ${document.getElementById("timeInputEdit").value},"Preparer": "${document.getElementById("sPreparerEdit").value}","Checker" : "${document.getElementById("sCheckerEdit").value}","Finaliter" : "${document.getElementById("sFinaliterEdit").value}"}`
+            Constraints: `{"Memory": ${document.getElementById("memInputEdit").value},"Time": ${document.getElementById("timeInputEdit").value},"Checker" : "${document.getElementById("sCheckerEdit").value}"${preparer}${finaliter}}`
 
         };
         $.ajax(
