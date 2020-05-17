@@ -9,14 +9,13 @@
 <div style="margin-bottom: 1%">
     <span>Дисциплина: </span><select onchange="DisciplineSel()" id="disciplineSelect"></select>
     <span>Группа: </span><select onchange="CreateTable()" id="groupSelect"></select>
-    <span>Лабораторная работа: </span><select onchange="CreateTable()" id="laboratoryWorkSelect"></select>
 </div>
 <div class="container">
 <table style="width: 100%" class="table table-hover" border="1">
     <thead>
-    <tr>
+    <tr id="header">
     <td>ФИО</td>
-    <td>Назначенный вариант</td>
+    </tr>
     </thead>
     <tbody id="tbodyContent">
 </table>
@@ -64,31 +63,71 @@
     
     
     function CreateTable() {
-        let data = getData();
-        let assignedVariants;
-        $.ajax(
-                    {
-                        type: 'GET',
-                        url: '/api/assignedvariants/getall',
-                        beforeSend: (xhr) => 
+        let idGroup = $('#groupSelect option:selected')[0].dataset.id;
+        let disciplineId = $('#disciplineSelect option:selected')[0].dataset.id;
+        let tbdy = document.getElementById('tbodyContent');
+        let tableHeader = document.getElementById('header');
+        tableHeader.innerHTML = "<td>ФИО</td>";
+        tbdy.innerHTML = "";
+        $.ajax({
+            type: 'GET',
+            url: '/api/users/getusersbygroup',
+            async:false,
+            beforeSend: (xhr) =>
+            {
+                xhr.setRequestHeader("groupId", idGroup);
+            },
+            success: (users) =>
+            {
+                if(users.length === 0)
+                {
+                    alert("В группе нет студентов");
+                    return;
+                }
+                for(let user of users)
+                 {
+                     let tr = document.createElement('tr');
+                     tbdy.appendChild(tr);
+                     let tdUser = document.createElement('td');
+                     tdUser.innerText = user.name + " " + user.surname + " " + user.patronymic;
+                     tdUser.dataset.id = user.id;
+                     tr.appendChild(tdUser);
+                 }
+                $.ajax(
                         {
-                            xhr.setRequestHeader("groupId", data.idGroup);
-                            xhr.setRequestHeader("laboratoryWorkId", data.idLw);
-                        },
-                        success: (aw) =>
-                        {
-                            assignedVariants = aw;
-                        },
-                        error: (awFail) =>
-                        {
-                            document.body.innerHTML = '';
-                            alert('Нет доступа');
-                            history.go(-1);
+                            type: 'GET',
+                            url: '/api/laboratoryworks/getallbydiscipline',
+                            async:false,
+                            beforeSend: (xhr) => 
+                            {
+                                xhr.setRequestHeader("disciplineCipher", disciplineId);
+                            },
+                            success: (laboratoryWorks) =>
+                            {
+                                for (let lw of laboratoryWorks)
+                                {
+                                    let tdLab = document.createElement('td');
+                                    tdLab.dataset.id = lw.laboratoryWorkId;
+                                    tdLab.innerText = lw.name;
+                                    tableHeader.append(tdLab);
+                                }
+                            },
+                            error: (groupsFail) =>
+                            {
+                                alert('Произошла ошибка');
+                            }
                         }
-                    }
-            );
+                    );
+            },
+            error: (fail) =>
+            {
+                document.body.innerHTML = '';
+                alert('Нет доступа');
+                history.go(-1);
+            }
+        });
                     
-        $.ajax(
+        /*$.ajax(
               {
                   type: 'GET',
                   url: '/api/users/getusersbygroup',
@@ -161,14 +200,10 @@
                   }
               }
           );
-          
+          */
           
     }
     
-    function getData() 
-    {
-      return { idGroup: $('#groupSelect option:selected')[0].dataset.id, idLw: $('#laboratoryWorkSelect option:selected')[0].dataset.id }
-    }
     
     function getAssignedVariantData(obj) {
         return {UserId: obj.parentNode.previousSibling.dataset.id, VariantId: obj.options[obj.options.selectedIndex].dataset.id};
@@ -207,34 +242,7 @@
             }
         );
         
-        $.ajax(
-                    {
-                        type: 'GET',
-                        url: '/api/laboratoryworks/getallbydiscipline',
-                        async:false,
-                        beforeSend: (xhr) => 
-                        {
-                            xhr.setRequestHeader("disciplineCipher", disciplineId);
-                        },
-                        success: (laboratoryWorks) =>
-                        {
-                            let sel = $('#laboratoryWorkSelect');
-                            for (let lw of laboratoryWorks)
-                            {
-                                let opt = document.createElement('option');
-                                opt.dataset.id = lw.laboratoryWorkId;
-                                opt.text = lw.name;
-                                sel.append(opt);
-                            }
-                        },
-                        error: (groupsFail) =>
-                        {
-                            document.body.innerHTML = '';
-                            alert('Нет доступа');
-                            history.go(-1);
-                        }
-                    }
-                );
+        
         }
         
         

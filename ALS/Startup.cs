@@ -270,12 +270,12 @@ namespace ALS
                 context.Solutions.Add(new Solution { IsSolved = false, IsCompile = false, SendDate = DateTime.Now.AddHours(12), AssignedVariantId = 5});
                 
                 context.Solutions.Add(new Solution { IsSolved = false, IsCompile = true, SendDate = DateTime.Now.AddHours(10), AssignedVariantId = 6});
-                context.Solutions.Add(new Solution { IsSolved = true, IsCompile = false, SendDate = DateTime.Now.AddHours(9), AssignedVariantId = 6});
+                context.Solutions.Add(new Solution { IsSolved = false, IsCompile = false, SendDate = DateTime.Now.AddHours(9), AssignedVariantId = 6});
                 context.Solutions.Add(new Solution { IsSolved = false, IsCompile = true, SendDate = DateTime.Now.AddHours(5), AssignedVariantId = 7});
-                context.Solutions.Add(new Solution { IsSolved = true, IsCompile = false, SendDate = DateTime.Now.AddHours(17), AssignedVariantId = 7});
+                context.Solutions.Add(new Solution { IsSolved = false, IsCompile = false, SendDate = DateTime.Now.AddHours(17), AssignedVariantId = 7});
                 
                 context.Solutions.Add(new Solution { IsSolved = true, IsCompile = true, SendDate = DateTime.Now.AddHours(15), AssignedVariantId = 8});
-                context.Solutions.Add(new Solution { IsSolved = true, IsCompile = false,SendDate = DateTime.Now.AddHours(6), AssignedVariantId = 9});
+                context.Solutions.Add(new Solution { IsSolved = false, IsCompile = false,SendDate = DateTime.Now.AddHours(6), AssignedVariantId = 9});
                 
                 context.SaveChanges();
             }
