@@ -1,9 +1,13 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.IO.Compression;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using ALS.CheckModule.Compare.DataStructures;
+using ALS.DTO;
 using ALS.EntityСontext;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -50,11 +54,27 @@ namespace ALS.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetResultLab(int labId, int userId) =>
-        Ok(await Task.Run(() => _db.AssignedVariants
-                .Where(av => av.Variant.LaboratoryWorkId == labId && av.UserId == userId)
-                .Select(av => new {av.Variant.VariantNumber, av.AssignDateTime, av.Solutions.FirstOrDefault(sol => sol.IsSolved).SendDate,av.Variant.LaboratoryWork.Constraints, av.Mark})));
-            
-        
+        public async Task<IActionResult> GetResultLab([FromHeader] List<int> labId, [FromHeader] List<int> userId)
+        {
+            var result = new List<List<VariantResultDTO>>();
+            for (var userIterator = 0; userIterator < userId.Count; ++userIterator)
+            {
+                var resRow = new List<VariantResultDTO>();
+                for (var labIterator = 0; labIterator < labId.Count; labIterator++)
+                {
+                    var row = await Task.Run(() => _db.AssignedVariants
+                        .Where(av => userId[userIterator] == av.UserId && labId[labIterator] == av.Variant.LaboratoryWorkId)
+                        .Select(av => new VariantResultDTO
+                        {
+                            VariantNumber = av.Variant.VariantNumber, AssignDateTime = av.AssignDateTime,
+                            SendDate = av.Solutions.FirstOrDefault(sol => sol.IsSolved).SendDate,
+                            Evaluation = av.Variant.LaboratoryWork.Evaluation, Mark = av.Mark
+                        }).FirstOrDefault());
+                    resRow.Add(row);
+                }
+                result.Add(resRow);
+            }
+            return Ok(result);
+        }
     }
 }

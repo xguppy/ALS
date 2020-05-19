@@ -111,6 +111,73 @@
                                     tdLab.innerText = lw.name;
                                     tableHeader.append(tdLab);
                                 }
+                                let rowElement = tbdy.firstChild;
+
+                                 $.ajax({
+                                    type: 'GET',
+                                    url: '/api/Results/GetResultLab',
+                                    async:false,
+                                    beforeSend: (xhr) =>
+                                    {
+                                        xhr.setRequestHeader('labId', laboratoryWorks.map((obj) => obj.laboratoryWorkId));
+                                        xhr.setRequestHeader('userId', users.map((obj) => obj.id));
+                                    },
+                                    success: (result) =>
+                                    {
+                                        let optionsTime = {
+                                            dateStyle: 'short',
+                                            timeStyle: 'short'
+                                        };
+                                                                               
+                                         for (let res of result)
+                                         {
+                                             for(let row of res)
+                                             {
+                                                 let tdResult = document.createElement('td');
+                                                 if(row == null)
+                                                  {
+                                                      tdResult.innerText = 'Вариант не назначен';
+                                                  }
+                                                 else 
+                                                 {
+                                                     let dateStr;
+                                                     if(row.sendDate == null)
+                                                     {
+                                                         dateStr = "Вариант не сдан";
+                                                     }
+                                                     else
+                                                     {
+                                                         dateStr = new Date(row.sendDate).toLocaleString('ru', optionsTime);
+                                                     }
+                                                     let evaText;
+                                                     switch (row.evaluation) {
+                                                       case 0:
+                                                           evaText = "Строго"
+                                                           break;
+                                                       case 1:
+                                                           evaText = "Не сторого"
+                                                           break;
+                                                       case 2:
+                                                            evaText = "Со штрафом"
+                                                            break;
+                                                     }
+                                                     tdResult.innerText = 'Номер варианта: ' + row.variantNumber + '\n' 
+                                                                             + 'Дата назначения: ' + new Date(row.assignDateTime).toLocaleString('ru', optionsTime)
+                                                                             + '\n' + 'Дата сдачи: ' + dateStr + 
+                                                                             '\n' + 'Оценивание: ' + evaText +
+                                                                             '\n' + 'Оценка: ' + row.mark;
+                                                 }
+                                                  
+                                                  rowElement.appendChild(tdResult);
+                                             }
+                                             rowElement = rowElement.nextSibling;
+                                         }
+                                    },
+                                    error: (fail) =>
+                                    {
+                                        alert(fail);
+                                    }
+                                 });
                             },
                             error: (groupsFail) =>
                             {
