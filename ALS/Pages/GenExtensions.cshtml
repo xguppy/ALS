@@ -1,8 +1,8 @@
 ﻿@page
-@model ALS.Pages.TemplatesModel
+@model ALS.Pages.GenExtensionsModel
 @{
     Layout = "_Layout";
-    ViewData["Title"] = "Шаблоны лабораторных работ";
+    ViewData["Title"] = "Расширение возможностей генератора";
 }
 
 <h4>@ViewData["Title"]</h4>
@@ -10,25 +10,21 @@
     <table style="width: 100%" class="table table-hover" border="1">
         <tr>
             <td>#</td>
-            <td>Тема</td>
-            <td>Имя файла</td>
-            <td>Действия</td>
+            <td>Путь до файла-расширения</td>
         </tr>
-        @foreach (var item in Model.Templates)
+        @foreach (var item in Model.Extensions)
         {
             <tr>
-                <td>@item.TemplateLaboratoryWorkId</td>
-                <td>@item.Theme.Name</td>
-                <td>@item.TemplateTask.Substring(item.TemplateTask.LastIndexOf('/') + 1)</td>
+                <td>@item.GenExtensionId</td>
+                <td>@item.Extension.Substring(item.Extension.LastIndexOf("genExtensions"))</td>
                 <td>
-                    <input type="button" id="buttonUpdate" class="btn btn-primary edit-item" value="Редактировать" onclick="updateTlw(@item.TemplateLaboratoryWorkId, @item.ThemeId, '@item.TemplateTask')" />
-                    <input type="button" id="buttonDelete" class="btn btn-danger remove-item" value="Удалить" onclick="deleteTlw(@item.TemplateLaboratoryWorkId)" />
+                    <input type="button" id="buttonUpdate" class="btn btn-primary edit-item" value="Редактировать" onclick="updateExt(@item.GenExtensionId, '@item.Extension' )" />
+                    <input type="button" id="buttonDelete" class="btn btn-danger remove-item" value="Удалить" onclick="deleteExt(@item.GenExtensionId)" />
                 </td>
             </tr>
         }
     </table>
     <input id="buttonCreate" class="btn btn-info btn-lg" type="submit" value="Создать" onclick="openModalCreate()" />
-    <a href='javascript: document.location.href = "genextensions";'>Перейти к расширениям генератора</a>
 </div>
 
 <div id="myModal" class="modal fade bd-example-modal-lg">
@@ -39,10 +35,6 @@
             </div>
             <div class="modal-body">
                 <form method="post">
-                    <p class="form-group row">
-                        <label class="col-sm-2 col-form-label font-weight-bold">Тема</label>
-                        @Html.DropDownList("ThemeId", Model.Themes, new { @class = "form-control col-sm-10", @id = "newThemeId" })
-                    </p>
                     <input id="hiddenId" name="hiddenId" value="1" hidden>
                     <input id="path" class="form-control col-sm-10" name="path" value="1" hidden>
                     <p>
@@ -61,16 +53,12 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Создание шаблона</h4><button class="close" type="button" data-dismiss="modal">×</button>
+                <h4 class="modal-title">Создание расширения</h4><button class="close" type="button" data-dismiss="modal">×</button>
             </div>
             <div class="modal-body">
                 <form method="post" enctype="multipart/form-data">
-                    <div class="form-group row">
-                        <label class="col-sm-2 col-form-label font-weight-bold">Тема</label>
-                        <select class="form-control col-sm-10" id="selectThemeId" name="themeId" asp-items="@Model.Themes"></select>
-                    </div>
                     <div id="fileselecting" class="form-group row">
-                        <label class="col-sm-2 col-form-label font-weight-bold">Файл с шаблоном</label>
+                        <label class="col-sm-2 col-form-label font-weight-bold">Файл с расширением</label>
                     </div>
                 </form>
             </div>
@@ -80,62 +68,51 @@
 </div>
 
 <script>
- 
-    function sendSolution(evt)
-    {
-            var files = evt.target.files; // FileList object
-            var dataFile = new FormData();
-            for (var i = 0; i < files.length; i++) {
-                dataFile.append('upload', files[i]);
-            }
-            var selector = document.getElementById('selectThemeId');
-            var value = selector[selector.selectedIndex].value;
+    function sendExtension(evt) {
+        var files = evt.target.files; // FileList object
+        var dataFile = new FormData();
+        for (var i = 0; i < files.length; i++) {
+            dataFile.append('upload', files[i]);
+        }
 
-            $.ajax(
-                {
-                    type: 'POST',
-                    url: '/api/TemplateLWS/Create',
-                    contentType: false,
-                    data: dataFile,
-                    processData: false,
-                    async: false,
-                    beforeSend: (xhr) =>
-                    {
-                        xhr.setRequestHeader("themeid", value);
-                    },
-                    success: (result) =>
-                    {                    
-                        document.location.reload(true);
-                    },
-                    error: (sendFail) =>
-                    {
-                        alert(sendFail.responseText);
-                    }
+        $.ajax(
+            {
+                type: 'POST',
+                url: '/api/GenExtensions/Create',
+                contentType: false,
+                data: dataFile,
+                processData: false,
+                async: false,
+                beforeSend: (xhr) => {
+                },
+                success: (result) => {
+                    document.location.reload(true);
+                },
+                error: (sendFail) => {
+                    alert(sendFail.responseText);
                 }
-            );
+            }
+        );
     }
 
     $.ajax(
         {
             type: 'GET',
-            url: '/api/TemplateLWS/CheckAuth',
-            beforeSend: (xhr) => 
-            {
+            url: '/api/GenExtensions/CheckAuth',
+            beforeSend: (xhr) => {
             },
-            success: (_) =>
-            {
+            success: (_) => {
                 let div = document.getElementById('fileselecting');
                 let buttonSend = document.createElement('input');
                 buttonSend.type = "file";
                 buttonSend.className = "files";
-                buttonSend.accept = ".*";
+                buttonSend.accept = ".lua";
                 buttonSend.multiple = false;
-                buttonSend.addEventListener('change', sendSolution, false);
+                buttonSend.addEventListener('change', sendExtension, false);
                 buttonSend.className = "btn btn-primary edit-item";
                 div.appendChild(buttonSend);
             },
-            error: (_) =>
-            {
+            error: (_) => {
                 document.body.innerHTML = '';
                 alert('Нет доступа');
                 history.go(-1);
@@ -147,13 +124,13 @@
         $('#myModalCreate').modal('show');
     }
 
-    function updateTlw(tlwId, themeid, pathFile) {
+    function updateExt(extId, pathFile) {
 
         $("#myModal").find("textarea[id='textAreaModel']").val('');
         $.ajax(
             {
                 type: 'GET',
-                url: '/api/TemplateLWS/ReadFile',
+                url: '/api/GenExtensions/ReadFile',
                 beforeSend: (xhr) => {
                     xhr.setRequestHeader('path', pathFile);
                 },
@@ -167,32 +144,23 @@
             }
         );
 
-        $("#myModal").find("input[name='hiddenId']").val(tlwId);
+        $("#myModal").find("input[name='hiddenId']").val(extId);
         $("#myModal").find("input[id='path']").val(pathFile);
-        
-        /*$('#newThemeId option:selected').each(function () {
-            this.selected = false;
-        });*/
-        $("#newThemeId").find('option').attr("selected",false) ;
-        $("#newThemeId option[value='" + themeid + "']").attr("selected", "selected");
         $('#myModal').modal('show');
     }
 
     function update() {
         let text = $("#myModal").find("textarea[id='textAreaModel']").val();
-        let twlId = $("#myModal").find("input[id='hiddenId']").val();
-        let themeId = $("#myModal").find("select[id='newThemeId']").val();
+        let extId = $("#myModal").find("input[id='hiddenId']").val();
         let path = $("#myModal").find("input[id='path']").val();
         let datas = {
-            //content: text,
-            //pathToFile : path
             Item1: path,
-            Item2 : text
+            Item2: text
         }
         $.ajax(
             {
                 type: 'POST',
-                url: '/api/TemplateLWS/WriteFile',
+                url: '/api/GenExtensions/WriteFile',
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 data: JSON.stringify(datas),
@@ -202,36 +170,34 @@
                     //document.location.reload(true);
                 },
                 error: (response) => {
-                    console.log(response);
+                    console.log(response.responseText);
                     alert('Не удалось обновить шаблон');
                 }
             }
         );
 
-        let tdto = {
-            TemplateTask: path,
-            ThemeId: themeId,
+        let extDTO = {
+            Item1: extId,
+            Item2: path
         };
         $.ajax(
             {
                 type: 'POST',
-                url: '/api/TemplateLWS/Update',
+                url: '/api/GenExtensions/Update',
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
-                data: JSON.stringify(tdto),
+                data: JSON.stringify(extDTO),
                 beforeSend: (xhr) => {
-                    //xhr.setRequestHeader("groupId", $('#EditGroupId').val());
-                    xhr.setRequestHeader("templateId", twlId);
                 },
                 success: (d) => {
                     document.location.reload(true);
                 },
                 error: (response) => {
-                    console.log(response);
+                    console.log(response.responseText);
                     alert('Не удалось обновить шаблон');
                 }
             }
-        );   
+        );
 
     }
 
@@ -240,15 +206,15 @@
             $.ajax(
                 {
                     type: 'POST',
-                    url: '/api/TemplateLWS/Delete',
+                    url: '/api/GenExtensions/Delete',
                     beforeSend: (xhr) => {
-                        xhr.setRequestHeader('templateId', data);
+                        xhr.setRequestHeader('extId', data);
                     },
                     success: (t) => {
-                        document.location.reload(true);          
+                        document.location.reload(true);
                     },
                     error: (response) => {
-                        alert('Удаление невозможно! Данный шаблон еще связан с лабораторными работами');
+                        alert('Удаление невозможно!');
                     }
                 }
             );

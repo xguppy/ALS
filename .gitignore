@@ -31,6 +31,7 @@ bld/
 [Oo]bj/
 [Ll]og/
 [Uu]ploads/
+[Gg]enExtensions/
 
 # Diagram
 Diagram/**

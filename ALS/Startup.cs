@@ -124,7 +124,7 @@ namespace ALS
         /// </summary>
         void CreateNeedDirectory()
         {
-            var necessaryDirectories = new[] {"sourceCodeUser", "uploads", "sourceCodeModel", "executeUser", "executeModel", "tmp", "modelTestingFiled"  };
+            var necessaryDirectories = new[] {"sourceCodeUser", "genExtensions", "uploads", "sourceCodeModel", "executeUser", "executeModel", "tmp", "modelTestingFiled"  };
             foreach (var item in necessaryDirectories)
             {
                 if (!Directory.Exists(item))

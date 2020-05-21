@@ -13,6 +13,7 @@ namespace ALS.EntityСontext
         public DbSet<Variant> Variants { get; set; }
         public DbSet<AntiplagiatData> AntiplagiatDatas { get; set; }
         public DbSet<TemplateLaboratoryWork> TemplateLaboratoryWorks { get; set; }
+        public DbSet<GenExtension> GenExtensions { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }

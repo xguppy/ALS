@@ -26,7 +26,7 @@ namespace Generator.MainGen.StdGenFunc
                 s[0] = ' ';
                 s[s.Length - 1] = ' ';
             }
-            s = s.Replace("io", "Вы не можете использовать stdin/stdout");
+            //s = s.Replace("io", "Вы не можете использовать stdin/stdout");
             string res = _lua.DoString(s.ToString())[0].ToString();
             return res;
         }
