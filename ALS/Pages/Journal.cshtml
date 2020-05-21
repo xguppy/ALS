@@ -9,14 +9,13 @@
 <div style="margin-bottom: 1%">
     <span>Дисциплина: </span><select onchange="DisciplineSel()" id="disciplineSelect"></select>
     <span>Группа: </span><select onchange="CreateTable()" id="groupSelect"></select>
-    <span>Лабораторная работа: </span><select onchange="CreateTable()" id="laboratoryWorkSelect"></select>
 </div>
 <div class="container">
 <table style="width: 100%" class="table table-hover" border="1">
     <thead>
-    <tr>
+    <tr id="header">
     <td>ФИО</td>
-    <td>Назначенный вариант</td>
+    </tr>
     </thead>
     <tbody id="tbodyContent">
 </table>
@@ -64,31 +63,138 @@
     
     
     function CreateTable() {
-        let data = getData();
-        let assignedVariants;
-        $.ajax(
-                    {
-                        type: 'GET',
-                        url: '/api/assignedvariants/getall',
-                        beforeSend: (xhr) => 
+        let idGroup = $('#groupSelect option:selected')[0].dataset.id;
+        let disciplineId = $('#disciplineSelect option:selected')[0].dataset.id;
+        let tbdy = document.getElementById('tbodyContent');
+        let tableHeader = document.getElementById('header');
+        tableHeader.innerHTML = "<td>ФИО</td>";
+        tbdy.innerHTML = "";
+        $.ajax({
+            type: 'GET',
+            url: '/api/users/getusersbygroup',
+            async:false,
+            beforeSend: (xhr) =>
+            {
+                xhr.setRequestHeader("groupId", idGroup);
+            },
+            success: (users) =>
+            {
+                if(users.length === 0)
+                {
+                    alert("В группе нет студентов");
+                    return;
+                }
+                for(let user of users)
+                 {
+                     let tr = document.createElement('tr');
+                     tbdy.appendChild(tr);
+                     let tdUser = document.createElement('td');
+                     tdUser.innerText = user.name + " " + user.surname + " " + user.patronymic;
+                     tdUser.dataset.id = user.id;
+                     tr.appendChild(tdUser);
+                 }
+                $.ajax(
                         {
-                            xhr.setRequestHeader("groupId", data.idGroup);
-                            xhr.setRequestHeader("laboratoryWorkId", data.idLw);
-                        },
-                        success: (aw) =>
-                        {
-                            assignedVariants = aw;
-                        },
-                        error: (awFail) =>
-                        {
-                            document.body.innerHTML = '';
-                            alert('Нет доступа');
-                            history.go(-1);
+                            type: 'GET',
+                            url: '/api/laboratoryworks/getallbydiscipline',
+                            async:false,
+                            beforeSend: (xhr) => 
+                            {
+                                xhr.setRequestHeader("disciplineCipher", disciplineId);
+                            },
+                            success: (laboratoryWorks) =>
+                            {
+                                for (let lw of laboratoryWorks)
+                                {
+                                    let tdLab = document.createElement('td');
+                                    tdLab.dataset.id = lw.laboratoryWorkId;
+                                    tdLab.innerText = lw.name;
+                                    tableHeader.append(tdLab);
+                                }
+                                let rowElement = tbdy.firstChild;
+
+                                 $.ajax({
+                                    type: 'GET',
+                                    url: '/api/Results/GetResultLab',
+                                    async:false,
+                                    beforeSend: (xhr) =>
+                                    {
+                                        xhr.setRequestHeader('labId', laboratoryWorks.map((obj) => obj.laboratoryWorkId));
+                                        xhr.setRequestHeader('userId', users.map((obj) => obj.id));
+                                    },
+                                    success: (result) =>
+                                    {
+                                        let optionsTime = {
+                                            dateStyle: 'short',
+                                            timeStyle: 'short'
+                                        };
+                                                                               
+                                         for (let res of result)
+                                         {
+                                             for(let row of res)
+                                             {
+                                                 let tdResult = document.createElement('td');
+                                                 if(row == null)
+                                                  {
+                                                      tdResult.innerText = 'Вариант не назначен';
+                                                  }
+                                                 else 
+                                                 {
+                                                     let dateStr;
+                                                     if(row.sendDate == null)
+                                                     {
+                                                         dateStr = "Вариант не сдан";
+                                                     }
+                                                     else
+                                                     {
+                                                         dateStr = new Date(row.sendDate).toLocaleString('ru', optionsTime);
+                                                     }
+                                                     let evaText;
+                                                     switch (row.evaluation) {
+                                                       case 0:
+                                                           evaText = "Строго"
+                                                           break;
+                                                       case 1:
+                                                           evaText = "Не сторого"
+                                                           break;
+                                                       case 2:
+                                                            evaText = "Со штрафом"
+                                                            break;
+                                                     }
+                                                     tdResult.innerText = 'Номер варианта: ' + row.variantNumber + '\n' 
+                                                                             + 'Дата назначения: ' + new Date(row.assignDateTime).toLocaleString('ru', optionsTime)
+                                                                             + '\n' + 'Дата сдачи: ' + dateStr + 
+                                                                             '\n' + 'Оценивание: ' + evaText +
+                                                                             '\n' + 'Оценка: ' + row.mark;
+                                                 }
+                                                  
+                                                  rowElement.appendChild(tdResult);
+                                             }
+                                             rowElement = rowElement.nextSibling;
+                                         }
+                                    },
+                                    error: (fail) =>
+                                    {
+                                        alert(fail);
+                                    }
+                                 });
+                            },
+                            error: (groupsFail) =>
+                            {
+                                alert('Произошла ошибка');
+                            }
                         }
-                    }
-            );
+                    );
+            },
+            error: (fail) =>
+            {
+                document.body.innerHTML = '';
+                alert('Нет доступа');
+                history.go(-1);
+            }
+        });
                     
-        $.ajax(
+        /*$.ajax(
               {
                   type: 'GET',
                   url: '/api/users/getusersbygroup',
@@ -161,14 +267,10 @@
                   }
               }
           );
-          
+          */
           
     }
     
-    function getData() 
-    {
-      return { idGroup: $('#groupSelect option:selected')[0].dataset.id, idLw: $('#laboratoryWorkSelect option:selected')[0].dataset.id }
-    }
     
     function getAssignedVariantData(obj) {
         return {UserId: obj.parentNode.previousSibling.dataset.id, VariantId: obj.options[obj.options.selectedIndex].dataset.id};
@@ -207,34 +309,7 @@
             }
         );
         
-        $.ajax(
-                    {
-                        type: 'GET',
-                        url: '/api/laboratoryworks/getallbydiscipline',
-                        async:false,
-                        beforeSend: (xhr) => 
-                        {
-                            xhr.setRequestHeader("disciplineCipher", disciplineId);
-                        },
-                        success: (laboratoryWorks) =>
-                        {
-                            let sel = $('#laboratoryWorkSelect');
-                            for (let lw of laboratoryWorks)
-                            {
-                                let opt = document.createElement('option');
-                                opt.dataset.id = lw.laboratoryWorkId;
-                                opt.text = lw.name;
-                                sel.append(opt);
-                            }
-                        },
-                        error: (groupsFail) =>
-                        {
-                            document.body.innerHTML = '';
-                            alert('Нет доступа');
-                            history.go(-1);
-                        }
-                    }
-                );
+        
         }
         
         

@@ -47,7 +47,6 @@ namespace ALS
             services.AddDistributedMemoryCache();
             services.AddSession();
             services.AddHttpClient();
-            //services.AddScoped<IParser, Parser>();
             services
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(cfg =>
@@ -227,7 +226,7 @@ namespace ALS
             {
                 //context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 9, ThemeId = 2, Name = "lr1", Description = "lr1_description", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
                 context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 9, ThemeId = 1, Name = "ЛР1 - работа с числами", Description = "Вывести четные элементы", Constraints = "{\"Memory\": 4096000,\"Time\": 60000,\"Checker\" : \"AbsoluteChecker\"}", DisciplineCipher = "pr1", Evaluation=Evaluation.Strict});
-                context.LaboratoryWorks.Add(new LaboratoryWork { TemplateLaboratoryWorkId = 1, UserId = 9, ThemeId = 2, Name = "ЛР2 - работа с условными операторами", Description = "сделайте что-нибудь с выражениями", Constraints = "{\"Memory\": 4096000,\"Time\": 60000,\"Preparer\": \"null\",\"Checker\" : \"AbsoluteChecker\",\"Finaliter\" : \"null\"}", DisciplineCipher = "pr1", Evaluation = Evaluation.Strict });
+                context.LaboratoryWorks.Add(new LaboratoryWork { TemplateLaboratoryWorkId = 1, UserId = 9, ThemeId = 2, Name = "ЛР2 - работа с условными операторами", Description = "сделайте что-нибудь с выражениями", Constraints = "{\"Memory\": 4096000,\"Time\": 60000,\"Checker\" : \"AbsoluteChecker\"}", DisciplineCipher = "pr1", Evaluation = Evaluation.Strict });
                 //context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 2, ThemeId = 1, Name = "lr1", Description = "lr1_description", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
                 //context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 2, ThemeId = 1, Name = "lr2", Description = "Вывести четные элементы", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
                 //context.LaboratoryWorks.Add(new LaboratoryWork { TemplateLaboratoryWorkId = 3, UserId = 2, ThemeId = 2, Name = "lr3", Description = "descrition", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1" });
@@ -271,12 +270,12 @@ namespace ALS
                 context.Solutions.Add(new Solution { IsSolved = false, IsCompile = false, SendDate = DateTime.Now.AddHours(12), AssignedVariantId = 5});
                 
                 context.Solutions.Add(new Solution { IsSolved = false, IsCompile = true, SendDate = DateTime.Now.AddHours(10), AssignedVariantId = 6});
-                context.Solutions.Add(new Solution { IsSolved = true, IsCompile = false, SendDate = DateTime.Now.AddHours(9), AssignedVariantId = 6});
+                context.Solutions.Add(new Solution { IsSolved = false, IsCompile = false, SendDate = DateTime.Now.AddHours(9), AssignedVariantId = 6});
                 context.Solutions.Add(new Solution { IsSolved = false, IsCompile = true, SendDate = DateTime.Now.AddHours(5), AssignedVariantId = 7});
-                context.Solutions.Add(new Solution { IsSolved = true, IsCompile = false, SendDate = DateTime.Now.AddHours(17), AssignedVariantId = 7});
+                context.Solutions.Add(new Solution { IsSolved = false, IsCompile = false, SendDate = DateTime.Now.AddHours(17), AssignedVariantId = 7});
                 
                 context.Solutions.Add(new Solution { IsSolved = true, IsCompile = true, SendDate = DateTime.Now.AddHours(15), AssignedVariantId = 8});
-                context.Solutions.Add(new Solution { IsSolved = true, IsCompile = false,SendDate = DateTime.Now.AddHours(6), AssignedVariantId = 9});
+                context.Solutions.Add(new Solution { IsSolved = false, IsCompile = false,SendDate = DateTime.Now.AddHours(6), AssignedVariantId = 9});
                 
                 context.SaveChanges();
             }
