@@ -3,7 +3,6 @@ using Generator.MainGen.Parametr;
 using Generator.Parsing;
 using Newtonsoft.Json;
 using Generator.MainGen.StdGenFunc;
-using System.Linq;
 
 namespace Generator.MainGen
 {
@@ -14,6 +13,8 @@ namespace Generator.MainGen
         public GenFunctions()
         {
             _f.Add(FuncsEnum.rnd, new Rnd());
+            _f.Add(FuncsEnum.rndInt, new RndInt());
+            _f.Add(FuncsEnum.rndDouble, new RndDouble());
             _f.Add(FuncsEnum.genAE, new GenExpr());
             _f.Add(FuncsEnum.lua, new LuaFunc());
             _f.Add(FuncsEnum.parent, new ParentChecker());

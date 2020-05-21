@@ -15,7 +15,7 @@ namespace Generator.MainGen.StdGenFunc
             string moduleName = param.FunctionName.Substring(0, pos);
             string funcName = param.FunctionName.Substring(pos+1, param.FunctionName.Length-pos-1);
             StringBuilder funcArgs = new StringBuilder();
-            for (int i = pos == -1 ? 2 : 0; i < args.Length; i++) funcArgs.Append($",{args[i]}");funcArgs[0] = ' ';
+            for (int i = pos == -1 ? 2 : 0; i < args.Count; i++) funcArgs.Append($",{args[i]}");funcArgs[0] = ' ';
             string cmd = $"#lua(\"local lib = require('{moduleName}');return lib.{funcName}({funcArgs.ToString()});\")";
             return base.Run(new Param(cmd, default, default));
         }

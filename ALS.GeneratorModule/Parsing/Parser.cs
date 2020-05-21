@@ -95,7 +95,7 @@ namespace Generator.Parsing
 
         public (string, string) GetQuotedValues(string s, char bracketS, char bracketE)
         {
-            string key = default, value = default;
+            string key = default, value = s;
             var start = s.IndexOf(bracketS);
             if (start >= 0)
             {
@@ -106,7 +106,7 @@ namespace Generator.Parsing
                 //return s.Substring(st + 1, end - st-1).Trim();
             }
 
-            return (key, value);
+            return (key, value.Trim('\n', ' '));
         }
 
         public int FindStringEnd(StringBuilder s, int pos, char separator)

@@ -12,10 +12,10 @@ namespace Generator.MainGen.StdGenFunc
 
         // использование анализатора для получение
         // списка аргументов функции 
-        protected string[] GetArgs(string str)
+        protected List<string> GetArgs(string str)
         {
             var args = _pr.GetSeparatedArgs(str);
-            return args.Select(arg => arg.Trim(' ', '\n', '\r')).ToArray();
+            return args.Select(arg => arg.Trim(' ', '\n', '\r')).ToList();
         }
         // хеширование имени функции для более удобного вызова нужной функции
         public static int GetHashOfFunc(string name)

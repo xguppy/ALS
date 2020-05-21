@@ -62,7 +62,7 @@ namespace Generator.MainGen.Parametr
             {
                 string raw = default;
                 bool isValueGot = false;
-                for (int i = 0; i < d.Data.Count&& !isValueGot; i++)
+                for (int i = 0; i < d.Data.Count && !isValueGot; i++)
                 {
                     var item = d.Data[i];
                     var p = _pr.GetAssociativeValues(item);

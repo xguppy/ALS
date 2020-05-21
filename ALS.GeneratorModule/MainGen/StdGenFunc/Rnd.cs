@@ -8,7 +8,6 @@ namespace Generator.MainGen.StdGenFunc
     public class Rnd : AFunc
     {
         private Random _random = new Random();
-        private string _rawstr = string.Empty;
         private string GenValue(string a, string b, string type, Random r, string count = "1")
         {
             string str;
@@ -26,14 +25,11 @@ namespace Generator.MainGen.StdGenFunc
             return str;
         }
 
-        public override string Run(Param param)
+        protected string Next(List<string> args, string rawstr)
         {
-            _rawstr = param.RawData;
-            var args = GetArgs(param.RawData);
+            if (args.Count < 3) throw new Exception($"Функция #{FuncsEnum.rnd} принимает 3(4) параметра ( минимум | максимум | тип (| количество) )| строка = [ {rawstr} ]");
 
-            if (args.Length < 3) throw new Exception($"Функция #{FuncsEnum.rnd} принимает 3(4) параметра ( минимум | максимум | тип (| количество) )| строка = [ {param} ]");
-
-            string res, count = args.Length == 4 ? args[3] : "1";
+            string res, count = args.Count == 4 ? args[3] : "1";
 
             try
             {
@@ -41,10 +37,16 @@ namespace Generator.MainGen.StdGenFunc
             }
             catch (Exception e)
             {
-                throw new Exception($"Функция #{FuncsEnum.rnd} не может конвертировать значения, убедитесь что значения имееют формат [double = 0.0] для [int = 0] | строка = [ {param} ] | error = {e.Message} ");
+                throw new Exception($"Функция #{FuncsEnum.rnd} не может конвертировать значения, убедитесь что значения имееют формат [double = 0.0] для [int = 0] | строка = [ {rawstr} ] | error = {e.Message} ");
             }
 
             return res;
+        }
+
+        public override string Run(Param param)
+        {
+            var args = GetArgs(param.RawData);
+            return Next(args, param.RawData);
         }
     }
 }
