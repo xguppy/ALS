@@ -84,27 +84,29 @@
   }
   
   function RemoveChecker(nameChecker) {
-    $.ajax(
-                 {
-                    type: 'POST',
-                    url: '/api/finaliter/Delete',
-                    beforeSend: (xhr) => 
-                    {
-                        $('#loader').get()[0].innerHtml = "<b>Идёт процесс удаления</b>";
-                        xhr.setRequestHeader("nameComponent", nameChecker);
-                    },
-                    success: (textChecker) =>
-                    {
-                        $('#loader').get()[0].innerHtml = "";
-                        CreateTable();
-                        alert(textChecker);
-                    },
-                    error: (checkerFail) =>
-                    {
-                        alert(checkerFail.responseText);
-                    }
-                 }
-             );
+        if (confirm("Вы точно хотите удалить этот завершитель?")) {
+            $.ajax(
+                         {
+                            type: 'POST',
+                            url: '/api/finaliter/Delete',
+                            beforeSend: (xhr) => 
+                            {
+                                $('#loader').get()[0].innerHtml = "<b>Идёт процесс удаления</b>";
+                                xhr.setRequestHeader("nameComponent", nameChecker);
+                            },
+                            success: (textChecker) =>
+                            {
+                                $('#loader').get()[0].innerHtml = "";
+                                CreateTable();
+                                alert(textChecker);
+                            },
+                            error: (checkerFail) =>
+                            {
+                                alert(checkerFail.responseText);
+                            }
+                         }
+                     );
+            }
   }
   
   function sendSolution(evt)
