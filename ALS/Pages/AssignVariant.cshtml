@@ -286,6 +286,7 @@
                 success: (groups) =>
                 {
                     let sel = $('#groupSelect');
+                    sel.empty();
                     for (let group of groups)
                     {
                         let opt = document.createElement('option');
@@ -316,6 +317,7 @@
                         success: (laboratoryWorks) =>
                         {
                             let sel = $('#laboratoryWorkSelect');
+                            sel.empty();
                             for (let lw of laboratoryWorks)
                             {
                                 let opt = document.createElement('option');

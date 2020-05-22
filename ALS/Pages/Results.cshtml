@@ -7,9 +7,10 @@
 }
 <h3>Результаты </h3>
 <div style="margin-bottom: 1%">
-    <span>Дисциплина: </span><select onchange="DisciplineSel()" id="disciplineSelect"></select>
-    <span>Группа: </span><select onchange="CreateTable()" id="groupSelect"></select>
-    <span>Лабораторная работа: </span><select onchange="CreateTable()" id="laboratoryWorkSelect"></select>
+    <span>Дисциплина: </span><select onchange="getComboBoxData()" id="disciplineSelect"></select>
+    <span>Лабораторная работа: </span><select onchange="CreateTable()" id="laboratoryWorkSelect"></select> <br/>
+    <span>Группа: </span><select onchange="GroupComboUpdate()" id="groupSelect"></select>
+    <span>Студент: </span><select onchange="CreateTable()" id="studentSelect"></select>
 </div>
 <div class="container">
 <table style="width: 100%" class="table table-hover" border="1">
@@ -58,12 +59,9 @@
     getComboBoxData();
     CreateTable();
     
-    function DisciplineSel() {
-      getComboBoxData();
-    }
-    
     
     function CreateTable() {
+        //TODO:Rework Create Table And Add Function For TestRunsTable
         let data = getData();
         let assignedVariants;
         $.ajax(
@@ -189,6 +187,7 @@
                 success: (groups) =>
                 {
                     let sel = $('#groupSelect');
+                    sel.empty();
                     for (let group of groups)
                     {
                         let opt = document.createElement('option');
@@ -219,6 +218,7 @@
                         success: (laboratoryWorks) =>
                         {
                             let sel = $('#laboratoryWorkSelect');
+                            sel.empty();
                             for (let lw of laboratoryWorks)
                             {
                                 let opt = document.createElement('option');
@@ -227,7 +227,7 @@
                                 sel.append(opt);
                             }
                         },
-                        error: (groupsFail) =>
+                        error: (labFail) =>
                         {
                             document.body.innerHTML = '';
                             alert('Нет доступа');
@@ -235,7 +235,46 @@
                         }
                     }
                 );
+                StudentsComboBox();
+        
+        }
+        function StudentsComboBox() {
+          $.ajax(
+                          {
+                              type: 'GET',
+                              url: '/api/users/GetUsersByGroup',
+                              async:false,
+                              beforeSend: (xhr) => 
+                              {
+                                  let groupId = $('#groupSelect option:selected')[0].dataset.id;
+                                  xhr.setRequestHeader("groupId", groupId);
+                              },
+                              success: (users) =>
+                              {
+                                  
+                                  let sel = $('#studentSelect');
+                                  sel.empty();
+                                  for (let user of users)
+                                  {
+                                      let opt = document.createElement('option');
+                                      opt.dataset.id = user.id;
+                                      opt.text = user.name + " " + user.surname + " " + user.patronymic;
+                                      sel.append(opt);
+                                  }
+                              },
+                              error: (user) =>
+                              {
+                                  document.body.innerHTML = '';
+                                  alert('Нет доступа');
+                                  history.go(-1);
+                              }
+                          }
+                      );
         }
         
+        function GroupComboUpdate() {
+          StudentsComboBox();
+          CreateTable();
+        }
         
 </script>

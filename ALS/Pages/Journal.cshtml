@@ -7,7 +7,7 @@
 }
 <h3>Журнал </h3>
 <div style="margin-bottom: 1%">
-    <span>Дисциплина: </span><select onchange="DisciplineSel()" id="disciplineSelect"></select>
+    <span>Дисциплина: </span><select onchange="getComboBoxData()" id="disciplineSelect"></select>
     <span>Группа: </span><select onchange="CreateTable()" id="groupSelect"></select>
 </div>
 <div class="container">
@@ -57,9 +57,6 @@
     getComboBoxData();
     CreateTable();
     
-    function DisciplineSel() {
-      getComboBoxData();
-    }
     
     
     function CreateTable() {
@@ -193,81 +190,6 @@
                 history.go(-1);
             }
         });
-                    
-        /*$.ajax(
-              {
-                  type: 'GET',
-                  url: '/api/users/getusersbygroup',
-                  beforeSend: (xhr) => 
-                  {
-                      xhr.setRequestHeader("groupId", data.idGroup);
-                  },
-                  success: (users) =>
-                  {
-                      $.ajax(
-                            {
-                                type: 'GET',
-                                url: '/api/variants/getallbylaboratoryid',
-                                beforeSend: (xhr) => 
-                                {
-                                    xhr.setRequestHeader("laboratoryWorkId", data.idLw);
-                                },
-                                success: (variants) =>
-                                {
-                                    let tbdy = document.getElementById('tbodyContent');
-                                    tbdy.innerHTML = ""; //Удалим все дочерние узлы
-                                    if(variants.length === 0)
-                                    {
-                                        alert("У вас нет вариантов к этой лабораторной работе");
-                                        return;
-                                    }
-                                    for (let user of users)
-                                    {
-                                        let tr = document.createElement('tr');
-                                        tbdy.appendChild(tr);
-                                        let tdUser = document.createElement('td');
-                                        tr.appendChild(tdUser);
-                                        tdUser.appendChild(document.createTextNode(user.name + " " + user.surname + " " + user.patronymic));
-                                        tdUser.dataset.id = user.id;
-                                        let tdVar = document.createElement('td');
-                                        tr.appendChild(tdVar);
-                                        let select;
-                                        let isAssigned = false;
-                                        for (let variant of variants)
-                                        {
-                                           let find = assignedVariants.find(x => x.variantId === variant.variantId && x.userId === user.id);
-                                           select = variant.variantNumber;
-                                           tr.dataset.id = variant.variantId;
-                                           if(find !== undefined)
-                                           {
-                                               isAssigned = true;
-                                           }
-                                        }
-                                        if(variants.length !== 0 && isAssigned === false)
-                                        {
-                                            select = "Не назначено";
-                                        }
-                                        tdVar.innerText = select;
-                                    }
-                                },
-                                error: (groupsFail) =>
-                                {
-                                    document.body.innerHTML = '';
-                                    alert('Нет доступа');
-                                    history.go(-1);
-                                }
-                            }
-                        );
-                  },
-                  error: (groupsFail) =>
-                  {
-                      document.body.innerHTML = '';
-                      alert('Нет доступа');
-                      history.go(-1);
-                  }
-              }
-          );
-          */
           
     }
     
@@ -291,6 +213,7 @@
                 success: (groups) =>
                 {
                     let sel = $('#groupSelect');
+                    sel.empty();
                     for (let group of groups)
                     {
                         let opt = document.createElement('option');
