@@ -8,6 +8,6 @@ namespace ALS.Extensions
         [ThreadStatic] private static Random _local;
 
         public static Random ThisThreadsRandom => 
-            _local ?? (_local = new Random(unchecked(Environment.TickCount * 31 + Thread.CurrentThread.ManagedThreadId)));
+            _local ??= new Random(unchecked(Environment.TickCount * 31 + Thread.CurrentThread.ManagedThreadId));
     }
 }
