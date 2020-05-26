@@ -83,7 +83,7 @@ namespace ALS.CheckModule.Compare
         public string GetPathToFile(string fileName)
             => Path.Combine(GetPathToSource(), fileName);
 
-            private async Task<string> GetText(string fileName)
+        private async Task<string> GetText(string fileName)
         {
             using var fileStreamReader = new StreamReader(GetPathToFile(fileName));
             var sourceCode = await fileStreamReader.ReadToEndAsync();
