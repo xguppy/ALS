@@ -70,16 +70,18 @@ namespace ALS.Controllers
                     //Скомпилируем программу пользователя
                     var compiler = new ProcessCompiler(solutionDirectory, programFileUser);
                     var isCompile = await compiler.Execute(10000);
-
+                    var extractUserDirectory = new DirectoryInfo(programFileUser).Parent.FullName;
                     //Если не скомпилировалась заносим, то в последнее решение добавим информацию что программа пользователя не была скомпилированна
                     if (isCompile != true)
                     {
                         solution.IsCompile = false;
                         solution.IsSolved = false;
                         await _db.Solutions.AddAsync(solution);
-                        Directory.Delete(moveModelProgram, true);
+                        DeleteProgramsDirectories(extractUserDirectory, moveModelProgram);
                         await _db.SaveChangesAsync();
-                        return BadRequest(compiler.CompileState);
+                        var result = compiler.CompileState;
+                        //Удалим показанный путь программы
+                        return BadRequest(result.Replace(solutionDirectory, null));
                     }
                     
                     //Прогоним по тестам
@@ -118,10 +120,8 @@ namespace ALS.Controllers
                     }
                     finally
                     {
-                        //В любом случае удалим директорию пользователя с исполняемым файлом
-                        Directory.Delete(new DirectoryInfo(programFileUser).Parent.FullName, true);
-                        //и директорию с моделью
-                        Directory.Delete(moveModelProgram, true);
+                        //В любом случае удалим директорию пользователя с исполняемым файлом и директорию с моделью
+                        DeleteProgramsDirectories(extractUserDirectory, moveModelProgram);
                     }
 
                     //Сохраним сейчас чтобы добавить тестовые прогоны в БД
@@ -196,7 +196,15 @@ namespace ALS.Controllers
 
             return Path.Combine(taskDirectory, $"{ProcessCompiler.CreatePath(lwId, variantId)}.exe");
         }
-        
+
+        private static void DeleteProgramsDirectories(params string[] directories)
+        {
+            foreach (var item in directories)
+            {
+                Directory.Delete(item, true);
+            }
+        }
+
         private static async Task SaveSources(string directorySave, IFormFileCollection sources)
         {
             //Сохраним все файлы в директорию пользовательского решения
