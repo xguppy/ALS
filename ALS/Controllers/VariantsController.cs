@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace ALS.Controllers
 {
@@ -109,7 +110,7 @@ namespace ALS.Controllers
                 catch (Exception ex)
                 {
                     // пишем ошибку генератора
-                    await Response.WriteAsync(ex.Message);
+                    //await Response.WriteAsync(ex.Message);
                     // выходим
                     return BadRequest(ex.Message);
                 }

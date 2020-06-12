@@ -335,12 +335,15 @@
                 data: JSON.stringify(variant),
                 beforeSend: (xhr) => {
                 },
-                success: (g) => {
+                success: (response) => {
                     document.location.reload(true);
                 },
-                error: (response) => {
-                    console.log(response.responseText);
-                    alert('Не удалось добавить вариант');
+                error: (request) => {
+                    console.log(request.responseText);
+                    let err = 'Не удалось добавить вариант';
+                    if (request.responseText != undefined)
+                        err += `: ${request.responseText}`;
+                    alert(err);
                 }
             }
         );
