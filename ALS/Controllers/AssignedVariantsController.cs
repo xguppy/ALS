@@ -39,6 +39,11 @@ namespace ALS.Controllers
                     .Contains(aw.UserId)).Select(aw => new {Id = aw.AssignedVariantId,UserId = aw.UserId, VariantId = aw.VariantId}).ToList()));
 
         [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin, Teacher")]
+        public async Task<IActionResult> Get([FromHeader] int userId, [FromHeader] int laboratoryWorkId)
+            => Ok(await Task.Run(() => _db.AssignedVariants.Where(aw => aw.UserId == userId && aw.Variant.LaboratoryWorkId == laboratoryWorkId)));
+        
+        [HttpGet]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Student")]
         public async Task<IActionResult> GetWorkVariants([FromHeader] string disciplineId)
         {

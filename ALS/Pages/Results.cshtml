@@ -63,19 +63,19 @@
     function CreateTable() {
         //TODO:Rework Create Table And Add Function For TestRunsTable
         let data = getData();
-        let assignedVariants;
+        let assignedVariant;
         $.ajax(
                     {
                         type: 'GET',
                         url: '/api/assignedvariants/getall',
                         beforeSend: (xhr) => 
                         {
-                            xhr.setRequestHeader("groupId", data.idGroup);
+                            xhr.setRequestHeader("userId", data.idStudent);
                             xhr.setRequestHeader("laboratoryWorkId", data.idLw);
                         },
                         success: (aw) =>
                         {
-                            assignedVariants = aw;
+                            assignedVariant = aw;
                         },
                         error: (awFail) =>
                         {
@@ -165,7 +165,7 @@
     
     function getData() 
     {
-      return { idGroup: $('#groupSelect option:selected')[0].dataset.id, idLw: $('#laboratoryWorkSelect option:selected')[0].dataset.id }
+      return { idStudent: $('#studentSelect option:selected')[0].dataset.id, idLw: $('#laboratoryWorkSelect option:selected')[0].dataset.id, }
     }
     
     function getAssignedVariantData(obj) {
