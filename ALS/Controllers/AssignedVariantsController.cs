@@ -41,7 +41,7 @@ namespace ALS.Controllers
         [HttpGet]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin, Teacher")]
         public async Task<IActionResult> Get([FromHeader] int userId, [FromHeader] int laboratoryWorkId)
-            => Ok(await Task.Run(() => _db.AssignedVariants.Where(aw => aw.UserId == userId && aw.Variant.LaboratoryWorkId == laboratoryWorkId)));
+            => Ok(await Task.Run(() => _db.AssignedVariants.FirstOrDefault(aw => aw.UserId == userId && aw.Variant.LaboratoryWorkId == laboratoryWorkId)));
         
         [HttpGet]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Student")]
@@ -108,6 +108,10 @@ namespace ALS.Controllers
             {
                 try
                 {
+                    foreach (var item in _db.Solutions.Where(sol => sol.AssignedVariantId == assignedVariantId))
+                    {
+                        await new SolutionsController(_db).Delete(item.SolutionId);
+                    }
                     _db.AssignedVariants.Remove(assignedVariant);
                     await _db.SaveChangesAsync();
                 }

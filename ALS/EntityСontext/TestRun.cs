@@ -8,6 +8,8 @@ namespace ALS.EntityСontext
         public int TestRunId { get; set; }
         public int SolutionId { get; set; }
         [Required]
+        public string Name { get; set; }
+        [Required]
         public string[] InputData { get; set; }
         [Required]
         public string[] OutputData { get; set; }

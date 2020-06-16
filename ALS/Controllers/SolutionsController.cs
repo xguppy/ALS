@@ -1,6 +1,6 @@
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using ALS.DTO;
 using ALS.EntityСontext;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -35,18 +35,11 @@ namespace ALS.Controllers
         }
         
         [HttpGet]
-        public async Task<IActionResult> GetByUser(int varId, int userId)
-        {
-            if (await _db.Variants.Where(w => w.VariantId == varId).FirstOrDefaultAsync() != null && await _db.Users.Where(u => u.Id == userId).FirstOrDefaultAsync() != null)
-            {
-                return Ok(await Task.Run(() => _db.Solutions.Include(sol => sol.AssignedVariant).Where(sol => sol.AssignedVariant.VariantId == varId && sol.AssignedVariant.UserId == userId).Select(v => new { v.SendDate, v.IsCompile, v.SourceCode, v.IsSolved  }).ToList()));
-            }
+        public async Task<IActionResult> GetByUser([FromHeader] int assignedVariantId)
+            => Ok(await Task.Run(() => _db.Solutions.Where(sol => sol.AssignedVariantId == assignedVariantId).Select(v => new {v.SolutionId, v.SendDate, v.IsCompile, v.IsSolved  })));
 
-            return BadRequest("Not Privilege");
-        }
-        
         [HttpGet]
-        public async Task<IActionResult> Get(int solutionId)
+        public async Task<IActionResult> Get([FromHeader] int solutionId)
         {
             
             var variant = await _db.Solutions.FirstOrDefaultAsync(sol => sol.SolutionId == solutionId);
@@ -59,15 +52,18 @@ namespace ALS.Controllers
         
         
         [HttpPost]
-        public async Task<IActionResult> Delete(int solutionId)
+        public async Task<IActionResult> Delete([FromHeader] int solutionId)
         {
             var solutionUpdate = await _db.Solutions.FirstOrDefaultAsync(solution => solution.SolutionId == solutionId);
             if (solutionUpdate != null)
             {
                 try
                 {
+                    var deleteTestRuns = _db.TestRuns.Where(tr => tr.SolutionId == solutionId);
+                    _db.TestRuns.RemoveRange(deleteTestRuns);
                     _db.Solutions.Remove(solutionUpdate);
                     await _db.SaveChangesAsync();
+                    Directory.Delete(solutionUpdate.SourceCode, true);
                 }
                 catch (DbUpdateException e)
                 {

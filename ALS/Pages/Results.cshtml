@@ -7,22 +7,50 @@
 }
 <h3>Результаты </h3>
 <div style="margin-bottom: 1%">
-    <span>Дисциплина: </span><select onchange="getComboBoxData()" id="disciplineSelect"></select>
-    <span>Лабораторная работа: </span><select onchange="CreateTable()" id="laboratoryWorkSelect"></select> <br/>
-    <span>Группа: </span><select onchange="GroupComboUpdate()" id="groupSelect"></select>
-    <span>Студент: </span><select onchange="CreateTable()" id="studentSelect"></select>
+    <table cellspacing="0" style="width: 300px;">
+        <tr>
+            <td><span>Дисциплина: </span><select onchange="getComboBoxData()" id="disciplineSelect"></select></td>
+            <td><span>Лабораторная работа: </span><select onchange="CreateTableSolutions()" id="laboratoryWorkSelect"></select></td>
+       </tr>
+       <tr>
+           <td><span>Группа: </span><select onchange="GroupComboUpdate()" id="groupSelect"></select></td>
+           <td><span>Студент: </span><select onchange="CreateTableSolutions()" id="studentSelect"></select></td>
+       </tr>
+    </table>
 </div>
-<div class="container">
-<table style="width: 100%" class="table table-hover" border="1">
-    <thead>
-    <tr>
-    <td>ФИО</td>
-    <td>Назначенный вариант</td>
-    </thead>
-    <tbody id="tbodyContent">
-</table>
+<div id="solutionTable" class="container">
+    <table style="width: 100%" class="table table-hover" border="1">
+        <thead>
+        <td>Время отправки решения</td>
+        <td>Было ли скомпилированно</td>
+        <td>Решение верно</td>
+        <td>Исходный код</td>
+        <td>Перейти к таблице тестовых прогонов</td>
+        <td>Удалить решение</td>
+        </thead>
+        <tbody id="tbodyContentSolutions">
+    </table>
+</div>
+<div id="testRunTable" class="container">
+    <button class="btn btn-primary edit-item" onclick="CreateTableSolutions()">Вернуться к решениям</button>
+    <table style="width: 100%" class="table table-hover" border="1">
+        <thead>
+        <td>Наименование теста</td>
+        <td>Память</td>
+        <td>Время выполнения</td>
+        <td>Комментарий</td>
+        <td>Успешность тестового прогона</td>
+        </thead>
+        <tbody id="tbodyContentTestRuns">
+    </table>
 </div>
 <script>
+let optionsTime = {
+                    dateStyle: 'short',
+                    timeStyle: 'short'
+                };
+const correct = "Да";
+const error = "Нет";
     $.ajax(
           {
               type: 'GET',
@@ -57,112 +85,198 @@
           }
     );
     getComboBoxData();
-    CreateTable();
+    CreateTableSolutions();
     
     
-    function CreateTable() {
-        //TODO:Rework Create Table And Add Function For TestRunsTable
+    function CreateTableSolutions() {
         let data = getData();
         let assignedVariant;
+        let tableTestRuns = $('#testRunTable').css('display', 'none');
+        tableTestRuns.innerHTML = "";
+        let tableSolWithHeader = document.getElementById("solutionTable");
+        tableSolWithHeader.style.display = "block";
+        let tableSol = document.getElementById("tbodyContentSolutions");
+        tableSol.innerHTML = "";
         $.ajax(
+                {
+                    type: 'GET',
+                    url: '/api/assignedvariants/get',
+                    async: false,
+                    beforeSend: (xhr) => 
                     {
-                        type: 'GET',
-                        url: '/api/assignedvariants/getall',
-                        beforeSend: (xhr) => 
-                        {
-                            xhr.setRequestHeader("userId", data.idStudent);
-                            xhr.setRequestHeader("laboratoryWorkId", data.idLw);
-                        },
-                        success: (aw) =>
-                        {
-                            assignedVariant = aw;
-                        },
-                        error: (awFail) =>
-                        {
-                            document.body.innerHTML = '';
-                            alert('Нет доступа');
-                            history.go(-1);
-                        }
+                        xhr.setRequestHeader("userId", data.idStudent);
+                        xhr.setRequestHeader("laboratoryWorkId", data.idLw);
+                    },
+                    success: (aw) =>
+                    {
+                        assignedVariant = aw;
+                    },
+                    error: (awFail) =>
+                    {
+                        document.body.innerHTML = '';
+                        alert('Нет доступа');
+                        history.go(-1);
                     }
-            );
-                    
+                }
+        );
+        if(assignedVariant === undefined)
+        {
+            alert("Не назначен вариант.\nВыберите другие параметры в списках");
+            return;
+        }
         $.ajax(
-              {
-                  type: 'GET',
-                  url: '/api/users/getusersbygroup',
-                  beforeSend: (xhr) => 
-                  {
-                      xhr.setRequestHeader("groupId", data.idGroup);
-                  },
-                  success: (users) =>
-                  {
-                      $.ajax(
+                {
+                    type: 'GET',
+                    url: '/api/solutions/getbyuser',
+                    beforeSend: (xhr) => 
+                    {
+                        xhr.setRequestHeader("assignedVariantId", assignedVariant.assignedVariantId);
+                    },
+                    success: (solutions) =>
+                    {
+                        for (let sol of solutions)
+                        {
+                            let row = document.createElement("tr");
+                            tableSol.appendChild(row);
+                            let tdDateTime = document.createElement("td");
+                            tdDateTime.innerText = new Date(sol.sendDate).toLocaleString('ru', optionsTime);
+                            row.appendChild(tdDateTime);
+                            let tdIsCompiled = document.createElement("td");
+                            tdIsCompiled.innerText = getSymbol(sol.isCompile);
+                            row.appendChild(tdIsCompiled);
+                            let tdIsSolved = document.createElement("td");
+                            tdIsSolved.innerText = getSymbol(sol.isSolved);
+                            row.appendChild(tdIsSolved);
+                            let tdSourceCode = document.createElement("td");
+                            row.appendChild(tdSourceCode);
+                            let btnSourceCode = document.createElement("button");
+                            btnSourceCode.className = "btn btn-primary edit-item";
+                            btnSourceCode.innerText = "Скачать";
+                            btnSourceCode.addEventListener('click', function() {
+                               DownloadSource(sol.solutionId);
+                             });
+                            tdSourceCode.appendChild(btnSourceCode);
+                            
+                            let tdViewTestRuns = document.createElement("td");
+                            row.appendChild(tdViewTestRuns);
+                            if(sol.isCompile)
                             {
-                                type: 'GET',
-                                url: '/api/variants/getallbylaboratoryid',
-                                beforeSend: (xhr) => 
-                                {
-                                    xhr.setRequestHeader("laboratoryWorkId", data.idLw);
-                                },
-                                success: (variants) =>
-                                {
-                                    let tbdy = document.getElementById('tbodyContent');
-                                    tbdy.innerHTML = ""; //Удалим все дочерние узлы
-                                    if(variants.length === 0)
-                                    {
-                                        alert("У вас нет вариантов к этой лабораторной работе");
-                                        return;
-                                    }
-                                    for (let user of users)
-                                    {
-                                        let tr = document.createElement('tr');
-                                        tbdy.appendChild(tr);
-                                        let tdUser = document.createElement('td');
-                                        tr.appendChild(tdUser);
-                                        tdUser.appendChild(document.createTextNode(user.name + " " + user.surname + " " + user.patronymic));
-                                        tdUser.dataset.id = user.id;
-                                        let tdVar = document.createElement('td');
-                                        tr.appendChild(tdVar);
-                                        let select;
-                                        let isAssigned = false;
-                                        for (let variant of variants)
-                                        {
-                                           let find = assignedVariants.find(x => x.variantId === variant.variantId && x.userId === user.id);
-                                           select = variant.variantNumber;
-                                           tr.dataset.id = variant.variantId;
-                                           if(find !== undefined)
-                                           {
-                                               isAssigned = true;
-                                           }
-                                        }
-                                        if(variants.length !== 0 && isAssigned === false)
-                                        {
-                                            select = "Не назначено";
-                                        }
-                                        tdVar.innerText = select;
-                                    }
-                                },
-                                error: (groupsFail) =>
-                                {
-                                    document.body.innerHTML = '';
-                                    alert('Нет доступа');
-                                    history.go(-1);
-                                }
+                               let btnViewTestRuns = document.createElement("button");
+                               btnViewTestRuns.className = "btn btn-primary edit-item";
+                               btnViewTestRuns.innerText = "Открыть";
+                               btnViewTestRuns.addEventListener('click', function() {
+                                  CreateTableTestRuns(sol.solutionId);
+                                });
+                               tdViewTestRuns.appendChild(btnViewTestRuns);
                             }
-                        );
-                  },
-                  error: (groupsFail) =>
-                  {
-                      document.body.innerHTML = '';
-                      alert('Нет доступа');
-                      history.go(-1);
-                  }
-              }
-          );
-          
-          
+                            else
+                            {
+                                tdViewTestRuns.innerText = "Отсутствуют";
+                            }
+                            let tdDeleteSolution = document.createElement("td");
+                            row.appendChild(tdDeleteSolution);
+                            let btnDeleteSolution = document.createElement("button");
+                            btnDeleteSolution.className = "btn btn-danger remove-item";
+                            btnDeleteSolution.innerText = "Удалить";
+                            btnDeleteSolution.addEventListener('click', function() {
+                               DeleteSolution(sol.solutionId);
+                             });
+                            tdDeleteSolution.appendChild(btnDeleteSolution);
+                        }
+                    },
+                    error: (solutionsFail) =>
+                    {
+                        document.body.innerHTML = '';
+                        alert('Нет доступа');
+                        history.go(-1);
+                    }
+                }
+        );            
     }
     
+    function DownloadSource(solutionId) {
+       window.open('/api/Results/GetCode?solutionId=' + solutionId);
+    }
+    
+    function DeleteSolution(solutionId) {
+      if (confirm("Вы точно хотите удалить это решение?")) {
+          $.ajax(
+              {
+                  type: 'POST',
+                  url: '/api/solutions/delete',
+                  beforeSend: (xhr) => 
+                  {
+                      xhr.setRequestHeader("solutionId", solutionId);
+                  },
+                  success: (sol) =>
+                  {
+                      alert("Решение успешно удалено");
+                      CreateTableSolutions();
+                  },
+                  error: (solFail) =>
+                  {
+                      alert(solFail.responseText);
+                  }
+              }
+      );
+      }
+    }
+    
+    function CreateTableTestRuns(solutionId) {
+      let tableSol = $('#solutionTable').css('display', 'none');
+      tableSol.innerHTML = "";
+      let tableTrWithHeader = document.getElementById("testRunTable");
+      tableTrWithHeader.style.display = "block";
+      let tableTestRuns = document.getElementById("tbodyContentTestRuns");
+      tableTestRuns.innerHTML = "";
+      $.ajax(
+                {
+                    type: 'GET',
+                    url: '/api/testruns/get',
+                    beforeSend: (xhr) => 
+                    {
+                        xhr.setRequestHeader("solutionId", solutionId);
+                    },
+                    success: (trs) =>
+                    {
+                        for (let tr of trs)
+                        {
+                            let row = document.createElement("tr");
+                            tableTestRuns.appendChild(row);
+                            let tdName = document.createElement("td");
+                            tdName.innerText = tr.name;
+                            row.appendChild(tdName);
+                            let tdMemory = document.createElement("td");
+                            tdMemory.innerText = tr.result.memory + " байт";
+                            row.appendChild(tdMemory);
+                            let tdTime = document.createElement("td");
+                            tdTime.innerText = tr.result.time + " мс";
+                            row.appendChild(tdTime);
+                            let tdComment = document.createElement("td");
+                            tdComment.innerText = tr.result.comment;
+                            row.appendChild(tdComment);
+                            let tdIsCorrect = document.createElement("td");
+                            tdIsCorrect.innerText = getSymbol(tr.result.isCorrect);
+                            row.appendChild(tdIsCorrect);
+                        }
+                    },
+                    error: (trFail) =>
+                    {
+                        document.body.innerHTML = '';
+                        alert('Нет доступа');
+                        history.go(-1);
+                    }
+                }
+        );
+    }
+    
+    function getSymbol(mark) {
+      if(mark)
+      {
+          return correct;
+      }
+      return error;
+    }
     function getData() 
     {
       return { idStudent: $('#studentSelect option:selected')[0].dataset.id, idLw: $('#laboratoryWorkSelect option:selected')[0].dataset.id, }
@@ -274,7 +388,7 @@
         
         function GroupComboUpdate() {
           StudentsComboBox();
-          CreateTable();
+          CreateTableSolutions();
         }
         
 </script>

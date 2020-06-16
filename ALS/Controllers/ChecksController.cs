@@ -127,11 +127,12 @@ namespace ALS.Controllers
                     //Сохраним сейчас чтобы добавить тестовые прогоны в БД
                     await _db.Solutions.AddAsync(solution);
                     await _db.SaveChangesAsync();
-                    
+                    var counterName = 0;
                     foreach (var result in resultTests)
                     {
                         var testRun = new TestRun
                         {
+                            Name = testNames[counterName++],
                             InputData = result.Input.ToArray(),
                             OutputData = result.Output.ToArray(), 
                             ResultRun = JsonConvert.SerializeObject(new { result.Time, result.Memory, result.IsCorrect, result.Comment }),
