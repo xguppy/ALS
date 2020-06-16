@@ -28,6 +28,7 @@
         }
     </table>
     <input id="buttonCreate" class="btn btn-info btn-lg" type="submit" value="Создать" onclick="openModalCreate()" />
+    <input id="helpBtn" class="btn btn-info btn-lg" type="submit" value="HELP" onclick="openHelp()" />
     <a href='javascript: document.location.href = "genextensions";'>Перейти к расширениям генератора</a>
 </div>
 
@@ -79,51 +80,58 @@
     </div>
 </div>
 
-<script>
- 
-    function sendSolution(evt)
-    {
-            var files = evt.target.files; // FileList object
-            var dataFile = new FormData();
-            for (var i = 0; i < files.length; i++) {
-                dataFile.append('upload', files[i]);
-            }
-            var selector = document.getElementById('selectThemeId');
-            var value = selector[selector.selectedIndex].value;
 
-            $.ajax(
-                {
-                    type: 'POST',
-                    url: '/api/TemplateLWS/Create',
-                    contentType: false,
-                    data: dataFile,
-                    processData: false,
-                    async: false,
-                    beforeSend: (xhr) =>
-                    {
-                        xhr.setRequestHeader("themeid", value);
-                    },
-                    success: (result) =>
-                    {                    
-                        document.location.reload(true);
-                    },
-                    error: (sendFail) =>
-                    {
-                        alert(sendFail.responseText);
-                    }
+
+<script>
+    $(() => {
+        // браузер блокирует вызов с помощью клавиатуры :(
+        /*window.onkeyup = function (event) {
+            if (event.keyCode == 112)
+                window.open("TemplateInstruction.html", 'Инструкция', 'width=800,menubar=no, toolbar=no, location=no'); 
+        }*/
+    });
+
+    function openHelp() {
+        window.open("TemplateInstruction.html", 'Инструкция', 'width=800,menubar=no, toolbar=no, location=no');        
+    }
+
+    function sendSolution(evt) {
+        var files = evt.target.files; // FileList object
+        var dataFile = new FormData();
+        for (var i = 0; i < files.length; i++) {
+            dataFile.append('upload', files[i]);
+        }
+        var selector = document.getElementById('selectThemeId');
+        var value = selector[selector.selectedIndex].value;
+
+        $.ajax(
+            {
+                type: 'POST',
+                url: '/api/TemplateLWS/Create',
+                contentType: false,
+                data: dataFile,
+                processData: false,
+                async: false,
+                beforeSend: (xhr) => {
+                    xhr.setRequestHeader("themeid", value);
+                },
+                success: (result) => {
+                    document.location.reload(true);
+                },
+                error: (sendFail) => {
+                    alert(sendFail.responseText);
                 }
-            );
+            }
+        );
     }
 
     $.ajax(
         {
             type: 'GET',
             url: '/api/TemplateLWS/CheckAuth',
-            beforeSend: (xhr) => 
-            {
+            beforeSend: (xhr) => {
             },
-            success: (_) =>
-            {
+            success: (_) => {
                 let div = document.getElementById('fileselecting');
                 let buttonSend = document.createElement('input');
                 buttonSend.type = "file";
@@ -134,8 +142,7 @@
                 buttonSend.className = "btn btn-primary edit-item";
                 div.appendChild(buttonSend);
             },
-            error: (_) =>
-            {
+            error: (_) => {
                 document.body.innerHTML = '';
                 alert('Нет доступа');
                 history.go(-1);
@@ -169,11 +176,11 @@
 
         $("#myModal").find("input[name='hiddenId']").val(tlwId);
         $("#myModal").find("input[id='path']").val(pathFile);
-        
+
         /*$('#newThemeId option:selected').each(function () {
             this.selected = false;
         });*/
-        $("#newThemeId").find('option').attr("selected",false) ;
+        $("#newThemeId").find('option').attr("selected", false);
         $("#newThemeId option[value='" + themeid + "']").attr("selected", "selected");
         $('#myModal').modal('show');
     }
@@ -187,7 +194,7 @@
             //content: text,
             //pathToFile : path
             Item1: path,
-            Item2 : text
+            Item2: text
         }
         $.ajax(
             {
@@ -231,7 +238,7 @@
                     alert('Не удалось обновить шаблон');
                 }
             }
-        );   
+        );
 
     }
 
@@ -245,7 +252,7 @@
                         xhr.setRequestHeader('templateId', data);
                     },
                     success: (t) => {
-                        document.location.reload(true);          
+                        document.location.reload(true);
                     },
                     error: (response) => {
                         alert('Удаление невозможно! Данный шаблон еще связан с лабораторными работами');

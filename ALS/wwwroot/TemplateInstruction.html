@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>**Инструкция по созданию шаблонов**</title>
+        <style>
+</style>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+        <link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
+        <style>
+.task-list-item { list-style-type: none; } .task-list-item-checkbox { margin-left: -20px; vertical-align: middle; }
+</style>
+        <style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        
+        <script src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+        
+    </head>
+    <body class="vscode-light">
+        <h1 id="инструкция-по-созданию-шаблонов"><strong>Инструкция по созданию шаблонов</strong></h1>
+<p>Предположим, что имеется некоторое задание и нужно сделать новую версию данного задания.</p>
+<p>Листинг 1 - Первоначальное задание</p>
+<blockquote>
+<p>Написать программу для вычисления функции  <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>=</mo><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">y = f(x)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mord mathdefault">x</span><span class="mclose">)</span></span></span></span></p>
+<ul>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>=</mo><mfrac><mrow><mi>cos</mi><mo>⁡</mo><mi>x</mi></mrow><mrow><mo stretchy="false">(</mo><mi>x</mi><mo>+</mo><mn>10</mn><mo stretchy="false">)</mo></mrow></mfrac></mrow><annotation encoding="application/x-tex">y = \frac{\cos{x}}{(x + 10)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.215392em;vertical-align:-0.52em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.695392em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mopen mtight">(</span><span class="mord mathdefault mtight">x</span><span class="mbin mtight">+</span><span class="mord mtight">1</span><span class="mord mtight">0</span><span class="mclose mtight">)</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mop mtight"><span class="mtight">c</span><span class="mtight">o</span><span class="mtight">s</span></span><span class="mspace mtight" style="margin-right:0.19516666666666668em;"></span><span class="mord mtight"><span class="mord mathdefault mtight">x</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.52em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span> при x &lt; -3</li>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>=</mo><msup><mi>e</mi><mrow><mn>0.1</mn><mi>x</mi></mrow></msup></mrow><annotation encoding="application/x-tex">y = e^{0.1x}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord mathdefault">e</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">0</span><span class="mord mtight">.</span><span class="mord mtight">1</span><span class="mord mathdefault mtight">x</span></span></span></span></span></span></span></span></span></span></span></span>        при -3 &lt;= x &lt; 4</li>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>=</mo><mi>lg</mi><mo>⁡</mo><mi>x</mi></mrow><annotation encoding="application/x-tex">y = \lg{x}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mop">l<span style="margin-right:0.01389em;">g</span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault">x</span></span></span></span></span>            при 4 &lt;= x &lt; 6</li>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>=</mo><mi>sin</mi><mo>⁡</mo><mi>x</mi></mrow><annotation encoding="application/x-tex">y = \sin{x}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.66786em;vertical-align:0em;"></span><span class="mop">sin</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault">x</span></span></span></span></span>       при x &gt;= 6</li>
+</ul>
+</blockquote>
+<p>Для создания нового варианта необходимо выделить основные части задания:</p>
+<ul>
+<li>статические - общие для всех вариантов части;</li>
+<li>динамические - генерируемые части.</li>
+</ul>
+<p>Листинг 2 - общий вид задания</p>
+<blockquote>
+<p>Написать программу для вычисления функции y = f(x)</p>
+<ul>
+<li>y = <strong>@выражение 1@</strong> при x &lt; <strong>@1-ый диапазон@</strong></li>
+<li>y = <strong>@выражение 2@</strong> при <strong>@1-ый диапазон@</strong> &lt;= x &lt; <strong>@2-ой диапазон@</strong></li>
+<li>y = <strong>@выражение 3@</strong> при <strong>@2-ой диапазон@</strong> &lt;= x &lt; <strong>@3-ий диапазон@</strong></li>
+<li>y = <strong>@выражение 4@</strong> при x &lt;= <strong>@3-ий диапазон@</strong></li>
+</ul>
+</blockquote>
+<p>В листинге 2 динамические части были помещены между символами <code>@</code>. При создании нового варианта, внимание будет уделяться только данным частям.</p>
+<p>Опишем шаблон для генератора и разберем каждую часть шаблона по отдельности.</p>
+<p>Листинг 3 - Шаблон задания</p>
+<pre><code><code><div>1. | ----
+2. | ШАБЛОННЫЙ_ВИД   // данный блок содержит общий вид задания
+3. | Написать программу для вычисления функции y = f(x)
+4. | 
+5. |  y = @выражение 1@ где x1 &lt; @1-ый диапазон@
+6. |  y = @выражение 2@ где @1-ый диапазон@ &lt;= x1 &lt; @2-ой диапазон@
+7. |  y = @выражение 3@ где @2-ой диапазон@ &lt;= x1 &lt; @3-ий диапазон@
+8. |  y = @выражение 4@ где x1 &gt;= @3-ий диапазон@
+9. | 
+10.| ----
+11.| ХРАНИЛИЩЕ_ОБЪЕКТОВ // хранилище всех объектов-параметров
+12.| выражение 1 : #genAE(5); // генерация арифм. выражений
+13.| код 1 : #getAEcode();    // код на C++ для вычисления пред. выражения
+14.| 
+15.| выражение 2 : #genAE(5);
+16.| код 2 : #getAEcode();
+17.| 
+18.| выражение 3 : #genAE(5);
+19.| код 3 : #getAEcode();
+20.| 
+21.| выражение 4 : #genAE(5);
+22.| код 4 : #getAEcode();
+23.| // rnd (Random) - генерация случайного числа
+24.| 1-ый диапазон : #rndDouble( 0.0  , 5.0); // в диапазоне [0.0; 5.0) типа double 
+25.| 2-ой диапазон : #rndDouble( 5.0  , 10.0); // в диапазоне [5.0; 10.0) типа double
+26.| 3-ий диапазон : #rndDouble( 10.0 , 15.0); // в диапазоне [10.0; 15.0) типа double
+27.| 
+28.| выражение 5: sin(x) + 88 * 99 - 123; // статическое выражение (если необходимо)
+29.|
+30.| ----
+31.| РЕШЕНИЕ // данная секция хранит эталонное решение
+32.| #include &lt;cmath&gt;
+33.| #include &lt;iostream&gt;
+34.| 
+35.| using namespace std;
+36.| 
+37.| int main()
+38.| {
+39.|     double y = 0.0;
+40.|     double x1;
+41.|     cin &gt;&gt; x1;
+42.| 
+43.|     if ( x1 &lt;  @1-ый диапазон@) // подстановка 1-го диапазона
+44.|     {        
+45.|         @код 1@ // подстановка сгенерированного кода для вычисления выражения 1
+46.|     }
+47.|     else if (x1 &gt;=  @1-ый диапазон@ &amp;&amp; x1 &lt; @2-ой диапазон@) // диапазон 1 и 2
+48.|     {
+49.|         @код 2@ // подстановка сгенерированного кода для вычисления выражения 2
+50.|     }
+51.|     else if (x1 &gt;= @2-ой диапазон@ &amp;&amp; x1 &lt; @3-ий диапазон@) // диапазон 2 и 3
+52.|     {
+53.|     	@код 3@ // подстановка сгенерированного кода для вычисления выражения 3
+54.|     }
+55.|     else if (x1 &gt;= @3-ий диапазон@) // подстановка 3-го диапазона
+56.|     {
+57.|         @код 4@ // подстановка сгенерированного кода для вычисления выражения 4
+58.|     }
+59.|     cout &lt;&lt; y &lt;&lt; &quot;\n&quot;;
+60.|     system(&quot;pause&quot;);
+61.|     return 0;
+62.| }
+63.| ----
+64.| СЛУЖЕБНОЕ // данная секция хранит настройки генератора
+65.|   знаки_арифм : + | - | * | / | ^;
+66.| функции_арифм : sin | cos | sqrt | tan | log | log10;
+67.| ----
+68.| ТЕСТОВЫЕ_ДАННЫЕ // здесь хранятся тестовые данные для прогонов
+69.| Тест1 : #rndDouble(100 , 200, 1000); //  генерация в ран тайме 1000 double значений
+70.| Тест2 : 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0;
+71.| ----
+</div></code></code></pre>
+<h3 id="шаблонный_вид"><strong>ШАБЛОННЫЙ_ВИД</strong></h3>
+<p>Первой секцией в листинге 3 является <code>ШАБЛОННЫЙ_ВИД</code>, блок в котором содержится генерируемое задание</p>
+<blockquote>
+<p>y = <strong>@выражение 1@</strong> где x1 &lt; <strong>@1-ый диапазон@</strong></p>
+</blockquote>
+<p>Это 5-ая строка из листинга 3, выделенные части - это места в которые будут подставляться генерируемые данные, не выделенные части, соответственно останутся неизменны. В данном примере используются два объекта-параметра <code>@выражение 1@</code> и <code>@1-ый  диапазон@</code>, эти и остальные параметры хранятся в блоке <code>ХРАНИЛИЩЕ_ОБЪЕКТОВ</code>.</p>
+<h3 id="хранилище_объектов"><strong>ХРАНИЛИЩЕ_ОБЪЕКТОВ</strong></h3>
+<p><code>ХРАНИЛИЩЕ_ОБЪЕКТОВ</code> расположено в строках <code>11-27</code> и содержит в себе все объекты-параметры, применяемые в шаблоне. Объекты-параметры своего рода переменные, которые хранят либо уже готовый набор строк, либо исполняемую функцию.</p>
+<p>Для примера обратимся к строке 12, здесь объект-параметр <code>выражение 1</code> содержит исполняемую функцию <code>#genAE(5)</code> (расшифровывается как <em>generate arithmenic expression</em>), данная функция генерирует случайное арифметическое выражение сложность 5 (сумма знаков и функций, например: <em>sin</em>, <em>cos</em>, <em>log</em>, <em>+</em>, <em>-</em> и т.д.).</p>
+<p>Функция <code>#genAE(3)</code> например может сгенерировать выражение <code>cos((-2 / x1) * x1)</code>, сложность данного выражения 3 = <code>cos, знак / и знак *</code>. Сгенерированное выражение поместится в объект-параметр <code>выражение 1</code></p>
+<p>Подстановка:</p>
+<pre><code><code><div>до подстановки =
+    y = @выражение 1@
+после подстановки =
+    y = cos((-2 / x1) * x1)
+</div></code></code></pre>
+<p>Далее обратимся к строке 13 к объекту-параметру <code>код 1</code> привязана функция <code>#getAEcode()</code> (расшифровывается как <em>get arithmenic expression code</em>), данная функция возвращает код на ЯП <code>C++</code> (вместе с проверками) для вычисления <strong>последнего сгенерированного выражения функцией <code>#genAE()</code></strong>.</p>
+<pre><code><code><div>до подстановки =
+    y = @выражение 1@
+    код = @код 1@
+после подстановки =
+    y = cos((-2 / x1) * x1)
+    код = if (x1 != 0 ) y = cos((-2 / x1) * x1); else y = 0.0;
+</div></code></code></pre>
+<p>Из примера выше становится более понятно, что данные функции сильно связаны друг с другом.</p>
+<p>Следующий уникальным объектом-параметром является <code>1-ый диапазон</code> и привязанная к нему функция <code>#rndDouble(0.0, 5.0)</code> (расшифровывается как <em>random double</em>). Функция возвращает случайное число типа <code>double</code> из диапазона от 0.0 до 5.0 <strong>не включая верхнюю границу</strong></p>
+<pre><code><code><div>до подстановки =
+    y = @выражение 1@ где х1 &lt; @1-ый диапазон@
+    if ( x1 &lt;  @1-ый диапазон@)
+    {        
+         @код 1@
+    }
+
+после подстановки =
+    y = cos((-2 / x1) * x1) где х1 &lt; 2.67
+    if ( x1 &lt;  2.67)
+    {        
+         if (x1 != 0 ) y = cos((-2 / x1) * x1); else y = 0.0;
+    }
+</div></code></code></pre>
+<p>Есть еще один объект-параметр из строки 28 это <code>выражение 5 : sin(x) + 88 * 99 - 123</code>, данный параметр нигде не используется, он указан лишь для того чтобы показать как можно использовать заготовленные данные.</p>
+<h3 id="решение"><strong>РЕШЕНИЕ</strong></h3>
+<p><code>РЕШЕНИЕ</code> - потенциальное эталонное решение, созданное преподавателем и которое в дальнейшем будет использоваться для проверки студенческих работ. В листинге 3 данной блок расположен в строках 31-62, здесь все работает по тому же принципу как и в секции <code>ШАБЛОННЫЙ_ВИД</code>, есть общие места, а есть места подстановки объектов-параметров.</p>
+<h3 id="служебное"><strong>СЛУЖЕБНОЕ</strong></h3>
+<p>Предпоследний блок <code>СЛУЖЕБНОЕ</code>, находящийся в строках 64-66, служит для настройки генератора. На данный момент есть два значения <code>функции_арифм</code> и <code>знаки_арифм</code>, данные настройки отвечают за знаки и функции, которые будут использоваться при генерации арифметических выражений.</p>
+<h3 id="тестовые_данные"><strong>ТЕСТОВЫЕ_ДАННЫЕ</strong></h3>
+<p>Последний блок в шаблоне это <code>ТЕСТОВЫЕ_ДАННЫЕ</code>, находящийся в строках 68-70 и который содержит в себе тестовые данные, которые будут применяться при тестировании работ студентов, здесь также как и в <code>ХРАНИЛИЩЕ_ОБЪЕКТОВ</code> можно создавать объекты-параметры, которые будут содержать либо уже заготовленные тестовые данные строка 70 или содержать функцию <code>#rndDouble(100, 200, 1000)</code>, это все таже функция <code>Random</code>, лишь с тем отличием, что здесь создается не одно значение а сразу 1000.</p>
+<h1 id="подробное-описание-блоков"><strong>Подробное описание блоков</strong></h1>
+<p>Шаблон задания состоит из пяти секций (листинг 3, строки: <code>2, 11, 31, 64, 68</code>), также необходимо обратить внимание на то, что начало каждой секции отделяется от предыдущей последовательностью символов : <code>----\n</code>, данная последовательность должна заканчиваться концом строки <code>\n</code>.</p>
+<pre><code><code><div>1. | ----
+2. | ШАБЛОННЫЙ_ВИД
+
+10.| ----
+11.| ХРАНИЛИЩЕ_ОБЪЕКТОВ
+
+30.| ----
+31.| РЕШЕНИЕ
+      
+63.| ----
+64.| СЛУЖЕБНОЕ
+      
+67.| ----
+68.| ТЕСТОВЫЕ_ДАННЫЕ   
+</div></code></code></pre>
+<h2 id="примечание">Примечание:</h2>
+<p>Для более удобного расшифровывания шаблон-файл есть набор метасимволов, который предназначен для разделения лексем. К ним относятся [ <code>: ; | &quot; @</code> ]. Eсли необходимо использовать эти символы в качестве текстовых знаков, можно использовать экранирующий символ [ <code>\</code> ]. При подстановке в текст символ [ <code>\</code> ] будет убираться.</p>
+<p><em><strong>Данное правило относится лишь к объектам-параметрам, во всех остальных местах никакие экранирующие символы использовать не нужно.</strong></em></p>
+<blockquote>
+<h3 id="пример">Пример:</h3>
+<p><strong>В данном случае все знаки используются для разделения лексем</strong></p>
+<ul>
+<li>выражение 1 <strong>:</strong> sin x + 23 <strong>|</strong> x * 2 + x * x <strong>;</strong></li>
+</ul>
+<p><strong>В следующих примерах некоторые символы выступают в качестве текстовых знаков. При использовании данных объектов-параметров в тексте - символ <code>\</code> удалится</strong></p>
+<ul>
+<li>задание : реализовать возведение в степень , не используя математическую библиотеку, для чисел в диапазоне [1 <strong>\;</strong> 100];</li>
+<li>оператор : оператор <strong>\|\|</strong> является логическим ИЛИ;</li>
+</ul>
+</blockquote>
+<h2 id="секция--1---хранилище_объектов"><strong>Секция № 1 - ХРАНИЛИЩЕ_ОБЪЕКТОВ</strong></h2>
+<p><code>ХРАНИЛИЩЕ_ОБЪЕКТОВ</code> - хранит объекты-параметры.</p>
+<p><code>Объект-параметр</code> - именованная переменная, хранящая строку (здесь подразумевается неограниченный набор символов). Объект-параметр может содержать как уже готовое значение так и исполняемую функцию (при вызове параметра где-либо в шаблоне функция сначала исполняется и подставляется уже результат, который выдала функция).</p>
+<p>Объект-параметр имеет следующий синтаксис :</p>
+<pre><code><code><div>объект_параметр = “имя объекта-параметра” “:” значение { &quot;|&quot; значение} “;”
+значение        =  наборы строк |
+                  “#имя_функции({аргументы функции [,]})”
+</div></code></code></pre>
+<p>Если описывать проще то синтаксис можно представить следующим образом (пробелы не играют никакой роли):</p>
+<pre><code><code><div>имя параметра : содержимое объекта параметра;
+  выражение 1 : решите выражение - sin(x) + x * 10 + 5 | #genAE(4) | 10 * x + 123;
+</div></code></code></pre>
+<ol>
+<li>Имя параметра может содержать любые символы (исключение составляют специальные символы - [ <code> : , ; | &quot; \n</code> ]);</li>
+<li>Содержимое может являться либо функцией либо уже готовым значением, перемешивание недопустимо;</li>
+<li>Объекту-параметру изначально можно задать несколько значений, используя символ [ <code>|</code> ]. В дальнейшем выберется одно случайное значение, которое и будет использоваться.</li>
+</ol>
+<p>Если выражение содержит несколько параметров, то можно выбрать необходимое значение путем указания ключа значения.</p>
+<pre><code><code><div>имя параметра [значение] : [ключ] содержимое объекта параметра;
+1.  выражение 1 [0] : [0] sin(x) + x * 10 + 5 |
+                      [1] #genAE(4) |
+                      [2] 10 * x + 123;
+
+2.  выражение 1 [1] : sin(x) + x * 10 + 5 | 
+                      #genAE(4) | 
+                      10 * x + 123;
+
+3. выражение 1 [мой_ключ] : sin(x) + x * 10 + 5 |
+                            #genAE(4) | 
+                            [мой_ключ] 10 * x + 123;
+
+4. случайное_значение : #rndInt(0,3);
+   выражение 1 [@случайное_значение@] : sin(x) + x * 10 + 5 |
+                                        #genAE(4) | 
+                                        10 * x + 123;
+</div></code></code></pre>
+<p>Выше описано 4 примера выбора значения по ключу. по умолчанию все значения пронумерованы от 0 до некоторого значения.
+Можно явно указать ключ для каждого значения, заключив его в скобки <code>[ключ]</code>. Ключ может быть числом, строкой, набор символов и т.д.
+Если необходимо выбрать случайное значение, то можно сгенерировать случайное число и использовать его в качестве ключа, так как это представлено в примере 4.</p>
+<ul>
+<li>В примере 1 будет выбрано <code>sin(x) + x * 10 + 5</code></li>
+<li>В примере 2 будет выбрано <code>#genAE(4)</code></li>
+<li>В примере 3 будет выбрано <code>10 * x + 123</code></li>
+</ul>
+<h3 id="стандартные-функции"><strong>Стандартные функции</strong></h3>
+<h4 id="функция-genaex">Функция #genAE(x)</h4>
+<p>Обратимся к строкам: <code>12, 15, 18, 21</code></p>
+<pre><code><code><div>12.| выражение 1 : #genAE(5);
+15.| выражение 2 : #genAE(5);
+18.| выражение 3 : #genAE(5);
+21.| выражение 4 : #genAE(5);
+</div></code></code></pre>
+<p>Здесь объекты-параметры содержат исполняемую функцию <code>#genAE(х)</code> - данная функция генерирует арифметическое выражения сложностью <code>х</code> (сумма знаков и функций: sin, cos, log и т.д.).</p>
+<p>Пример:</p>
+<pre><code><code><div> было = выражение 1 : #genAE(5);
+стало = выражение 1 : cos(-99.45 + log(51.01 - (18.82 * x1)));
+</div></code></code></pre>
+<h4 id="функция-getaecode">Функция #getAEcode()</h4>
+<p>Теперь посмотрим на строки: <code>13, 16, 19, 22</code></p>
+<pre><code><code><div>13.| код 1 : #getAEcode();
+16.| код 2 : #getAEcode();
+19.| код 3 : #getAEcode();
+22.| код 4 : #getAEcode();
+</div></code></code></pre>
+<p>Здесь объекты-параметры содержат исполняемую функцию <code>#getAEcode()</code> - функция, генерирующая код на языке <code>C++</code> для вычисления последнего сгенерированного арифметическое выражения (код содержит само выражение, а также условия при которых оно вычисляется).</p>
+<p>Пример :</p>
+<pre><code><code><div>было =
+    выражение 1 : #genAE(5);
+    код 1 : #getAEcode();
+
+стало =
+    выражение 1 : cos(-99.45 + log(51.01 - (18.82 * x1)));
+    код 1 : if (((51.01 - (18.82 * x1)) &gt; 0 &amp;&amp; (51.01 - (18.82 * x1)) != 1))
+                 y = cos(-99.45 + log(51.01 - (18.82 * x1)));
+            else 
+                 y = 0.0;
+</div></code></code></pre>
+<h4 id="функция-rnddoublemin-max">Функция #rndDouble(min, max)</h4>
+<p>Строки:  <code>24-26</code></p>
+<pre><code><code><div>24.| 1-ый диапазон : #rndDouble( 0.0  , 5.0 );
+25.| 2-ой диапазон : #rndDouble( 5.0  , 10.0);
+26.| 3-ий диапазон : #rndDouble( 10.0 , 15.0);
+</div></code></code></pre>
+<p>Объекты-параметры из данных строк содержат исполняемую функцию <code>#rndDouble(min, max)</code> - функция, генерирующая случайное число в диапазоне [<code>min</code> ; <code>max</code>] типа <code>double</code>.</p>
+<p>Пример:</p>
+<pre><code><code><div> было = 1-ый диапазон : #rndDouble(1, 10);
+стало = 1-ый диапазон : 5.67;
+</div></code></code></pre>
+<p><em>Полное описание доступных функций будет изложено в конце документа.</em></p>
+<h3 id="подстановка-объектов-параметров"><strong>Подстановка объектов-параметров</strong></h3>
+<p>На данном этапе стало более понятно что представляют собой объекты-параметры. Теперь нужно сказать о там как их использовать, все довольно просто, чтобы использовать параметр нужно прибегнуть к следующему синтаксису:</p>
+<pre><code><code><div>@имя_объекта_параметра@
+</div></code></code></pre>
+<p><strong>Между знаками <code>@</code> и <code>имя_объекта_параметра</code> пробелов быть не должно.</strong></p>
+<p>Пример использования подстановок:</p>
+<pre><code><code><div>было = 
+    количество : 100;
+    задание: запишите в файл 'Input.txt' @количество@ знаков;
+
+стало = 
+    количество : 100;
+    задание: запишите в файл 'Input.txt' 100 знаков;
+</div></code></code></pre>
+<h2 id="секция-2---шаблонный_вид"><strong>Секция 2 - ШАБЛОННЫЙ_ВИД</strong></h2>
+<p>Данная секция шаблон-файла содержит конкретный вид варианта задания. В данном блоке можно и нужно использовать ранее описанные объекты-параметры.</p>
+<p>Обратимся к строкам <code>1-8</code></p>
+<pre><code><code><div>1. | ----
+2. | ШАБЛОННЫЙ_ВИД
+3. | Написать программу для вычисления выражения y = f(x):
+4. | 
+5. | - y = $@выражение 1@$ **где x1 &lt; @1-ый диапазон@**
+6. | - y = $@выражение 2@$ **где @1-ый диапазон@ &lt;= x1 &lt; @2-ой диапазон@**
+7. | - y = $@выражение 3@$ **где @2-ой диапазон@ &lt;= x1 &lt; @3-ий диапазон@**
+8. | - y = $@выражение 4@$ **где x1 &gt;= @3-ий диапазон@**
+</div></code></code></pre>
+<p>Данный блок содержит задание в которое будут подставляться ранее описанные объекты-параметры: <code>@выражение 1@</code>, <code>@выражение 2@</code>, <code>@выражение 3@</code>, <code>@выражение 4@</code>, <code>@1-ый диапазон@</code>, <code>@2-ый диапазон@</code>, <code>@3-ый диапазон@</code>.</p>
+<p>Примечание:
+Посмотрим на строку 5</p>
+<blockquote>
+<p>5.| <code>-</code> y = <code>$</code>@выражение 1@<code>$</code> <code>**</code>где x1 &lt; @1-ый диапазон@<code>**</code></p>
+</blockquote>
+<p>Помеченные символы являются частью языка разметки <code>markdown</code> и используются для форматирования текста, использование <code>markdown</code> не является обязательным, если у вас нет времени на изучение <code>markdown</code>, вы можете игнорировать использование данного языка и описывать все так как вы привыкли.</p>
+<p>Примерный вид готового задания с использованием форматирования может выглядеть следующим образом:</p>
+<blockquote>
+<p>Написать программу для вычисления выражения <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>=</mo><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">y = f(x)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mord mathdefault">x</span><span class="mclose">)</span></span></span></span>:</p>
+<ul>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>=</mo><mfrac><mrow><mi>x</mi><mn>1</mn></mrow><mrow><mo>−</mo><mn>6</mn></mrow></mfrac><mo>+</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">y = \frac{x1}{-6} + 3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.2484389999999999em;vertical-align:-0.403331em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.845108em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">6</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">x</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.403331em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">3</span></span></span></span>  <strong>где x1 &lt; 3</strong></li>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>=</mo><mi>log</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>cos</mi><mo>⁡</mo><mo stretchy="false">(</mo><msup><mn>2</mn><mrow><mo>−</mo><mn>6</mn><mo>∗</mo><mi>x</mi><mn>1</mn></mrow></msup><mo stretchy="false">)</mo><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">y = \log(\cos(2^{-6 * x1})))</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.064108em;vertical-align:-0.25em;"></span><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="mopen">(</span><span class="mop">cos</span><span class="mopen">(</span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">6</span><span class="mbin mtight">∗</span><span class="mord mathdefault mtight">x</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class="mclose">)</span><span class="mclose">)</span><span class="mclose">)</span></span></span></span>  <strong>где 3 &lt;= x1 &lt; 7</strong></li>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>=</mo><mo>−</mo><mn>10</mn><mo>+</mo><mo stretchy="false">(</mo><mi>sin</mi><mo>⁡</mo><mo stretchy="false">(</mo><mn>9</mn><mo>−</mo><mi>x</mi><mn>1</mn><mo stretchy="false">)</mo><mo>∗</mo><mn>8</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">y = -10 + (\sin(9 - x1) * 8)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">−</span><span class="mord">1</span><span class="mord">0</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mop">sin</span><span class="mopen">(</span><span class="mord">9</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">x</span><span class="mord">1</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">8</span><span class="mclose">)</span></span></span></span>  <strong>где 7 &lt;= x1 &lt; 14</strong></li>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>=</mo><msqrt><mrow><mn>6</mn><mo>∗</mo><mo stretchy="false">(</mo><mo>−</mo><mn>1</mn><mo>+</mo><mi>x</mi><mn>1</mn><mo stretchy="false">)</mo></mrow></msqrt></mrow><annotation encoding="application/x-tex">y = \sqrt{6 * (-1 + x1)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.24em;vertical-align:-0.30499999999999994em;"></span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.935em;"><span class="svg-align" style="top:-3.2em;"><span class="pstrut" style="height:3.2em;"></span><span class="mord" style="padding-left:1em;"><span class="mord">6</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mopen">(</span><span class="mord">−</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathdefault">x</span><span class="mord">1</span><span class="mclose">)</span></span></span><span style="top:-2.8950000000000005em;"><span class="pstrut" style="height:3.2em;"></span><span class="hide-tail" style="min-width:1.02em;height:1.28em;"><svg width='400em' height='1.28em' viewBox='0 0 400000 1296' preserveAspectRatio='xMinYMin slice'><path d='M263,681c0.7,0,18,39.7,52,119
+c34,79.3,68.167,158.7,102.5,238c34.3,79.3,51.8,119.3,52.5,120
+c340,-704.7,510.7,-1060.3,512,-1067
+l0 -0
+c4.7,-7.3,11,-11,19,-11
+H40000v40H1012.3
+s-271.3,567,-271.3,567c-38.7,80.7,-84,175,-136,283c-52,108,-89.167,185.3,-111.5,232
+c-22.3,46.7,-33.8,70.3,-34.5,71c-4.7,4.7,-12.3,7,-23,7s-12,-1,-12,-1
+s-109,-253,-109,-253c-72.7,-168,-109.3,-252,-110,-252c-10.7,8,-22,16.7,-34,26
+c-22,17.3,-33.3,26,-34,26s-26,-26,-26,-26s76,-59,76,-59s76,-60,76,-60z
+M1001 80h400000v40h-400000z'/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.30499999999999994em;"><span></span></span></span></span></span></span></span></span>  <strong>где x1 &gt;= 14</strong></li>
+</ul>
+</blockquote>
+<h2 id="секция-3---решение"><strong>Секция 3 - РЕШЕНИЕ</strong></h2>
+<p><code>РЕШЕНИЕ</code> - хранит эталонное решения для задания. Эталонное решение компилируется и используется для тестирования других программ предназначенных для выполнения поставленных задач.</p>
+<p>Данная секция является копией <code>ШАБЛОННОГО_ВИДА</code>, здесь также можно использовать объекты-параметры. Отличительная черта данного блока это данные, а именно код который должен успешно компилироваться или интерпретироваться, привязки к определенному ЯП нет. Из <em>'коробки'</em> генератор обращается к модулю проверки заданий, который компилирует эталонное решения, используя <code>g++</code> (подразумевается, что решение написано ЯП <code>C++</code>).</p>
+<h2 id="секция-4---служебное"><strong>Секция 4 - СЛУЖЕБНОЕ</strong></h2>
+<p><code>СЛУЖЕБНОЕ</code> - секция отвечающая за настройку генератора. На данный момент есть лишь 2 параметра :</p>
+<ul>
+<li><code>знаки_арифм</code> – отвечает за операции, которые будут использоваться во время генерации арифметических выражений;</li>
+<li><code>функции_арифм</code> – отвечает за функции, которые будут использоваться во время генерации арифметических выражений.</li>
+</ul>
+<h2 id="секция-5---тестовые_данные"><strong>Секция 5 - ТЕСТОВЫЕ_ДАННЫЕ</strong></h2>
+<p><code>ТЕСТОВЫЕ_ДАННЫЕ</code> - секция которая содержит данные для тестирования эталонного решения и решения, присланного обучаемым;</p>
+<p>Данный блок схож с <code>ХРАНИЛИЩЕМ_ОБЪЕКТОВ</code>, здесь также описываются объекты-параметры. В данной секции можно указывать заготовленные данные через запятую или же использовать какие-либо функции, например использовать функцию для генерации большого количества случайных чисел в диапазоне и т.д.</p>
+<h1 id="полное-описание-доступных-функций">Полное описание доступных функций:</h1>
+<ul>
+<li><code>#rndInt( нижняя_граница , верхняя_граница {, количество})</code> - генерирует случайное число в границе [ нижняя_граница, верхняя_граница) целого типа. Если необходимо сгенерировать сразу несколько значений используется дополнительный параметр “количество”, в таком случае сгенерированные числа будут разделены запятыми;</li>
+<li><code>#rndDouble( нижняя_граница , верхняя_граница {, количество})</code> - тоже самое что и rndInt, но генерирует числа с плавающей точкой двойной точности;<pre><code><code><div> было = число : #rndInt(1, 10);
+стало = число : 5;
+
+ было = число : #rndDouble(1.0, 10.0);
+стало = число : 3.14;
+</div></code></code></pre>
+</li>
+<li><code>#genAE(сложность {, граница , тип , количество переменных})</code> - генерирует выражение некоторой сложности (сложность указывает количество знаков и функций (например log, sin и т.д.)), граница указывает диапазон генерации констант [-граница, граница) по умолчанию = [-100; 100), тип указывает на тип генерируемых констант (<code>double</code> или <code>int</code>), по умолчанию = int, количество переменных, указывает на зависимость выражения от количества переменных (от 1 до бесконечности), по умолчанию = 1.<pre><code><code><div> было = выр : #genAE(5);
+стало = выр : cos(-99 + log(51 - (10 * x1)));
+
+ было = выр2 : #genAE(5 , 50.0 , double , 2);
+стало = выр2 : (x2 / ((x2 + tan(x1)) * 18.82)) + x1;
+</div></code></code></pre>
+</li>
+<li><code>#getAEcode()</code> - возвращает код для вычисления последнего сгенерированного выражения на языке <code>C++</code>.<pre><code><code><div>было =
+    выр : #genAE(5, 100, double);
+    код : #getAEcode();
+
+стало =
+    выр : cos(-99.45 + log(51.01 - (18.82 * x1)));
+    код : if (((51.01 - (18.82 * x1)) &gt; 0 &amp;&amp; (51.01 - (18.82 * x1)) != 1))
+               y = cos(-99.45 + log(51.01 - (18.82 * x1)));
+          else 
+               y = 0.0;
+</div></code></code></pre>
+</li>
+<li><code>#lua(код_на_луа)</code> - данная функция является второстепенной и предназначена для выполнения кода на <code>Lua</code> (изначально предполагалось использовать <code>Lua</code> лишь для вычисления мат. выражений, но в дальнейшем данный язые будет использовать для расширения предоставляемого функционала генератора). Все системные функции (кроме получения времени и даты) на <code>Lua</code> которые обращаются к OS запрещены в целях безопасности.<pre><code><code><div>было =
+    число : #lua(&quot;
+            math.randomseed(12345689);
+            return math.random(100);
+        &quot;);
+стало =
+    число : 88;
+</div></code></code></pre>
+</li>
+<li>#путь_до_модуля.метод(аргументы) - это способ расширения стандартного набора функций с помощью скриптов написанных на <code>lua</code>. Допустим вам необходима функция которой нет, вы можете написать модуль на <code>lua</code>, поместить данный модуль в какую-либо директорию и вызвать ее описанным способом. Путь до модуля может быть как полным, так и относительным.<pre><code><code><div>Внешний модуль написанный на lua. Имя файла rnd_arr.lua. Расположен в поддиректории my_modules.
+Дерево директории Generator:
+---
+|--*.dll *.json другие директории
+| 
+|--Generator.exe
+|--Generator.dll
+|
+|--my_modules
+        |
+        |--rnd_arr.lua
+
+--------------------
+МОДУЛЬ rnd_arr.lua
+--------------------
+lib = {}
+-- перевод в строку не обращайте внимания
+function table_to_string(tbl)
+    local result = &quot;&quot;
+    for k, v in pairs(tbl) do
+        if type(k) == &quot;string&quot; then
+            result = result..&quot;[\&quot;&quot;..k..&quot;\&quot;]&quot;..&quot;=&quot;
+        end
+        
+        if type(v) == &quot;table&quot; then
+            result = result..table_to_string(v)
+        elseif type(v) == &quot;boolean&quot; then
+            result = result..tostring(v)
+        else
+            result = result..v
+        end
+        result = result..&quot;,&quot;
+    end
+
+    if result ~= &quot;&quot; then
+        result = result:sub(1, result:len()-1)
+    end
+    return result
+end
+
+-- генерация упорядоченного массива
+function lib.make_array(count, min, max)
+    math.randomseed(os.time()) -- задаем случайное зерно
+    local digits = {} -- массив с числами
+    for i = 1,count do -- генерация новых значений
+        digits[i] = math.random( min,max )
+    end
+    -- сортировка
+    table.sort(digits, function (a, b) return (a &lt; b) end)
+    -- возвращаем строку
+    return table_to_string(digits)
+end
+
+return lib -- возвращаем модуль
+--------------------
+Вызов метода из внешнего модуля
+
+модуль : my_modules/rnd_arr;
+массив1 : #@модуль@.make_array(100,-250.0, 250.0); // способ 1
+массив2 : #my_modules/rnd_arr.make_array(100,-250.0, 250.0); // способ 2
+</div></code></code></pre>
+</li>
+</ul>
+
+    </body>
+    </html>
