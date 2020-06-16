@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using ALS.CheckModule.Compare.Finaliter;
 
@@ -14,6 +15,8 @@ namespace ALS.CheckModule.Processes
         /// Мониторинг ресурсов процесса
         /// </summary>
         private readonly ProcessMonitor _monitor;
+        
+        private const int TaskDelay = 200;
         /// <summary>
         /// Использовать ли стандартный ввод
         /// </summary>
@@ -49,12 +52,13 @@ namespace ALS.CheckModule.Processes
         public override async Task<bool> Execute(int timeMilliseconds)
         {
             var result = false;
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
                 using (AppProcess)
                 {
                     InitExecute();
                     _monitor?.Start();
+                    await Task.Delay(TaskDelay);
                     if (IsStdInput)
                     {
                         foreach (var elem in _inputData)
@@ -64,6 +68,10 @@ namespace ALS.CheckModule.Processes
                     }
                     result = AppProcess.WaitForExit(timeMilliseconds);
                     _monitor?.Stop();
+                    if (!(_monitor is null))
+                    {
+                        _monitor.Time = -TaskDelay;
+                    }
                 }
             });
             return result;

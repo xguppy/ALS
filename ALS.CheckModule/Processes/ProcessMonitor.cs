@@ -11,8 +11,8 @@ namespace ALS.CheckModule.Processes
         private readonly Task _monitorTask;
         private readonly CancellationTokenSource _tokenSource = new CancellationTokenSource();
         private readonly CancellationToken _cancellationTokenMeasuring;
-
-        public int Time { get; private set; }
+        private DateTime _startTime; 
+        public int Time { get; set; }
         public long Memory { get; private set; }
 
         public ProcessMonitor(Process process)
@@ -34,20 +34,23 @@ namespace ALS.CheckModule.Processes
 
         private void Measuring()
         {
-            while (!_process.HasExited || !_cancellationTokenMeasuring.IsCancellationRequested)
+            _startTime = _process.StartTime;
+            try
             {
-                try
+                while (!_process.HasExited || !_cancellationTokenMeasuring.IsCancellationRequested)
                 {
+
                     Memory = _process.PeakWorkingSet64;
-                    Time = _process.TotalProcessorTime.Milliseconds;
-                }
-                catch (Exception)
-                {
-                    //Если процесс завершён, то обязательно при замерах будет исключение
-                    return;
                 }
             }
-            
+            catch (Exception)
+            {
+                // ignored
+            }
+            finally
+            {
+                Time = (DateTime.Now - _startTime).Milliseconds;
+            }
         }
     }
 }
