@@ -1,9 +1,11 @@
 using System.Linq;
 using System.Threading.Tasks;
+using ALS.CheckModule.Compare.DataStructures;
 using ALS.EntityСontext;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace ALS.Controllers
 {
@@ -22,7 +24,7 @@ namespace ALS.Controllers
 
         [HttpGet]
         public async Task<IActionResult> Get([FromHeader] int solutionId) =>
-            Ok(await Task.Run(() => _db.TestRuns.Where(testRun => testRun.SolutionId == solutionId).Select(testRun => new {testRun.InputData, testRun.OutputData, testRun.ResultRun})));
+            Ok(await Task.Run(() => _db.TestRuns.Where(testRun => testRun.SolutionId == solutionId).Select(testRun => new {Result = JsonConvert.DeserializeObject<ResultRun>(testRun.ResultRun), testRun.Name})));
         
         
     }
