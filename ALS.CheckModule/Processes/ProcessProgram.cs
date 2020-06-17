@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
-using ALS.CheckModule.Compare.Finaliter;
 
 namespace ALS.CheckModule.Processes
 {

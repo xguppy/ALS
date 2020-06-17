@@ -10,21 +10,27 @@
     <span>Дисциплина: </span><select onchange="CreateTable()" id="disciplineSelect"></select>
 </div>
 <div class="container">
-<table style="width: 100%" class="table table-hover" border="1">
-    <thead>
-    <tr>
-    <td>Лабораторная работа</td>
-    <td>Описание лабораторной работы</td>    
-    <td>Номер варианта</td>
-    <td>Описание варианта</td>
-    <td>Статус</td>
-    </thead>
-    <tbody id="tbodyContent">
-</table>
+    <table style="width: 100%" class="table table-hover" border="1">
+        <thead>
+        <tr>
+        <td>Лабораторная работа</td>
+        <td>Описание лабораторной работы</td>    
+        <td>Номер варианта</td>
+        <td>Описание варианта</td>
+        <td>Статус</td>
+        </thead>
+        <tbody id="tbodyContent">
+    </table>
+    <button onclick="ShowHelpWindow()" class="btn btn-primary edit-item">HELP</button>
 </div>
 
 <script>
-        
+    document.onkeydown = document.onkeyup = document.onkeypress = (ev => {
+        if(ev.key === 'F1')
+        {
+            ShowHelpWindow();
+        }
+    });
     $.ajax(
               {
                   type: 'GET',
@@ -168,6 +174,10 @@
                               }
                           }
             );
+        }
+        
+        function ShowHelpWindow() {
+          window.open("UserInstruction.html", 'Инструкция по отправке решения', 'width=800,menubar=no, toolbar=no, location=no'); 
         }
         
 </script>
