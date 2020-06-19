@@ -6,6 +6,10 @@
 }
 <h3>Варианты </h3>
 <div class="container">
+    <p class="form-group row">
+        <label class="col-sm-4 col-form-label font-weight-bold">Сортировка по лабораторным работам</label>
+        <select class="col-sm-8 form-control" name="getByLaboratoryWork" id="getByLaboratoryWork"></select>
+    </p>
     <table style="width: 100%" class="table table-hover" border="1">
         <thead>
             <tr>
@@ -13,7 +17,7 @@
                 <td>Номер варианта</td>
                 <td>Описание</td>
                 @{/*<td>Ссылка на модель (эталонная программа)</td>
-                                      <td>Входные данные</td>*/}
+                                        <td>Входные данные</td>*/}
                 <td>Действие</td>
             </tr>
         </thead>
@@ -45,8 +49,10 @@
                             @Html.TextArea("Description", "описание", new { @class = "form-control", id = "newDescription" })
                         </p>
                         <p class="form-group">
-                            <label class="col-form-label font-weight-bold">Ссылка на модель</label>
-                            @Html.TextArea("Link", @"file:///C:/Users/kampukter/source/repos/ALS/ALS.GeneratorModule/Docs/Exp.txt", new { @class = "form-control", id = "newLink" })
+                            <div id="crtUploadSolution" class="form-group">
+                                <label class="col-form-label font-weight-bold">Эталонное решение</label>
+                                <label class="hide" id="hiddenPathSolution"></label>
+                            </div>
                         </p>
                         <p class="form-group">
                             <label class="col-form-label font-weight-bold">Входные данные</label>
@@ -114,8 +120,13 @@
                         @Html.TextArea("Description", null, new { @class = "form-control", id = "EditDescription" })
                     </p>
                     <p class="form-group">
-                        <label class="col-form-label font-weight-bold">Ссылка на модель</label>
-                        @Html.TextArea("Link", null, new { @class = "form-control", id = "EditLink" })
+                        <label class="col-form-label font-weight-bold">Эталонное решение</label>
+                        <label class="col-sm-9" id="EditPathSolution"></label>
+                    </p>
+                    <p class="form-group">
+                        <div id="updUploadSolution" class="form-group">
+                            <label class="col-form-label font-weight-bold">Изменить Эталонное решение</label>
+                        </div>
                     </p>
                     <p class="form-group">
                         <label class="col-form-label font-weight-bold">Входные данные</label>
@@ -165,59 +176,6 @@
 <script src="~/lib/markdown-it-katex/markdown-it-katex.js"></script>
 <link rel="stylesheet" href="~/lib/KaTeX/katex.min.css">
 <script>
-    $.ajax(
-        {
-            type: 'GET',
-            url: '/api/variants/getall',
-            beforeSend: (xhr) => {
-            },
-            success: (variants) => {
-                let md = window.markdownit();
-                md.use(math_plugin);
-                let tbdy = document.getElementById('tbodyContent');
-                for (let variant of variants) {
-                    let tr = document.createElement('tr');
-                    variant.rawDescription = variant['description'];
-                    //let rawDescription = variant['description'];
-                    for (let prop in variant) {
-                        if (prop !== 'variantId' && prop !== 'laboratoryWorkId') {
-                            let td = document.createElement('td');
-                            if (variant[prop] != null) {
-                                if (prop === 'description') td.innerHTML = md.render(variant[prop]);// + katex.renderToString("");
-                                else td.appendChild(document.createTextNode(variant[prop]));
-                            }
-                            if (prop === 'name')
-                                td.dataset.id = variant.laboratoryWorkId;
-
-                            // оставил для вывода лишь имя, вариант и описание
-                            if (prop !== 'name' && prop !== 'description' && prop !== 'variantNumber')
-                                td.hidden = true;
-                            tr.appendChild(td);
-                        }
-                    }
-                    let td = document.createElement('td');
-                    td.dataset.id = variant.variantId;
-                    td.innerHTML = '<button style="margin-right: 5%" data-toggle="modal" onclick="editPrepareVariant(this)" data-target="#edit" class="btn btn-primary edit-item">Редактировать</button>' +
-                        '<button onclick="removeVariant(' + variant.variantId + ')" class="btn btn-danger remove-item">Удалить</button>';
-                    tr.appendChild(td);
-                    tbdy.appendChild(tr);
-                }
-                updateConstrains(); // обновляет ограничения в соответствии с ЛР и убирает поля которые будут перезаписаны генератором
-                addSelectItems('checker', 'sCheckerCreate', false);
-                addSelectItems('checker', 'sCheckerEdit', false);
-                addSelectItems('preparer', 'sPreparerCreate', true);
-                addSelectItems('preparer', 'sPreparerEdit', true);
-                addSelectItems('finaliter', 'sFinaliterCreate', true);
-                addSelectItems('finaliter', 'sFinaliterEdit', true);
-                initSliders();
-            },
-            error: (varFail) => {
-                document.body.innerHTML = '';
-                alert('Нет доступа');
-                history.go(-1);
-            }
-        }
-    );
 
     $.ajax(
         {
@@ -226,15 +184,15 @@
             beforeSend: (xhr) => {
             },
             success: (lws) => {
-                let selectCreate = document.getElementById('newLaboratoryWork');
-                let selectUpdate = document.getElementById('EditLaboratoryWork');
+                let selectSort = document.getElementById('getByLaboratoryWork');
                 for (let lw of lws) {
                     let opt = document.createElement('option');
                     opt.dataset.id = lw.laboratoryWorkId;
                     opt.innerText = lw.name;
-                    selectCreate.appendChild(opt.cloneNode(true));
-                    selectUpdate.appendChild(opt);
+                    selectSort.appendChild(opt);
                 }
+                Init();
+                selectSort.addEventListener("change", Init);
             },
             error: (labFail) => {
                 console.log(labFail);
@@ -244,6 +202,191 @@
             }
         }
     );
+    var firstInit = true;
+    var firstInitThemes = true;
+    function Init() {
+        let laboratorywokid = $('#getByLaboratoryWork option:selected')[0].dataset.id
+        $.ajax(
+            {
+                type: 'GET',
+                url: '/api/variants/GetAllByLaboratoryId',
+                //url: '/api/variants/GetAll',
+                beforeSend: (xhr) => {
+                    xhr.setRequestHeader("laboratoryWorkId", laboratorywokid);
+                },
+                success: (variants) => {
+                    let md = window.markdownit();
+                    md.use(math_plugin);
+                    $("#tbodyContent").empty();
+                    let tbdy = document.getElementById('tbodyContent');
+                    //tbdy.innerHTML = "";
+                    for (let variant of variants) {
+                        let tr = document.createElement('tr');
+                        variant.rawDescription = variant['description'];
+                        //let rawDescription = variant['description'];
+                        for (let prop in variant) {
+                            if (prop !== 'variantId' && prop !== 'laboratoryWorkId') {
+                                let td = document.createElement('td');
+                                if (variant[prop] != null) {
+                                    if (prop === 'description') td.innerHTML = md.render(variant[prop]);// + katex.renderToString("");
+                                    else td.appendChild(document.createTextNode(variant[prop]));
+                                }
+                                if (prop === 'name')
+                                    td.dataset.id = variant.laboratoryWorkId;
+
+                                // оставил для вывода лишь имя, вариант и описание
+                                if (prop !== 'name' && prop !== 'description' && prop !== 'variantNumber')
+                                    td.hidden = true;
+                                tr.appendChild(td);
+                            }
+                        }
+                        let td = document.createElement('td');
+                        td.dataset.id = variant.variantId;
+                        td.innerHTML = '<button style="margin-right: 5%" data-toggle="modal" onclick="editPrepareVariant(this)" data-target="#edit" class="btn btn-primary edit-item">Редактировать</button>' +
+                            '<button onclick="removeVariant(' + variant.variantId + ')" class="btn btn-danger remove-item">Удалить</button>';
+                        tr.appendChild(td);
+                        tbdy.appendChild(tr);
+                    }
+                    if (firstInit) {
+                        updateConstrains(); // обновляет ограничения в соответствии с ЛР и убирает поля которые будут перезаписаны генератором
+                        addSelectItems('checker', 'sCheckerCreate', false);
+                        addSelectItems('checker', 'sCheckerEdit', false);
+                        addSelectItems('preparer', 'sPreparerCreate', true);
+                        addSelectItems('preparer', 'sPreparerEdit', true);
+                        addSelectItems('finaliter', 'sFinaliterCreate', true);
+                        addSelectItems('finaliter', 'sFinaliterEdit', true);
+                        initSliders();
+                        createFileUpload("crtUploadSolution", uploadSolution);
+                        createFileUpload("updUploadSolution", updateSolution);
+                        firstInit = false;
+                    }                    
+                },
+                error: (varFail) => {
+                    document.body.innerHTML = '';
+                    alert('Нет доступа');
+                    history.go(-1);
+                }
+            }
+        );
+        if (firstInitThemes) {
+            $.ajax(
+                {
+                    type: 'GET',
+                    url: '/api/laboratoryworks/getall',
+                    beforeSend: (xhr) => {
+                    },
+                    success: (lws) => {
+                        let selects = [
+                            document.getElementById('newLaboratoryWork'),
+                            document.getElementById('EditLaboratoryWork')
+                        ];
+                        for (let lw of lws) {
+                            let opt = document.createElement('option');
+                            opt.dataset.id = lw.laboratoryWorkId;
+                            opt.innerText = lw.name;
+                            for (let x of selects)
+                                x.appendChild(opt.cloneNode(true));
+                        }
+                    },
+                    error: (labFail) => {
+                        console.log(labFail);
+                        document.body.innerHTML = '';
+                        alert('Нет доступа');
+                        history.go(-1);
+                    }
+                }
+            );
+            firstInitThemes = false;
+        }
+        
+    }
+    
+
+    function checkAndSendSolution(file, varid, lwid, fSuccess) {
+        $.ajax(
+            {
+                type: 'POST',
+                url: '/api/Variants/IsThereSolution',
+                contentType: false,
+                data: file,
+                processData: false,
+                async: false,
+                beforeSend: (xhr) => {
+                    //xhr.setRequestHeader("themeid", value);
+                    xhr.setRequestHeader("varId", varid);
+                    xhr.setRequestHeader("lwId", lwid);
+                },
+                success: (result) => {
+                    if (result === "False" || confirm("Эталонное решение с данным именем уже существует! Хотите перезаписать решение?")) {
+                        $.ajax(
+                            {
+                                type: 'POST',
+                                url: '/api/Variants/UploadSolutionManually',
+                                contentType: false,
+                                data: file,
+                                processData: false,
+                                async: false,
+                                beforeSend: (xhr) => {
+                                    //xhr.setRequestHeader("themeid", value);
+                                    xhr.setRequestHeader("varId", varid);
+                                    xhr.setRequestHeader("lwId", lwid);
+                                },
+                                success: (result) => {
+                                    fSuccess(result);
+                                },
+                                error: (sendFail) => { }
+                            }
+                        );
+                    }
+                },
+                error: (sendFail) => {
+                    // alert(sendFail.responseText);
+                }
+            }
+        );
+    }
+
+    function updateSolution(evt) {
+        var files = evt.target.files; // FileList object
+        var dataFile = new FormData();
+        for (var i = 0; i < files.length; i++) {
+            dataFile.append('upload', files[i]);
+        }
+        var varId = document.getElementById('EditNumber').value;
+        var selectorLwId = document.getElementById('EditLaboratoryWork');
+        var lwId = selectorLwId[selectorLwId.selectedIndex].dataset.id;
+        checkAndSendSolution(dataFile, varId, lwId, (result) => {
+            let p = document.getElementById("EditPathSolution");
+            p.value = result;
+            p.textContent = result;
+        });
+    }
+
+    function uploadSolution(evt) {
+        var files = evt.target.files; // FileList object
+        var dataFile = new FormData();
+        for (var i = 0; i < files.length; i++) {
+            dataFile.append('upload', files[i]);
+        }
+        var varId = document.getElementById('newNumber').value;
+        var selectorLwId = document.getElementById('newLaboratoryWork');
+        var lwId = selectorLwId[selectorLwId.selectedIndex].dataset.id;
+        checkAndSendSolution(dataFile, varId, lwid, (result) => {
+            $("#myModal").find("#hiddenPathSolution").val(result);
+        });
+    }
+
+    function createFileUpload(id, f) {
+        let div = document.getElementById(id);
+        let buttonSend = document.createElement('input');
+        buttonSend.type = "file";
+        buttonSend.className = "files";
+        buttonSend.accept = ".*";
+        buttonSend.multiple = false;
+        buttonSend.addEventListener('change', f, false);
+        buttonSend.className = "btn btn-primary edit-item";
+        div.appendChild(buttonSend);
+    }
 
     function initSliders(updatevalues = false) {
         memSlider = document.getElementById('memInputCreate');
@@ -290,7 +433,7 @@
         let sCreate = document.getElementById("newLaboratoryWork");
         let divgenpart = document.getElementById("generationPart");
 
-        sCreate.addEventListener("change", function () {
+        const f = () => {
             id = $('#newLaboratoryWork option:selected')[0].dataset.id
             $.ajax({
                 type: 'GET',
@@ -312,7 +455,9 @@
                     alert(fail.responseText);
                 }
             });
-        });
+        }
+        f();
+        sCreate.addEventListener("change", f);
     }
 
     function createVariant() {
@@ -322,7 +467,7 @@
             LaboratoryWorkId: $('#newLaboratoryWork option:selected')[0].dataset.id,
             VariantNumber: $('#newNumber').val(),
             Description: $('#newDescription').val(),
-            LinkToModel: $('#newLink').val(),
+            LinkToModel: $('#hiddenPathSolution').val(),
             InputDataRuns: $('#newInputData').val(),
             Constraints: `{"Memory": ${document.getElementById("memInputCreate").value},"Time": ${document.getElementById("timeInputCreate").value},"Checker" : "${document.getElementById("sCheckerCreate").value}"${preparer}${finaliter}}`
         };
@@ -398,7 +543,9 @@
 
         $("#edit").find("input[id='EditNumber']").val(numberVar);
         $("#EditDescription").val(rawdescription);
-        $("#EditLink").val(link);
+        //$("#EditLink").val(link);
+        $('#EditPathSolution').val(link);
+        $('#EditPathSolution').text(link);
         $("#EditInputData").val(inputData);
         $("#edit").find("input[type='hidden']").val(id);
         $("#edit").find("select[id='EditLaboratoryWork']").val(name);

@@ -85,14 +85,24 @@
 <script>
     $(() => {
         // браузер блокирует вызов с помощью клавиатуры :(
-        /*window.onkeyup = function (event) {
-            if (event.keyCode == 112)
-                window.open("TemplateInstruction.html", 'Инструкция', 'width=800,menubar=no, toolbar=no, location=no'); 
-        }*/
+        document.onkeyup = function (event) {
+            if (event.key === 'F1')
+                openHelp();
+        }
     });
-
-    function openHelp() {
-        window.open("TemplateInstruction.html", 'Инструкция', 'width=800,menubar=no, toolbar=no, location=no');        
+    let windowObjectReference = null;
+    function openHelp() {       
+        if (windowObjectReference == null || windowObjectReference.closed) {
+            windowObjectReference =
+                window.open(
+                    "TemplateInstruction.html",
+                    'Инструкция',
+                    'width=800,menubar=no, toolbar=no, location=no'
+                ); 
+        }
+        else {
+            windowObjectReference.focus();
+        };
     }
 
     function sendSolution(evt) {

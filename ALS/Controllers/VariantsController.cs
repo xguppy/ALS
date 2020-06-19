@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ using Generator.MainGen.Structs;
 using Generator.Parsing;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -25,11 +27,13 @@ namespace ALS.Controllers
     {
         private readonly ApplicationContext _db;
         private readonly Gen _gen;
+        private IWebHostEnvironment _environment;
 
-        public VariantsController(ApplicationContext db)
+        public VariantsController(ApplicationContext db, IWebHostEnvironment env)
         {
             _db = db;
             _gen = new Gen(new Parser(), new ParamsContainer());
+            _environment = env;
         }
 
         public async Task GenNewTask(VariantDTO model, int templateId)
@@ -55,7 +59,10 @@ namespace ALS.Controllers
             var userId = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
             if (await _db.LaboratoryWorks.Where(w =>  w.UserId == userId).FirstOrDefaultAsync() != null)
             {
-                return Ok(await Task.Run(() => _db.Variants.Include(variant => variant.LaboratoryWork).Select(v => new {v.VariantId, v.LaboratoryWorkId, v.LaboratoryWork.Name, v.VariantNumber, v.Description, v.LinkToModel, v.InputDataRuns, v.Constraints }).ToList()));
+                return Ok(await Task.Run(() => _db.Variants
+                .Include(variant => variant.LaboratoryWork)
+                .Select(v => new {v.VariantId, v.LaboratoryWorkId, v.LaboratoryWork.Name, v.VariantNumber, v.Description, v.LinkToModel, v.InputDataRuns, v.Constraints })
+                .ToList()));
             }
             
             return BadRequest("Нет прав для просмотра");
@@ -66,7 +73,13 @@ namespace ALS.Controllers
             var userId = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
             if (await _db.LaboratoryWorks.Where(w =>  w.UserId == userId && w.LaboratoryWorkId == laboratoryWorkId).FirstOrDefaultAsync() != null)
             {
-                return Ok(await Task.Run(() => _db.Variants.Include(variant => variant.LaboratoryWork).Where(v => v.LaboratoryWork.LaboratoryWorkId == laboratoryWorkId).Select(v => new {v.VariantId, v.LaboratoryWorkId, v.LaboratoryWork.Name, v.VariantNumber, v.Description, v.LinkToModel, v.InputDataRuns }).ToList()));
+                return Ok(await Task.Run(() => _db.Variants
+                    .Include(variant => variant.LaboratoryWork)
+                    .Where(v => v.LaboratoryWork.LaboratoryWorkId == laboratoryWorkId)
+                    .Select(v => new { v.VariantId, v.LaboratoryWorkId, v.LaboratoryWork.Name, v.VariantNumber, v.Description, v.LinkToModel, v.InputDataRuns, v.Constraints })
+                    .OrderBy(x=> x.VariantNumber)
+                    .ToList())
+                );
             }
             
             return BadRequest("Нет прав для просмотра");
@@ -91,6 +104,36 @@ namespace ALS.Controllers
             return BadRequest("Нет прав для просмотра");
         }
 
+        public string PathExecute(string filename, int varId, int lwId) => Path.Combine(_environment.ContentRootPath, "executeModel", $"lr{lwId}_var{varId}_{filename}");
+
+        [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Teacher")]
+        public async Task<IActionResult> UploadSolutionManually(IFormFileCollection upload, [FromHeader] int varId, [FromHeader] int lwId)
+        {
+            if (upload == null)
+            {
+                return RedirectToPage("");
+            }
+
+            //var file = Path.Combine(_environment.ContentRootPath, "uploads", upload[0].FileName);
+            var file = PathExecute(upload[0].FileName, varId, lwId);
+
+            using (var fileStream = new FileStream(file, FileMode.Create))
+            {
+                await upload[0].CopyToAsync(fileStream);
+            }
+
+            return Ok(file);
+        }
+
+        [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Teacher")]
+        public IActionResult IsThereSolution(IFormFileCollection upload, [FromHeader] int varId, [FromHeader] int lwId)
+        {
+            var result = $"{System.IO.File.Exists(PathExecute(upload[0].FileName, varId, lwId))}";
+            return Ok(result);
+        }
+
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Teacher")]
         public async Task<IActionResult> Create([FromBody] VariantDTO model)
@@ -109,9 +152,6 @@ namespace ALS.Controllers
                 }
                 catch (Exception ex)
                 {
-                    // пишем ошибку генератора
-                    //await Response.WriteAsync(ex.Message);
-                    // выходим
                     return BadRequest(ex.Message);
                 }
                 Variant variant = new Variant {VariantNumber = model.VariantNumber, LaboratoryWorkId = model.LaboratoryWorkId, Description = model.Description, LinkToModel = model.LinkToModel, InputDataRuns = model.InputDataRuns, Constraints = model.Constraints};
