@@ -9,7 +9,7 @@
 <h3>Чекеры </h3>
 <div style="margin-bottom: 1%">
     <input onchange="sendSolution(this)" class="btn btn-primary edit-item" type="file" accept=".cs"/>
-    <span id="loader"></span>
+    <span style="float: right; text-align: right;" id="loader"></span>
 </div>
 <div class="container">
     <table style="width: 100%" class="table table-hover" border="1">
@@ -85,23 +85,25 @@
   
   function RemoveChecker(nameChecker) {
         if (confirm("Вы точно хотите удалить этот чекер?")) {
+            let loader = document.getElementById('loader');
             $.ajax(
                          {
                             type: 'POST',
                             url: '/api/Checker/Delete',
                             beforeSend: (xhr) => 
                             {
-                                $('#loader').get()[0].innerHtml = "<b>Идёт процесс удаления</b>";
+                                loader.innerText = "Идёт процесс удаления";
                                 xhr.setRequestHeader("nameComponent", nameChecker);
                             },
                             success: (textChecker) =>
                             {
-                                $('#loader').get()[0].innerHtml = "";
+                                loader.innerText = "";
                                 CreateTable();
                                 alert(textChecker);
                             },
                             error: (checkerFail) =>
                             {
+                                loader.innerText = "";
                                 alert(checkerFail.responseText);
                             }
                          }
@@ -116,6 +118,7 @@
               for (var i = 0; i < files.length; i++) {
                   dataFile.append('componentFile', files[i]);
               }
+              let loader = document.getElementById('loader');
               $.ajax(
                   {
                       type: 'POST',
@@ -126,16 +129,17 @@
                       async: false,
                       beforeSend: (xhr) =>
                       {
-                          $('#loader').get()[0].innerHtml = "<b>Идёт загрузка</b>";
+                          loader.innerText = "Идёт загрузка";
                       },
                       success: (result) =>
                       {
-                          $('#loader').get()[0].innerHtml = "";
+                          loader.innerText = "";
                           CreateTable();
                           alert(result);
                       },
                       error: (sendFail) =>
                       {
+                          loader.innerText = "";
                           alert(sendFail.responseText);
                       }
                   }
