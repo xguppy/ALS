@@ -9,6 +9,6 @@ namespace ALS.DTO
         public DateTime AssignDateTime { get; set; }
         public DateTime? SendDate { get; set; }
         public Evaluation Evaluation { get; set; }
-        public int Mark { get; set; }
+        public double Mark { get; set; }
     }
 }

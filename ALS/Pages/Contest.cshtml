@@ -14,7 +14,8 @@
         <thead>
         <tr>
         <td>Лабораторная работа</td>
-        <td>Описание лабораторной работы</td>    
+        <td>Описание лабораторной работы</td>
+        <td>Система оценивания</td>
         <td>Номер варианта</td>
         <td>Описание варианта</td>
         <td>Статус</td>
@@ -137,7 +138,23 @@
                                       let tdDescLab = document.createElement('td');
                                       tdDescLab.appendChild(document.createTextNode(task.description));
                                       tr.appendChild(tdDescLab);
-
+                                      
+                                      let evaText;
+                                      switch (task.evaluation) {
+                                         case 0:
+                                             evaText = "Строго"
+                                             break;
+                                         case 1:
+                                             evaText = "Не сторого"
+                                             break;
+                                         case 2:
+                                              evaText = "Со штрафом"
+                                              break;
+                                       }
+                                      let tdEvaluation = document.createElement('td');
+                                      tdEvaluation.appendChild(document.createTextNode(evaText));
+                                      tr.appendChild(tdEvaluation);
+                                      
                                       let tdVariantNumber = document.createElement('td');
                                       tdVariantNumber.appendChild(document.createTextNode(task.variantId));
                                       tr.appendChild(tdVariantNumber);
@@ -149,7 +166,16 @@
                                       let tdSolution = document.createElement('td');
                                       if (task.isSolved)
                                       {
-                                          tdSolution.appendChild(document.createTextNode("Задача решена"));
+                                          let counter = 0;
+                                          let allTest = task.testRuns.length;
+                                          for(let item of task.testRuns)
+                                          {
+                                              if(item.isCorrect)
+                                              {
+                                                  counter++;
+                                              }
+                                          }
+                                          tdSolution.appendChild(document.createTextNode("Задача решена" + "\nВсего решено " + counter + "/" + allTest + "\nОценка:" + task.mark * 100));
                                       }
                                       else
                                       {

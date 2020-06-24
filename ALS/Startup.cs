@@ -141,7 +141,7 @@ namespace ALS
             
             if (!context.Disciplines.Any())
             {
-                context.Disciplines.Add(new Discipline { Name = "Programming", Cipher = "pr1" });
+                context.Disciplines.Add(new Discipline { Name = "Программирование", Cipher = "pr1" });
                 context.SaveChanges();
             }
 
@@ -170,14 +170,14 @@ namespace ALS
             
             if (!context.Users.Any())
             {
-                var student = new User { Surname = "Студентов", Name = "Студент", Patronymic = "Студентович", Email = "tmpstudent@mail.com", PwHash = auth.GetHashedPassword("tmpstudent"), GroupId = 1};
+                var student = new User { Surname = "Михайлов", Name = "Дмитрий", Patronymic = "Владимирович", Email = "tmpstudent@mail.com", PwHash = auth.GetHashedPassword("tmpstudent"), GroupId = 1};
                 var student1 = new User { Surname = "Иванов", Name = "Иван", Patronymic = "Иванович", Email = "ivan@mail.com", PwHash = auth.GetHashedPassword("ivan"), GroupId = 2};
                 var student2 = new User { Surname = "Петров", Name = "Петр", Patronymic = "Петрович", Email = "petr@mail.com", PwHash = auth.GetHashedPassword("petr"), GroupId = 1};
                 var student3 = new User { Surname = "Макаров", Name = "Макар", Patronymic = "Макарович", Email = "makar@mail.com", PwHash = auth.GetHashedPassword("makar"), GroupId = 2};
                 var student4 = new User { Surname = "Сидорова", Name = "Александра", Patronymic = "Михайловна", Email = "alexandrochka@mail.com", PwHash = auth.GetHashedPassword("alexandrochka"), GroupId = 1};
                 var student5 = new User { Surname = "Владов", Name = "Владислав", Patronymic = "Владиславович", Email = "vlad@mail.com", PwHash = auth.GetHashedPassword("vlad"), GroupId = 2};
                 var student6 = new User { Surname = "Федоров", Name = "Федор", Patronymic = "Федорович", Email = "fedor@mail.com", PwHash = auth.GetHashedPassword("fedor"), GroupId = 1};
-                var teacher = new User { Surname = "Преподов", Name = "Препод", Patronymic = "Преподович", Email = "tmpprepod@mail.com", PwHash = auth.GetHashedPassword("tmpprepod") };
+                var teacher = new User { Surname = "Семёнов", Name = "Иван", Patronymic = "Васильевич", Email = "tmpprepod@mail.com", PwHash = auth.GetHashedPassword("tmpprepod") };
                 var admin = new User { Surname = "Админов", Name = "Админ", Patronymic = "Админович", Email = "tmpadmin@mail.com", PwHash = auth.GetHashedPassword("tmpadmin") };
 
                 
@@ -225,8 +225,8 @@ namespace ALS
             if (!context.LaboratoryWorks.Any())
             {
                 //context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 9, ThemeId = 2, Name = "lr1", Description = "lr1_description", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
-                context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 9, ThemeId = 1, Name = "ЛР1 - работа с числами", Description = "Вывести четные элементы", Constraints = "{\"Memory\": 4096000,\"Time\": 60000,\"Checker\" : \"AbsoluteChecker\"}", DisciplineCipher = "pr1", Evaluation=Evaluation.Strict});
-                context.LaboratoryWorks.Add(new LaboratoryWork { TemplateLaboratoryWorkId = 1, UserId = 9, ThemeId = 2, Name = "ЛР2 - работа с условными операторами", Description = "сделайте что-нибудь с выражениями", Constraints = "{\"Memory\": 4096000,\"Time\": 60000,\"Checker\" : \"AbsoluteChecker\"}", DisciplineCipher = "pr1", Evaluation = Evaluation.Strict });
+                context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 9, ThemeId = 1, Name = "ЛР1 - работа с числами", Description = "Выполнить операции с числами", Constraints = "{\"Memory\": 4096000,\"Time\": 60000,\"Checker\" : \"AbsoluteChecker\"}", DisciplineCipher = "pr1", Evaluation=Evaluation.Strict});
+                context.LaboratoryWorks.Add(new LaboratoryWork { TemplateLaboratoryWorkId = 1, UserId = 9, ThemeId = 2, Name = "ЛР2 - работа с файлами", Description = "Выполнить операции с числами из файла input.txt и запишите в файл output.txt", Constraints = "{\"Memory\": 4096000,\"Time\": 60000,\"Checker\" : \"FileChecker\", \"Finaliter\" : \"FileFinaliter\", \"Preparer\": \"FilePreparer\"}", DisciplineCipher = "pr1", Evaluation = Evaluation.NotStrict });
                 //context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 2, ThemeId = 1, Name = "lr1", Description = "lr1_description", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
                 //context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 2, ThemeId = 1, Name = "lr2", Description = "Вывести четные элементы", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
                 //context.LaboratoryWorks.Add(new LaboratoryWork { TemplateLaboratoryWorkId = 3, UserId = 2, ThemeId = 2, Name = "lr3", Description = "descrition", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1" });
@@ -237,6 +237,7 @@ namespace ALS
                 context.Variants.Add(new Variant { VariantNumber = 1, LaboratoryWorkId = 1, Description = "var descr" });
                 context.Variants.Add(new Variant { VariantNumber = 2, LaboratoryWorkId = 1, Description = "Тест" });
                 context.Variants.Add(new Variant { VariantNumber = 1, LaboratoryWorkId = 2, LinkToModel = Path.Combine(Environment.CurrentDirectory, "executeModel", $"{ProcessCompiler.CreatePath(2, 1)}.exe"), Description = "В стандартный поток ввода принимаются 10 целых чисел. Вывести в стандартный поток вывода только чётные числа.", InputDataRuns = "[{\"Name\":\"Тест2\",\"Data\":[\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"7\",\"8\",\"9\",\"10\"]},{\"Name\":\"Тест3\",\"Data\":[\"1,2,3,4,5,6,7,8,9,10\"]},{\"Name\":\"Тест4\",\"Data\":[\"#rnd(100, 200, int, 100)\"]}]"});
+                context.Variants.Add(new Variant { VariantNumber = 3, LaboratoryWorkId = 1, LinkToModel = Path.Combine(Environment.CurrentDirectory, "executeModel", $"{ProcessCompiler.CreatePath(1, 3)}.exe"), Description = "Прочитать числа из одного файла и записать квадраты этих чисел в другой. Считывать символы до встречи буквы 'n'", InputDataRuns = "[{\"Name\":\"Тест2\",\"Data\":[\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"7\",\"8\",\"9\",\"10\", \"n\"]},{\"Name\":\"Тест3\",\"Data\":[\"1,2,3,4,5,6,7,8,9,10,n\"]},{\"Name\":\"Тест4\",\"Data\":[\"#rnd(100, 200, int, 100), n\"]}]"});
                 context.SaveChanges();
             }
 
@@ -247,8 +248,9 @@ namespace ALS
                 context.AssignedVariants.Add(new AssignedVariant {UserId = 1, VariantId = 2, AssignDateTime = DateTime.Now});
                 context.AssignedVariants.Add(new AssignedVariant {UserId = 1, VariantId = 1, AssignDateTime = DateTime.Now});
                 
+                context.AssignedVariants.Add(new AssignedVariant {UserId = 4, VariantId = 2, AssignDateTime = DateTime.Now});
                 context.AssignedVariants.Add(new AssignedVariant {UserId = 4, VariantId = 1, AssignDateTime = DateTime.Now});
-
+                
                 context.AssignedVariants.Add(new AssignedVariant {UserId = 5, VariantId = 1, AssignDateTime = DateTime.Now});
                 context.AssignedVariants.Add(new AssignedVariant {UserId = 5, VariantId = 2, AssignDateTime = DateTime.Now});
 

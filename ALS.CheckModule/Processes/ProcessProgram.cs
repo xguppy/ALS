@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace ALS.CheckModule.Processes
@@ -28,6 +29,8 @@ namespace ALS.CheckModule.Processes
         public ProcessProgram(string nameProgram, List<string> inputData, bool isMonitoring)
         {
             AppProcess.StartInfo.FileName = nameProgram;
+            var dirInfo = new DirectoryInfo(nameProgram);
+            AppProcess.StartInfo.WorkingDirectory = dirInfo.Parent.FullName;
             if (isMonitoring)
             {
                 _monitor = new ProcessMonitor(AppProcess);
