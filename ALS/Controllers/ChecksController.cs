@@ -226,18 +226,18 @@ namespace ALS.Controllers
             return testsLog.ToString();
         }
         
-        private static bool Rate(Evaluation evaluation, int testComplete, int sumTest, ref int currentMark)
+        private static bool Rate(Evaluation evaluation, int testComplete, int sumTest, ref double currentMark)
         {
             switch (evaluation)
             {
                 case Evaluation.Strict:
                     currentMark = sumTest == testComplete ? 1 : 0;
-                    return currentMark == 1;
+                    return Math.Abs(currentMark - 1) < 0.0001;
                 case Evaluation.NotStrict:
-                    currentMark = testComplete;
+                    currentMark = testComplete / sumTest;
                     return IsSolved(testComplete, sumTest);
                 case Evaluation.Penalty:
-                    currentMark -= sumTest - testComplete;
+                    currentMark -= testComplete / sumTest;
                     return IsSolved(testComplete, sumTest);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(evaluation), evaluation, "Выбранная стратегия оценивания отсутствует");

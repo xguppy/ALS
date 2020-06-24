@@ -37,7 +37,7 @@ namespace ALS.CheckModule.Compare
         public async Task<ResultRun> CompareAsync(Constrains constrains)
         {
             var isStdInput = true;
-            await Task.Run(() =>PreparerList.Get(constrains.Preparer)?.Prepare(_user.PathToProgram, _model.PathToProgram, _userResult.Input, ref isStdInput));
+            await Task.Run(() => PreparerList.Get(constrains.Preparer)?.Prepare(_user.PathToProgram, _model.PathToProgram, _userResult.Input, ref isStdInput));
             _user.IsStdInput = isStdInput;
             _model.IsStdInput = isStdInput;
             //Начнём и подождём завершения

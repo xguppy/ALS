@@ -5,7 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ALS.CheckModule\ALS.CheckModule.csproj" >
+      <ProjectReference Include="..\ALS.CheckModule\ALS.CheckModule.csproj">
         <Private>false</Private>
         <ExcludeAssets>runtime</ExcludeAssets>
       </ProjectReference>

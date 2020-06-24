@@ -9,7 +9,7 @@ namespace ALS.EntityСontext
         public int UserId { get; set; }
         public int VariantId { get; set; }
         public DateTime AssignDateTime { get; set; }
-        public int Mark { get; set; }
+        public double Mark { get; set; }
         
         public User User { get; set; }
         public Variant Variant { get; set; }

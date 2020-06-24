@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using ALS.CheckModule.Compare.DataStructures;
 using ALS.DTO;
 using ALS.EntityСontext;
 using ALS.Extensions;
@@ -53,8 +54,9 @@ namespace ALS.Controllers
                         av.UserId == userId && av.Variant.LaboratoryWork.DisciplineCipher == disciplineId)
                 .Select(av => new
                 {
-                    av.AssignedVariantId, av.Variant.LaboratoryWork.Description, av.Variant.LaboratoryWork.Name, av.Variant.VariantId, VarDescription = av.Variant.Description,
-                    IsSolved = av.Solutions.Any(sol => sol.IsSolved)
+                    av.AssignedVariantId, av.Mark, av.Variant.LaboratoryWork.Description, av.Variant.LaboratoryWork.Name, av.Variant.LaboratoryWork.Evaluation, 
+                    av.Variant.VariantId, VarDescription = av.Variant.Description,
+                    IsSolved = av.Solutions.Any(sol => sol.IsSolved), TestRuns = av.Solutions.FirstOrDefault(sol => sol.IsSolved).TestRuns.Select(tr => JsonConvert.DeserializeObject<ResultRun>(tr.ResultRun))
                 }).ToList()));
         }
         

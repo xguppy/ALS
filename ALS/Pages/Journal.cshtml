@@ -162,7 +162,7 @@
                                                                              + 'Дата назначения: ' + new Date(row.assignDateTime).toLocaleString('ru', optionsTime)
                                                                              + '\n' + 'Дата сдачи: ' + dateStr + 
                                                                              '\n' + 'Оценивание: ' + evaText +
-                                                                             '\n' + 'Оценка: ' + row.mark;
+                                                                             '\n' + 'Оценка: ' + row.mark * 100;
                                                  }
                                                   
                                                   rowElement.appendChild(tdResult);
