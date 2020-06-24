@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using ALS.DTO;
 using ALS.EntityСontext;
 using Generator.MainGen;
-using Generator.MainGen.Parametr;
 using Generator.MainGen.Structs;
 using Generator.Parsing;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -32,24 +31,24 @@ namespace ALS.Controllers
         public VariantsController(ApplicationContext db, IWebHostEnvironment env)
         {
             _db = db;
-            _gen = new Gen(new Parser(), new ParamsContainer());
+            _gen = new Gen();
             _environment = env;
         }
 
         public async Task GenNewTask(VariantDTO model, int templateId)
         {
-            ResultData resOfGen = null;
+            //ResultData resOfGen = null;
             var path = _db.TemplateLaboratoryWorks
                 .FirstOrDefault(twl => twl.TemplateLaboratoryWorkId == templateId).TemplateTask;
             // если условия соблюдены, генерируем данные
-            if (path != null) resOfGen = await _gen.Run(new Uri(path).AbsolutePath, model.LaboratoryWorkId, model.VariantNumber, true);
-            // успешная генерация
-            if (resOfGen != null)
+            if (path != null)
             {
+                var resOfGen = await _gen.Run(new Uri(path).AbsolutePath, model.LaboratoryWorkId, model.VariantNumber, true);
+
                 // перезаписываем введеные пользователем данные
-                model.Description = resOfGen.Template;
-                model.LinkToModel = resOfGen.Code;
-                model.InputDataRuns = resOfGen.Tests;
+                model.Description = resOfGen.task;
+                model.LinkToModel = resOfGen.code;
+                model.InputDataRuns = resOfGen.tests;
             }
         }
 

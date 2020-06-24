@@ -1,32 +1,38 @@
-﻿using System;
-using System.IO;
-using System.Text;
-using System.Collections.Generic;
-using Generator.Parsing;
+﻿using ALS.CheckModule.Processes;
 using Generator.MainGen.Structs;
-using System.Threading.Tasks;
-using ALS.CheckModule.Processes;
+using Generator.Parsing;
 using Newtonsoft.Json;
-using Generator.MainGen;
-using Generator.MainGen.Parametr;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Generator.MainGen
 {
     public class Gen
     {
-        private Parser _pr;
-        private ParamsContainer _paramsContainer;
-        private List<Param> _parametrs;
-        private GenFunctions _genFunctions = new GenFunctions();
-
-        public Gen(Parser pr, ParamsContainer paramsContainer)
+        // анализ шаблон-файлов
+        private Parser _pr = new Parser();
+        // доступные функции
+        public GenFunctions _gf = new GenFunctions();
+        // настройки генератора
+        private Services _services = new Services();
+        private const char _matchChar = '@';
+        private readonly string _fextension;
+        public Gen()
         {
-            _pr = pr;
-            _paramsContainer = paramsContainer;
+            // инициализация стандартных настроек
+            InitDefaultServices();
+            _gf.Init(_services);
+            var os = Environment.OSVersion;
+            _fextension = os.Platform == PlatformID.Win32NT ? ".exe" : "";
         }
 
-        private string PathSourceModelCode(string name, string fextension) => Path.Combine("sourceCodeModel", $"{name}.{fextension}");
-        private string PathExecuteModel(string name, string fextension) => Path.Combine("executeModel", $"{name}.{fextension}");
+        private string PathSourceModelCode(string name) => Path.Combine("sourceCodeModel", $"{name}{_fextension}");
+        private string PathExecuteModel(string name) => Path.Combine("executeModel", $"{name}{_fextension}");
 
         private string PathToSoulution(string subpath)
         {
@@ -41,38 +47,122 @@ namespace Generator.MainGen
         private async Task<bool> Compile(int lr, int var)
         {
             string name = ProcessCompiler.CreatePath(lr, var);
-            //ProcessCompiler pc = new ProcessCompiler(Path.Combine("sourceCodeModel", $"{lrPath}.cpp"), Path.Combine("executeModel", $"{lrPath}.exe"));
-            ProcessCompiler pc = new ProcessCompiler(PathToSoulution(name), PathExecuteModel(name, "exe"));
+            ProcessCompiler pc = new ProcessCompiler(PathToSoulution(name), PathExecuteModel(name));
             return await Task.Run(() => pc.Execute(60000));
         }
 
-        public async Task<ResultData> Run(string fileName, int lr = 1, int var = 1, bool needCompile = false)
+        // использование готового объекта-параметра в шаблоне
+        private void UseParam(List<(BlockEnum, StringBuilder)> blocks, Param p)
         {
-            var d = await Task.Run(() => _pr.Read(fileName));
-            if (d == null) return null;
-
-            _parametrs = _paramsContainer.GenNewParametrs(d.Sd);
-
-            foreach (var elem in _parametrs)
+            foreach (var item in blocks)
             {
-                var pattern = $"@{elem.Name}@";
-                d.Template = d.Template.Replace(pattern, elem.Value);
-                d.Code = d.Code.Replace(pattern, elem.Value);
-                if (d.TestsD == null) continue;
-                for (int i = 0; i < d.TestsD.Count; i++)
+                // поиск мест где необходима подстановка
+                Regex r = new Regex($"({_matchChar})({p.Name})(\\.?)([^{_matchChar}]*)({_matchChar})");
+                var ms = r.Matches(item.ToString());
+                // непосредственная подстановка параметров
+                foreach (Match i in ms)
                 {
-                    for (int j = 0; j < d.TestsD[i].Data.Count; j++)
-                    {
-                        d.TestsD[i].Data[j] = d.TestsD[i].Data[j].Replace(pattern, elem.Value);
-                    }
+                    var full = i.Groups[0].ToString();
+                    var fieldName = i.Groups[4].ToString();
+                    var bestValue = p.GetField(fieldName);
+                    item.Item2.Replace(full, bestValue);
                 }
             }
+        }
 
-            if (d.TestsD != null && !_genFunctions.CheckTests(d.TestsD))
+        // вывод задания, эталонного решения(кода), тестовых данных (json)
+        public (string, string, string) GetTaskCodeTests(List<(BlockEnum, StringBuilder)> blocks)
+        {
+            var task = blocks.FirstOrDefault(x => x.Item1 == BlockEnum.Template).Item2.ToString();
+            var code = blocks.FirstOrDefault(x => x.Item1 == BlockEnum.Solution).Item2.ToString();
+            var tests = blocks.FirstOrDefault(x => x.Item1 == BlockEnum.Tests).Item2.ToString();
+            return (task, code, JsonConvert.SerializeObject(tests.Trim()));
+        }
+
+        // получение очередного параметра из секции ХРАНИЛИЩЕ_ОБЪЕКТОВ
+        private IEnumerable<Param> GetNextParam(StringBuilder block)
+        {
+            // получение объекта-параметра
+            while (_pr.GetParamString(block, out string paramStr))
             {
-                throw new Exception("Тестовые данные содержат ошибку!");
+                // создание готового параметра
+                var p = CreateParamAsync(paramStr);
+                yield return p.Result;
             }
+        }
 
+        // создание списка готовых к использования параметров
+        private List<Param> GetParams(StringBuilder block)
+        {
+            List<Param> list = new List<Param>();
+            foreach (Param p in GetNextParam(block))
+            {
+                list.Add(p);
+            }
+            return list;
+        }
+
+        // инициализация стандартных настроек
+        private void InitDefaultServices()
+        {
+            _services.InitDefault();
+        }
+
+        // применение конкретных настроек
+        private void InitServices(StringBuilder serviceBlock)
+        {
+            var options = GetParams(serviceBlock);
+            _services.Init(options);
+            _gf.Init(_services);
+        }
+
+
+        // создание задания, эталонного решения(кода), тестовых данных
+        public async Task<(string task, string code, string tests)> GenerateDataAsync(string fileName)
+        {
+            // получение всех блоков шаблона-файла
+            var blocks = await Task.Run(() => _pr.GetBlocks(fileName));
+            StringBuilder storage = blocks.FirstOrDefault(x => x.Item1 == BlockEnum.Storage).Item2;
+            StringBuilder services = blocks.FirstOrDefault(x => x.Item1 == BlockEnum.Service).Item2;
+            InitServices(services);
+            foreach (Param p in GetNextParam(storage))
+            {
+                UseParam(blocks, p);
+            }
+            return await Task.Run(() => GetTaskCodeTests(blocks));
+        }
+        // создание готового параметра
+        public async Task<Param> CreateParamAsync(string paramStr)
+        {
+            Param p = await Task.Run(() => _pr.CreateRawParam(paramStr));
+            var value = p.GetBestData();
+            var fs = await Task.Run(() => _pr.CreateFunctionStruct(value));
+            p.SetValue(_gf.WhatToDoWithParam(fs));
+            return p;
+        }
+        // получение списка готовых тестовых данных из json
+        public List<(string, List<string>)> GetTestsFromJson(string json)
+        {
+            var t = new StringBuilder(JsonConvert.DeserializeObject<string>(json));
+            var tests = GetParams(t);
+            List<(string, List<string>)> result = tests.Select(x => {
+                var name = x.Name;
+                var rawTests = x.Data.ToList().Select(x => x.Value).ToList();
+                return (name, rawTests);
+            }).ToList();
+
+            return result;
+        }
+
+        public List<Param> GetTestsFromJsonParam(string json)
+        {
+            var t = new StringBuilder(JsonConvert.DeserializeObject<string>(json));
+            return GetParams(t);
+        }
+
+        public async Task<(string task, string code, string tests)> Run(string fileName, int lr = 1, int var = 1, bool needCompile = false)
+        {
+            (string task, string code,string tests) = await GenerateDataAsync(fileName);
             string name = ProcessCompiler.CreatePath(lr, var);
             string pathtocpp = PathToSoulution(name);
 
@@ -80,7 +170,7 @@ namespace Generator.MainGen
             {
                 using (StreamWriter sw = new StreamWriter(Path.Combine(pathtocpp, $"{name}.cpp"), false, Encoding.UTF8))
                 {
-                    await sw.WriteLineAsync(d.Code);
+                    await sw.WriteLineAsync(code);
                 }
 
                 if (!await Compile(lr, var))
@@ -89,12 +179,11 @@ namespace Generator.MainGen
                 }
             }
 
-            return new ResultData()
-            {
-                Template = d.Template, /* шаблон задания */
-                Code = new System.Uri(Path.Combine(Environment.CurrentDirectory, PathExecuteModel(name, "exe"))).AbsoluteUri, /*путь до бинарника*/
-                Tests = JsonConvert.SerializeObject(d.TestsD) /* тестовые данные */
-            };
+            return (
+                task, 
+                new System.Uri(Path.Combine(Environment.CurrentDirectory, PathExecuteModel(name))).AbsoluteUri, 
+                tests
+            );
         }
     }
 }

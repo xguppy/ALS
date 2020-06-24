@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ALS.EntityСontext;
 using Generator.MainGen;
-using Generator.MainGen.Parametr;
+using Generator.MainGen.Structs;
 using Generator.Parsing;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -22,7 +22,7 @@ namespace ALS.Controllers
         public GeneratorController(ApplicationContext db)//, IParser pr, IParamsContainer paramsContainer)
         {
             _db = db;
-            _gen = new Gen(new Parser(), new ParamsContainer());
+            _gen = new Gen();
         }
 
         // Подумать над вариантом - откуда брать
@@ -38,9 +38,9 @@ namespace ALS.Controllers
             try
             {
                 var res = await _gen.Run(new Uri(tlwPath).AbsolutePath, lrId, var, true);
-                if (res == null) return BadRequest("Result of generation is null");
+                //if (res == null) return BadRequest("Result of generation is null");
 
-                _db.Variants.Add(new Variant { LaboratoryWorkId = lrId, VariantNumber = var, Description = res.Template, LinkToModel = res.Code, InputDataRuns = res.Tests });
+                _db.Variants.Add(new Variant { LaboratoryWorkId = lrId, VariantNumber = var, Description = res.task, LinkToModel = res.code, InputDataRuns = res.tests });
                 await _db.SaveChangesAsync();
             }
             catch (Exception ex)

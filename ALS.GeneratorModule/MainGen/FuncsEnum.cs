@@ -3,14 +3,15 @@ namespace Generator.MainGen
 {
     public enum FuncsEnum
     {
-        rnd,
-        rndInt,
-        rndDouble,
-        genAE,
-        getAEcode,
-        parent,
-        lua,
-        luaExtension,
+        случайное,
+        случайноеЦелое,
+        случайноеДробное,
+        создатьАВ,
+        создатьАВдробь,
+        получитьАВкод,
+        родитель,
+        луа,
+        расширениеЛуа,
         justString
     }
 }

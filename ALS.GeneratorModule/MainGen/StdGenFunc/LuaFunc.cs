@@ -1,34 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
-using Generator.MainGen.Parametr;
+using Generator.MainGen.Structs;
 using NLua;
 
 namespace Generator.MainGen.StdGenFunc
 {
+    // исполнения функции написанной на языке Lua
     public class LuaFunc : AFunc
     {
         private Lua _lua;
 
-        public LuaFunc()
+        public LuaFunc(bool multypleReturnDatas = false)
         {
+            MultypleReturnDatas = multypleReturnDatas;
             _lua = new Lua();
             _lua.State.Encoding = Encoding.UTF8;
         }
 
-        public override string Run(Param param)
+        public override dynamic Run(FunctionStruct fs)
         {
-            var args = GetArgs(param.RawData);
-            if (args.Count != 1) throw new Exception($"Функция #{FuncsEnum.lua} только 1 параметр| строка = [ {param} ]");
-            StringBuilder s = new StringBuilder(args[0]);
-            if (s[0] == '\"' && s[s.Length - 1] == '\"')
+            // получение кода на lua из аргумента
+            StringBuilder s = new StringBuilder(fs.Args);
+            if (s[0] == '\"' && s[^1] == '\"')
             {
                 s[0] = ' ';
-                s[s.Length - 1] = ' ';
+                s[^1] = ' ';
             }
-            //s = s.Replace("io", "Вы не можете использовать stdin/stdout");
-            string res = _lua.DoString(s.ToString())[0].ToString();
-            return res;
+            // исполнение кода
+            var res = _lua.DoString(s.ToString());
+            // вовзращение одного значения, таблицы или списка значений
+            if (res.Length == 1 && res[0].ToString() == "table") 
+                return res[0];
+
+            List<(string, string)> ls = new List<(string, string)>();
+            for (int i = 0; i < res.Length; i++)
+            {
+                ls.Add((i.ToString(), res[i].ToString()));
+            }
+            return ls;
         }
     }
 }

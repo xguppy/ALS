@@ -1,20 +1,18 @@
-﻿using Generator.MainGen.Parametr;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Generator.MainGen.Structs;
 
 namespace Generator.MainGen.StdGenFunc
 {
     public class RndInt : Rnd
     {
-        public override string Run(Param param)
+        public RndInt(bool multypleReturnDatas = false) : base(multypleReturnDatas) { }
+        public override dynamic Run(FunctionStruct fs)
         {
-            var args = GetArgs(param.RawData);
+            var args = fs.ListArgs;
             if (args.Count == 3)
-                args.Insert(2, "int");
+                args.Insert(2, TypesEnum.целое.ToString());
             if (args.Count == 2)
-                args.Add("int");
-            return Next(args, param.ToString());
+                args.Add(TypesEnum.целое.ToString());
+            return Next(args, fs.ToString());
         }
     }
 }

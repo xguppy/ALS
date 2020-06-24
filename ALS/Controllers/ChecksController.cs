@@ -90,7 +90,7 @@ namespace ALS.Controllers
                     try
                     {
                         //Получим входные данные для задачи
-                        var gen = new GenFunctions();
+                        var gen = new Gen();
 
                         var testData = gen.GetTestsFromJson(assignedVar.Variant.InputDataRuns);
                         testNames = testData.Select(td => td.Item1).ToArray();

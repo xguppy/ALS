@@ -1,28 +1,41 @@
-﻿using Generator.MainGen.Parametr;
-using Generator.Parsing;
-using System.Linq;
+﻿using Generator.MainGen.Structs;
 using System.Collections.Generic;
+using NLua;
 
 namespace Generator.MainGen.StdGenFunc
 {
     // Асбтрактный класс - функция генератора
     public abstract class AFunc
     {
-        private Parser _pr = new Parser();
+        // св-во, указывет на количество возвращаемых параметров
+        protected bool MultypleReturnDatas = false;
 
-        // использование анализатора для получение
-        // списка аргументов функции 
-        protected List<string> GetArgs(string str)
+        // шаблонный метод
+        public List<(string, string)> Call(FunctionStruct fs)
         {
-            var args = _pr.GetSeparatedArgs(str);
-            return args.Select(arg => arg.Trim(' ', '\n', '\r')).ToList();
+            // вовзвращаемые данные
+            List<(string, string)> returningData = new List<(string, string)>();
+            // вызов конкретного метода
+            var result = Run(fs);
+            // создание списка готовых значений
+            if (MultypleReturnDatas) {
+                if (result.ToString() == "table")
+                {
+                    LuaTable lt = (LuaTable)result;
+                    foreach (var k in lt.Keys)
+                        returningData.Add((k.ToString().ToLower(), lt[k].ToString()));
+                }
+                else
+                {
+                    return result;
+                }
+            }
+            else{
+                returningData.Add(("0", result));
+            }
+
+            return returningData;
         }
-        // хеширование имени функции для более удобного вызова нужной функции
-        public static int GetHashOfFunc(string name)
-        {
-            return name.Sum(ch => ch * 1337);
-        }
-        // абстрактный меод запуска функции
-        public abstract string Run(Param param);
+        public abstract dynamic Run(FunctionStruct fs);
     }
 }

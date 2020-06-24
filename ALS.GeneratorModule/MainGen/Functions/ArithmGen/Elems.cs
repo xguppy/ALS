@@ -2,12 +2,24 @@ using System.Collections.Generic;
 
 namespace Generator
 {
-    public static class Elems
+    public class Elems
     {
-        public static List<AEElem> Funcs = new List<AEElem>();
-        public static List<AEElem> Signs = new List<AEElem>();
-       
-        public static void SetFuncs(List<string> funcs)
+        public List<AEElem> Funcs { get; set; } = new List<AEElem>();
+        public List<AEElem> Signs { get; set; } = new List<AEElem>();
+
+        public AEElem Frac { get; set; }
+
+        public Elems()
+        {
+            Frac = new AEElem("/", "(?L) / (?R)", "\\frac{?L}{?R}", "(fabs((?R)) > 1.0e-6)");
+        }
+        public void Default()
+        {
+            SetFuncs(new List<string>() {"sin", "cos", "tan", "atan", "scobs", "log10", "ln", "sqrt"});
+            SetSigns(new List<string>() { "+", "-", "*", "/", "^"});
+        }
+
+        public void SetFuncs(List<string> funcs)
         {
             AEElem sin = new AEElem("sin", "sin(?L)", "\\sin{(?L)}", default);
             AEElem cos = new AEElem("cos", "cos(?L)", "\\cos{(?L)}", default);
@@ -29,12 +41,12 @@ namespace Generator
                                          Funcs.Add(scobs);
         }
         
-        public static void SetSigns(List<string> signs)
+        public void SetSigns(List<string> signs)
         {// знаки
             AEElem add = new AEElem("+", "?L + ?R", "?L + ?R", default);
             AEElem sub = new AEElem("-", "?L - ?R", "?L - ?R", default);
             AEElem mul = new AEElem("*", "?L * ?R", "?L * ?R", default);
-            AEElem div = new AEElem("/", "?L / (?R)", "\\frac{?L}{?R}", "(fabs((?R)) > 1.0e-6)");
+            AEElem div = Frac;//new AEElem("/", "?L / (?R)", "\\frac{?L}{?R}", "(fabs((?R)) > 1.0e-6)");
             AEElem pow = new AEElem("^", "pow(?L, ?R)", "(?L)^{?R}", default);
 
             if (signs.Contains("+")) Signs.Add(add);

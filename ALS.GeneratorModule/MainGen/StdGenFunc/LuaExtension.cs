@@ -1,23 +1,27 @@
-﻿using Generator.MainGen.Parametr;
+﻿using Generator.MainGen.Structs;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
 
 namespace Generator.MainGen.StdGenFunc
 {
     class LuaExtension : LuaFunc
     {
-        public override string Run(Param param)
+        public LuaExtension(bool multypleReturnDatas = false) : base(multypleReturnDatas) {}
+        public override dynamic Run(FunctionStruct fs)
         {
-            var args = GetArgs(param.RawData);
-            int pos = param.FunctionName.IndexOf('.');
-            if (pos == -1) return param.RawData;
-            string moduleName = param.FunctionName.Substring(0, pos);
-            string funcName = param.FunctionName.Substring(pos+1, param.FunctionName.Length-pos-1);
-            StringBuilder funcArgs = new StringBuilder();
-            for (int i = pos == -1 ? 2 : 0; i < args.Count; i++) funcArgs.Append($",{args[i]}");funcArgs[0] = ' ';
-            string cmd = $"#lua(\"local lib = require('{moduleName}');return lib.{funcName}({funcArgs.ToString()});\")";
-            return base.Run(new Param(cmd, default, default));
+            // анализ - какой метод необходимо вызвать и из какого модуля
+            List<(string, string)> ls = new List<(string, string)>();
+            int pos = fs.FullFunctionName.IndexOf('.');
+           
+            if (pos == -1) { ls.Add(("0", fs.Raw)); return ls; }
+            string moduleName =  fs.FullFunctionName.Substring(0, pos).Replace("\\", "/");
+            string funcName = fs.FullFunctionName.Substring(pos + 1, fs.FullFunctionName.Length - pos - 1);
+            // создание кода для вызова метода
+            //fs.Args = $"\"package.path = package.path .. \";{Directory.GetCurrentDirectory().Replace("\\", "/")}\";local lib = require('{moduleName}');return lib.{funcName}({fs.Args});\"";            
+            fs.Args = $"\"local lib = require('{moduleName}');return lib.{funcName}({fs.Args});\"";
+            // вызов метода
+            return base.Run(fs);
         }
     }
 }

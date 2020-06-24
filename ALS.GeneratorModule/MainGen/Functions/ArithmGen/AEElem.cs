@@ -36,7 +36,7 @@ namespace Generator
 
             return res.ToString();
         }
-        public string MakeOrig(Tree tree) => Make(tree, _model);
+        public string Makeorig(Tree tree) => Make(tree, _model);
         public string MakeConstr(Tree tree) => Make(tree, _constraints);
 
     }

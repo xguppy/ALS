@@ -1,20 +1,19 @@
-﻿using Generator.MainGen.Parametr;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Generator.MainGen.Structs;
 
 namespace Generator.MainGen.StdGenFunc
 {
     public class RndDouble : Rnd
     {
-        public override string Run(Param param)
+        public RndDouble(bool multypleReturnDatas = false) : base(multypleReturnDatas) { }
+        
+        public override dynamic Run(FunctionStruct fs)
         {
-            var args = GetArgs(param.RawData);
+            var args = fs.ListArgs;
             if (args.Count == 3)
-                args.Insert(2, "double");
+                args.Insert(2, TypesEnum.дробное.ToString());
             if (args.Count == 2)
-                args.Add("double");
-            return Next(args, param.ToString());
+                args.Add(TypesEnum.дробное.ToString());
+            return Next(args, fs.ToString());
         }
     }
 }

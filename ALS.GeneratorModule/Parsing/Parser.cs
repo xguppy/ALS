@@ -1,6 +1,10 @@
+﻿using Generator.MainGen;
+using Generator.MainGen.Structs;
+using Generator.MainGen.StdGenFunc;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -8,86 +12,204 @@ namespace Generator.Parsing
 {
     public class Parser
     {
-        /*названия блоков*/
+        // список секций
         private const string _storage = "ХРАНИЛИЩЕ_ОБЪЕКТОВ";
         private const string _template = "ШАБЛОННЫЙ_ВИД";
         private const string _solution = "РЕШЕНИЕ";
         private const string _service = "СЛУЖЕБНОЕ";
         private const string _tests = "ТЕСТОВЫЕ_ДАННЫЕ";
-        /*настройки в блоке СЛУЖЕБНОЕ*/
-        private const string _arithmSigns = "знаки_арифм";
-        private const string _arithmFuncs = "функции_арифм";
-
-        private List<DataContainer> _storageData;
-        private List<DataContainer> _testData;
-        private string _templateStr, _code;
-        public GenData GenData;
+        // словарь с доступными функциями
+        private Dictionary<string, FuncsEnum> _funcs = new Dictionary<string, FuncsEnum>();
+        
+        private const char _or = '|';
+        private const char _super = (char)254;
 
         public Parser()
         {
-            _storageData = new List<DataContainer>();
+            // инициализация словаря с функциями
+            foreach (int i in Enum.GetValues(typeof(FuncsEnum)))
+            {
+                FuncsEnum f = (FuncsEnum)i;
+                _funcs.Add(f.ToString(), f);
+            }            
         }
-        // основной метод класса
-        public GenData Read(string fileName)
+        // разделение секций
+        private string[] SplitText(string text)
         {
-            _code = "";
-            _templateStr = "";
             string lines = "----";
+            Regex r = new Regex("\\/\\/.*");
+            text = r.Replace(text, "");
+            r = new Regex($"{lines}(\\W*)\n");
+            text = r.Replace(text, lines);
+            var p = text.Split(lines).Select(str => str.Trim(' ', '\n', '\r')).Where(s => !string.IsNullOrEmpty(s)).ToArray();
+            return p;
+        }
+        // Получение списка (название секции - содержимое)
+        public List<(BlockEnum, StringBuilder)> GetBlocks(string fileName)
+        {
+            List<(BlockEnum, StringBuilder)> result = new List<(BlockEnum, StringBuilder)>();
             try
             {
                 string text;
                 // чтение файла
                 using (StreamReader s = new StreamReader(fileName)) text = s.ReadToEnd();
                 // разделение файла наблоки
-                Regex r = new Regex($"{lines}(\\W*)\n");
-                text = r.Replace(text, lines);
-                var splitedText = text.Split(lines);
+                var splitedText = SplitText(text);
                 // обработка блоков
-                foreach (string str in splitedText)
+                foreach (var str in splitedText)
                 {
-                    var s = str.Trim(' ', '\n', '\r');
-                    if (s.Length == 0) continue;
-                    var pos = s.IndexOf('\n');
-                    var head = s.Substring(0, pos);
-                    var body = s.Remove(0, pos);
-                    Parse(head, body);
+                    var b = Block(str);
+                    result.Add((b.Item1, new StringBuilder(b.Item2)));
                 }
-
-                GenData = new GenData(_storageData, _templateStr, _code, _testData);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Возникла ошибка во время парсинга фалйа! Сообщение об ошибке = [{ex.Message}] ");
+                throw new Exception($"Возникла ошибка во время парсинга файла! Сообщение об ошибке = [{ex.Message}] ");
             }
 
-            return GenData;
+            return result;
         }
 
-        private void Parse(string head, string body)
+        // определение типа секции
+        private (BlockEnum, string) Block(string text)
         {
+            var pos = text.IndexOf('\n');
+            var head = text.Substring(0, pos);
+            var body = text.Remove(0, pos);
             switch (head.Trim(' ', '\r').ToUpper())
             {
                 case _storage:
-                    GetStorageData(body);
-                    break;
+                    return (BlockEnum.Storage, body);
                 case _template:
-                    GetTemplateData(body);
-                    break;
+                    return (BlockEnum.Template, body);
                 case _service:
-                    GetServiceData(body);
-                    break;
+                    return (BlockEnum.Service, body);
                 case _solution:
-                    GetCode(body);
-                    break;
+                    return (BlockEnum.Solution, body);
                 case _tests:
-                    GetTestsD(body);
-                    break;
+                    return (BlockEnum.Tests, body);
                 default:
-                    break;
+                    return (BlockEnum.Text, text);
             }
         }
 
+        private bool CheckShielding(StringBuilder s, int i)
+        {
+            return (i > 0 && s[i - 1] == '\\');
+        }
+        // индекс символа в StringBuilder
+        private int IndexOf(StringBuilder s, char ch)
+        {
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (s[i] == ch && !CheckShielding(s, i))
+                {
+                    return i;
+                }
+                else if (s[i] == '\"')
+                {
+                    i = FindStringEnd(s, i, '\"');
+                    if (i < 0) throw new Exception($"Не получилось найти окончание строки: [{s.ToString()}]");
+                }
+            }
+            return -1;
+        }
+        // получение очередного объекта-параметра в секции
+        public bool GetParamString(StringBuilder text, out string outputParam)
+        {
+            outputParam = default;
+            var pos = IndexOf(text, ';');
+            if (pos == -1) return false;
+            outputParam = text.ToString(0, pos).Trim();
+            text.Remove(0, pos+1);
+            return outputParam != default;
+        }
+        // создание словаря (ключ-значение) всех значений присвоенных объекту-параметру
+        private Dictionary<string, string> CreateDictionaryFromRaw(string[] raw)
+        {
+            Dictionary<string, string> d = new Dictionary<string, string>();
+            int iter = 0;
+            // для каждого значения
+            foreach (var str in raw)
+            {
+                // выбирается наиболее подходящий ключ
+                var res = GetAssociativeValues(str);
+                var key = res.Item1 != default ? res.Item1 : iter.ToString();
+                // если ключ не был установлен явно, то используется просто номер
+                if (res.Item1 == default) iter++;
+                d.Add(key, res.Item2);
+            }
 
+            return d;
+        }
+        // создание сырого параметра, все значения находятся в первоначальном виде
+        public Param CreateRawParam(string paramStr)
+        {
+            Param p = null;
+            var parts = paramStr.Split(':', 2);
+            if (parts.Length > 1)
+            {
+                var rawName = GetAssociativeValues(parts[0]);
+                var raw  = GetSeparatedValues(parts[1], _or);
+                //            список всех значений          имя параметра  выбранное значение
+                p = new Param(CreateDictionaryFromRaw(raw), rawName.Item2, rawName.Item1);
+            }
+
+            return p;
+        }
+        // получение имени функции
+        private string GetFuncName(string value)
+        {
+            int s = value.IndexOf('#');
+            if (s == -1 || (s > 0 && value[s-1] == '\\')) return FuncsEnum.justString.ToString();
+            int f = value.IndexOf('(');
+            if (f == -1 || (f > 0 && value[f - 1] == '\\')) return FuncsEnum.justString.ToString();
+            return value.Substring(s + 1, f - s - 1);
+        }
+        // определяем тип функции
+        private FuncsEnum WhatFunctionType(string name)
+        {
+            if (name == FuncsEnum.justString.ToString()) return FuncsEnum.justString;
+
+            try
+            {
+                return _funcs[name];
+            }
+            catch (Exception)
+            {
+                return FuncsEnum.расширениеЛуа;
+            }
+            /*int h = AFunc.GetHashOfFunc(name);
+            if (_funcs.ContainsKey(h))
+            {
+                if (name == $"{_funcs[h]}")
+                    return _funcs[h];
+            }*/
+        }
+        // восстановление параметров из списка
+        public string RestoreArgs(List<string> args)
+        {
+            StringBuilder funcArgs = new StringBuilder("");
+            if (args.Count > 0)
+            {
+                for (int i = 0; i < args.Count; i++)
+                    funcArgs.Append($",{args[i]}");
+                funcArgs[0] = ' ';
+            }
+            return funcArgs.ToString();
+        }        
+        public FunctionStruct CreateFunctionStruct(string value)
+        {
+            string fun = GetFuncName(value);
+            var funType = WhatFunctionType(fun);
+            var listArgs = funType!= FuncsEnum.justString ? GetSeparatedArgs(value) : null;
+            var args = funType != FuncsEnum.justString ? RestoreArgs(listArgs) : value;
+            return new FunctionStruct(fun, value, args, listArgs, funType);
+            //FunctionStruct fs = new FunctionStruct(fun, value, args, listArgs, funType);
+            //return fs;
+        }
+
+        // получение двух ключ значение из записи типа "[ключ] значение"
         public (string, string) GetAssociativeValues(string str)
         {
             return GetQuotedValues(str, '[', ']');
@@ -102,18 +224,17 @@ namespace Generator.Parsing
                 var end = FindStringEnd(new StringBuilder(s), start, bracketE);
                 if (end < 0) throw new Exception($"{s} - отсутствует символ окончания {bracketE}");
                 key = s.Substring(start + 1, end - start - 1).Trim();
-                value = s.Remove(start, end - start+1);
-                //return s.Substring(st + 1, end - st-1).Trim();
+                value = s.Remove(start, end - start + 1);
             }
 
             return (key, value.Trim('\n', ' '));
         }
 
+        // поиск строк в формате "..."
         public int FindStringEnd(StringBuilder s, int pos, char separator)
         {
-            //const char separator = '\"';
             pos++;
-            for (;pos < s.Length; pos++)
+            for (; pos < s.Length; pos++)
             {
                 if (s[pos] == separator)
                 {
@@ -129,16 +250,16 @@ namespace Generator.Parsing
             }
             return -1;
         }
-
-        private void HandleOfSymbol(StringBuilder s, int i, char super)
+        // проверка на экранирование
+        private void HandleOfSymbol(StringBuilder s, int i)
         {
             if (i > 0 && s[i - 1] == '\\')
-                s = s.Remove(i - 1, 1);
+                s.Remove(i - 1, 1);
             else
-                s[i] = super;
+                s[i] = _super;
         }
         // получения списка значений разделенных символом separator
-        public string[] GetSeparatedValues(string str, char separator, char super)
+        public string[] GetSeparatedValues(string str, char separator)
         {
             StringBuilder s = new StringBuilder(str);
 
@@ -146,22 +267,23 @@ namespace Generator.Parsing
             {
                 if (s[i] == separator)
                 {
-                    HandleOfSymbol(s, i, super);
+                    HandleOfSymbol(s, i);
                 }
                 else if (s[i] == '\"')
                 {
                     i = FindStringEnd(s, i, '\"');
-                    if (i < 0) throw new Exception($"Не получилось найти окончание строки: [{s.ToString()}]");
+                    if (i < 0)
+                        throw new Exception($"Не получилось найти окончание строки: [{s}]");
                 }
             }
 
-            return s.ToString().Split(super, StringSplitOptions.RemoveEmptyEntries);
+            return s.ToString().Split(_super, StringSplitOptions.RemoveEmptyEntries);
         }
-        // получение списка аргументов передавемых в функции
-        public string[] GetSeparatedArgs(string str)
+
+        // получение списка аргументов передаваемых в функции
+        public List<string> GetSeparatedArgs(string str, bool split = true)
         {
             const char separator = ',';
-            const char super = '■';
             int i_start = str.IndexOf('(') + 1;
             if (i_start < 0) throw new Exception($"Не получилось найти окончание функции: [{str}]");
             StringBuilder s = new StringBuilder(str.Substring(i_start));
@@ -189,7 +311,10 @@ namespace Generator.Parsing
                     case separator:
                         if (counter == 1)
                         {
-                            HandleOfSymbol(s, i, super);
+                            if (i > 0 && s[i - 1] == '\\')
+                                s = s.Remove(i - 1, 1);
+                            else if (split)
+                                s[i] = _super;
                         }
                         break;
                 }
@@ -197,87 +322,7 @@ namespace Generator.Parsing
 
             if (counter > 0) throw new Exception($"Не получилось найти окончание функции: [{str}]");
 
-            return s.ToString().Split(super, StringSplitOptions.RemoveEmptyEntries);
+            return s.ToString().Split(_super, StringSplitOptions.RemoveEmptyEntries).Select(arg => arg.Trim(' ', '\n', '\r')).ToList();
         }
-        // получение данных из строки body
-        private List<DataContainer> GetDCFromBody(string body)
-        {
-            List<DataContainer> sd = new List<DataContainer>();
-            var lines = GetSeparatedValues(body, ';', '■');
-            
-            foreach (string v in lines)
-            {
-                List<string> data = new List<string>();
-
-                var parts = v.Split(':', 2);
-                if (parts.Length < 2) continue;
-                var rightPart = GetSeparatedValues(parts[1], '|', '■');
-                foreach (var s in rightPart)
-                {
-                    if (s.Length == 0) continue;
-                    data.Add(s.Trim(' ', '\n', '\r'));
-                }
-
-                if (data.Count > 0)
-                {
-                    sd.Add(new DataContainer(parts[0].Trim(' ', '\r', '\n'), data));
-                }
-            }
-
-            return sd;
-        }
-        // обработка блока ХРАНИЛИЩЕ_ОБЪЕКТОВ
-        private void GetStorageData(string body)
-        {
-            _storageData = GetDCFromBody(body);
-        }
-        // обработка блока ШАБЛОННЫЙ_ВИД
-        private void GetTemplateData(string body)
-        {
-            _templateStr = body.Trim(' ', '\r', '\n');
-        }
-        // обработка блока РЕШЕНИЕ
-        private void GetCode (string body)
-        {
-            _code = body.Trim(' ', '\r', '\n');
-        }
-        // обработка блока СЛУЖЕБНОЕ
-        private void GetServiceData(string body)
-        {
-            var sd = GetDCFromBody(body);
-
-            foreach (var d in sd)
-            {
-                switch (d.Name.ToLower())
-                {
-                    case _arithmFuncs:
-                        Elems.SetFuncs(d.Data);
-                        break;
-                    case _arithmSigns:
-                        Elems.SetSigns(d.Data);
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-        // обработка блока ТЕСТОВЫЕ_ДАННЫЕ
-        private void GetTestsD(string body)
-        {
-            _testData = GetDCFromBody(body);
-        }
-
-        public override string ToString()
-        {
-            string s = string.Empty;
-
-            foreach (var d in _storageData)
-            {
-                Console.WriteLine(d);
-            }
-
-            return s;
-        }
-
     }
 }
