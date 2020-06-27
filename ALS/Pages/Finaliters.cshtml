@@ -9,7 +9,7 @@
 <h3>Завершитель </h3>
 <div style="margin-bottom: 1%">
     <input onchange="sendSolution(this)" class="btn btn-primary edit-item" type="file" accept=".cs"/>
-    <span style="float: right; text-align: right;" id="loader"></span>
+    <span style="float: right; text-align: right; color: aliceblue; font-size: 120%" id="loader"></span>
 </div>
 <div class="container">
     <table style="width: 100%" class="table table-hover" border="1">
@@ -92,17 +92,20 @@
                             url: '/api/finaliter/Delete',
                             beforeSend: (xhr) => 
                             {
+                                loader.style.backgroundColor = " #3366CC";
                                 loader.innerText = "Идёт процесс удаления";
                                 xhr.setRequestHeader("nameComponent", nameChecker);
                             },
                             success: (textChecker) =>
                             {
+                                loader.style.backgroundColor = " #FFFFFF";
                                 loader.innerText = "";
                                 CreateTable();
                                 alert(textChecker);
                             },
                             error: (checkerFail) =>
                             {
+                                loader.style.backgroundColor = " #FFFFFF";
                                 loader.innerText = "";
                                 alert(checkerFail.responseText);
                             }
@@ -129,20 +132,33 @@
                       async: false,
                       beforeSend: (xhr) =>
                       {
+                          loader.style.backgroundColor = " #3366CC";
                           loader.innerText = "Идёт загрузка";
                       },
                       success: (result) =>
                       {
+                          loader.style.backgroundColor = " #FFFFFF";
                           loader.innerText = "";
                           CreateTable();
                           alert(result);
                       },
                       error: (sendFail) =>
                       {
+                          loader.style.backgroundColor = " #FFFFFF";
                           loader.innerText = "";
                           alert(sendFail.responseText);
                       }
                   }
               );
           }
+          function loaderSet(text) {
+              let loader = document.getElementById('loader');
+              loader.style.backgroundColor = "#007bff";
+              loader.innerText = text;
+            }
+            function loaderDiasble() {
+              let loader = document.getElementById('loader');
+              loader.style.backgroundColor = "#ffffff";
+              loader.innerText = "";
+            }
 </script>

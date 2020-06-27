@@ -9,7 +9,7 @@
 <h3>Подготовитель </h3>
 <div style="margin-bottom: 1%">
     <input onchange="sendSolution(this)" class="btn btn-primary edit-item" type="file" accept=".cs"/>
-    <span style="float: right; text-align: right;" id="loader"></span>
+    <span style="float: right; text-align: right; color: aliceblue; font-size: 120%" id="loader"></span>
 </div>
 <div class="container">
     <table style="width: 100%" class="table table-hover" border="1">
@@ -92,18 +92,18 @@
                             url: '/api/Preparer/Delete',
                             beforeSend: (xhr) => 
                             {
-                                loader.innerText = "Идёт процесс удаления";
+                                loaderSet("Идёт процесс удаления");
                                 xhr.setRequestHeader("nameComponent", nameChecker);
                             },
                             success: (textChecker) =>
                             {
-                                loader.innerText = "";
+                                loaderDiasble();
                                 CreateTable();
                                 alert(textChecker);
                             },
                             error: (checkerFail) =>
                             {
-                                loader.innerText = "";
+                                loaderDiasble();
                                 alert(checkerFail.responseText);
                             }
                          }
@@ -129,20 +129,30 @@
                       async: false,
                       beforeSend: (xhr) =>
                       {
-                          loader.innerText = "Идёт загрузка";
+                          loaderSet("Идёт загрузка");
                       },
                       success: (result) =>
                       {
-                          loader.innerText = "";
+                          loaderDiasble();
                           CreateTable();
                           alert(result);
                       },
                       error: (sendFail) =>
                       {
-                          loader.innerText = "";
+                          loaderDiasble();
                           alert(sendFail.responseText);
                       }
                   }
               );
+          }
+          function loaderSet(text) {
+            let loader = document.getElementById('loader');
+            loader.style.backgroundColor = "#007bff";
+            loader.innerText = text;
+          }
+          function loaderDiasble() {
+            let loader = document.getElementById('loader');
+            loader.style.backgroundColor = "#ffffff";
+            loader.innerText = "";
           }
 </script>
