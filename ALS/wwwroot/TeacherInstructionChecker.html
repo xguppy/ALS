@@ -1,0 +1,572 @@
+<html>
+
+<head>
+    <meta http-equiv=Content-Type content="text/html; charset=utf-8">
+    <meta name=Generator content="Microsoft Word 15 (filtered)">
+    <style>
+        <!--
+        /* Font Definitions */
+        @font-face
+        {font-family:Wingdings;
+            panose-1:5 0 0 0 0 0 0 0 0 0;}
+        @font-face
+        {font-family:"Cambria Math";
+            panose-1:2 4 5 3 5 4 6 3 2 4;}
+        @font-face
+        {font-family:Calibri;
+            panose-1:2 15 5 2 2 2 4 3 2 4;}
+        /* Style Definitions */
+        p.MsoNormal, li.MsoNormal, div.MsoNormal
+        {margin-top:0cm;
+            margin-right:0cm;
+            margin-bottom:8.0pt;
+            margin-left:0cm;
+            line-height:107%;
+            font-size:11.0pt;
+            font-family:"Calibri",sans-serif;}
+        p.MsoListParagraph, li.MsoListParagraph, div.MsoListParagraph
+        {margin-top:0cm;
+            margin-right:0cm;
+            margin-bottom:8.0pt;
+            margin-left:36.0pt;
+            line-height:107%;
+            font-size:11.0pt;
+            font-family:"Calibri",sans-serif;}
+        p.MsoListParagraphCxSpFirst, li.MsoListParagraphCxSpFirst, div.MsoListParagraphCxSpFirst
+        {margin-top:0cm;
+            margin-right:0cm;
+            margin-bottom:0cm;
+            margin-left:36.0pt;
+            margin-bottom:.0001pt;
+            line-height:107%;
+            font-size:11.0pt;
+            font-family:"Calibri",sans-serif;}
+        p.MsoListParagraphCxSpMiddle, li.MsoListParagraphCxSpMiddle, div.MsoListParagraphCxSpMiddle
+        {margin-top:0cm;
+            margin-right:0cm;
+            margin-bottom:0cm;
+            margin-left:36.0pt;
+            margin-bottom:.0001pt;
+            line-height:107%;
+            font-size:11.0pt;
+            font-family:"Calibri",sans-serif;}
+        p.MsoListParagraphCxSpLast, li.MsoListParagraphCxSpLast, div.MsoListParagraphCxSpLast
+        {margin-top:0cm;
+            margin-right:0cm;
+            margin-bottom:8.0pt;
+            margin-left:36.0pt;
+            line-height:107%;
+            font-size:11.0pt;
+            font-family:"Calibri",sans-serif;}
+        .MsoChpDefault
+        {font-family:"Calibri",sans-serif;}
+        .MsoPapDefault
+        {margin-bottom:8.0pt;
+            line-height:107%;}
+        /* Page Definitions */
+        @page WordSection1
+        {size:595.3pt 841.9pt;
+            margin:42.5pt 42.5pt 2.0cm 70.85pt;}
+        div.WordSection1
+        {page:WordSection1;}
+        /* List Definitions */
+        ol
+        {margin-bottom:0cm;}
+        ul
+        {margin-bottom:0cm;}
+        -->
+    </style>
+
+</head>
+
+<body lang=RU>
+<div class=WordSection1>
+<p class=MsoNormal><b><span style='font-size:12.0pt;line-height:107%;
+font-family:"Times New Roman",serif'>Чекер</span></b></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;line-height:107%;font-family:
+"Times New Roman",serif'>Сигнатура метода в интерфейсе </span><span lang=EN-US
+                                                                    style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>IChecker</span><span
+        style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>
+выглядит следующим образом:</span></p>
+
+<p class=MsoNormal><span lang=EN-US style='font-size:12.0pt;line-height:107%;
+font-family:"Times New Roman",serif'>void Check(List&lt;string&gt; modeOutput,
+string pathToUserProgram, string pathToModelProgram, ref ResultRun result);</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;line-height:107%;font-family:
+"Times New Roman",serif'>Параметр </span><b><span lang=EN-US style='font-size:
+12.0pt;line-height:107%;font-family:"Times New Roman",serif'>modelOutput</span></b><span
+        style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>
+– это список строк, хранящий стандартный вывод эталонного приложения. </span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;line-height:107%;font-family:
+"Times New Roman",serif'>Параметр </span><b><span lang=EN-US style='font-size:
+12.0pt;line-height:107%;font-family:"Times New Roman",serif'>pathToUserProgram</span></b><span
+        style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>
+– это строка, хранящая абсолютный путь к исполняемому файлу пользователя. </span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;line-height:107%;font-family:
+"Times New Roman",serif'>Параметр </span><b><span lang=EN-US style='font-size:
+12.0pt;line-height:107%;font-family:"Times New Roman",serif'>pathToModelProgram</span></b><span
+        style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>
+– это строка, хранящая абсолютный путь к исполняемому файлу эталонной
+программы.</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;line-height:107%;font-family:
+"Times New Roman",serif'>Параметр по ссылке </span><b><span lang=EN-US
+                                                            style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>result</span></b><span
+        style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>
+– это структура, представляющая из себя результаты одного тестового прогона.
+Эта структура содержит множество полей:</span></p>
+
+<p class=MsoListParagraphCxSpFirst style='text-indent:-18.0pt'><span
+        style='font-size:12.0pt;line-height:107%;font-family:Symbol'>·<span
+        style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US style='font-size:12.0pt;line-height:107%;
+font-family:"Times New Roman",serif'>long</span><span lang=EN-US
+                                                      style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'> </span><span
+        lang=EN-US style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>Memory</span><span
+        style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>
+– количество потребляемой пользователем памяти в байтах в текущим тестовом
+прогоне;</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-18.0pt'><span
+        style='font-size:12.0pt;line-height:107%;font-family:Symbol'>·<span
+        style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US style='font-size:12.0pt;line-height:107%;
+font-family:"Times New Roman",serif'>int</span><span lang=EN-US
+                                                     style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'> </span><span
+        lang=EN-US style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>Time</span><span
+        style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>
+– время работы пользовательской программы в миллисекундах текущим тестовом
+прогоне;</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-18.0pt'><span
+        style='font-size:12.0pt;line-height:107%;font-family:Symbol'>·<span
+        style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US style='font-size:12.0pt;line-height:107%;
+font-family:"Times New Roman",serif'>bool</span><span lang=EN-US
+                                                      style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'> </span><span
+        lang=EN-US style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>IsCorrect</span><span
+        style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>
+– параметр представляющий собой правильность работы пользовательской программы
+при заданных входных данных (преподаватель должен обязательно изменить этот
+параметр, если параметр не изменён тестовый проход считается ошибочным т.е.
+аргумент равен </span><span lang=EN-US style='font-size:12.0pt;line-height:
+107%;font-family:"Times New Roman",serif'>false</span><span style='font-size:
+12.0pt;line-height:107%;font-family:"Times New Roman",serif'>);</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-18.0pt'><span
+        style='font-size:12.0pt;line-height:107%;font-family:Symbol'>·<span
+        style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US style='font-size:12.0pt;line-height:107%;
+font-family:"Times New Roman",serif'>string</span><span lang=EN-US
+                                                        style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'> </span><span
+        lang=EN-US style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>Comment</span><span
+        style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>
+– комментарий к тестовому прогону, который будет выведен пользователю прим. </span><span
+        lang=EN-US style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>“”</span><span
+        style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>;</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-18.0pt'><span
+        style='font-size:12.0pt;line-height:107%;font-family:Symbol'>·<span
+        style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US style='font-size:12.0pt;line-height:107%;
+font-family:"Times New Roman",serif'>List</span><span style='font-size:12.0pt;
+line-height:107%;font-family:"Times New Roman",serif'>&lt;</span><span
+        lang=EN-US style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>string</span><span
+        style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>&gt;
+</span><span lang=EN-US style='font-size:12.0pt;line-height:107%;font-family:
+"Times New Roman",serif'>Input</span><span style='font-size:12.0pt;line-height:
+107%;font-family:"Times New Roman",serif'> – Список строк, представляющие
+входные данные из стандартного потока ввода пользовательской программы;</span></p>
+
+<p class=MsoListParagraphCxSpLast style='text-indent:-18.0pt'><span
+        style='font-size:12.0pt;line-height:107%;font-family:Symbol'>·<span
+        style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span lang=EN-US style='font-size:12.0pt;line-height:107%;
+font-family:"Times New Roman",serif'>List</span><span style='font-size:12.0pt;
+line-height:107%;font-family:"Times New Roman",serif'>&lt;</span><span
+        lang=EN-US style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>string</span><span
+        style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>&gt;
+</span><span lang=EN-US style='font-size:12.0pt;line-height:107%;font-family:
+"Times New Roman",serif'>Output</span><span style='font-size:12.0pt;line-height:
+107%;font-family:"Times New Roman",serif'> – Список строк, представляющий
+выходные данные из стандартного потока вывода пользовательской программы;</span></p>
+
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+        style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>Пример
+написания чекера</span></b></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><i><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>//
+Подключим нужные компоненты для чекера</span></i></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>using
+System.Collections.Generic;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>using
+System.IO;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>using
+ALS.CheckModule.Compare.Checker;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>using
+ALS.CheckModule.Compare.DataStructures;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><i><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>//
+</span></i><i><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>Укажем</span></i><i><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'> </span></i><i><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'>пространство</span></i><i><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'> </span></i><i><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'>имён</span></i><i><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'> </span></i><i><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'>этой</span></i><i><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'> </span></i><i><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'>компоненты</span></i></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>namespace
+ALS.CheckModule.Component.Checker</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>{</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>   <i>//
+Создадим класс и реализуем интерфейс </i></span><i><span lang=EN-US
+                                                         style='font-size:12.0pt;font-family:"Times New Roman",serif'>IChecker</span></i></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>    
+</span><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>public</span><span
+        lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'> </span><span
+        lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>class</span><span
+        lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'> </span><span
+        lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>AbsoluteChecker</span><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'>: </span><span
+        lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>IChecker</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>   
+{</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><i><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>       
+// Реализуемый метод из интерфейса</span></i></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>       
+</span><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>public
+void Check (List&lt;string&gt; modeOutput, </span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:106.2pt;margin-bottom:.0001pt;line-height:normal'><span lang=EN-US
+                                                                    style='font-size:12.0pt;font-family:"Times New Roman",serif'>    string pathToUserProgram,
+</span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:106.2pt;margin-bottom:.0001pt;line-height:normal'><span lang=EN-US
+                                                                    style='font-size:12.0pt;font-family:"Times New Roman",serif'>    string
+pathToModelProgram,<span style='background:yellow'> </span></span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:106.2pt;margin-bottom:.0001pt;line-height:normal'><span lang=EN-US
+                                                                    style='font-size:12.0pt;font-family:"Times New Roman",serif'>    ref ResultRun result)</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>       
+</span><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>{</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>           
+<i>// Заведём счётчик для того, чтобы узнать на какой позиции пользовательского  
+</i></span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><i><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>          
+// вывода проблемы</span></i></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>           
+</span><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>var</span><span
+        lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'> </span><span
+        lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>counter</span><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'> = 0;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>           
+<i>// Используем совместный цикл для прохождения по множеству      </i></span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><i><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>           
+</span></i><i><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>//
+</span></i><i><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>пользовательского</span></i><i><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'> </span></i><i><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'>вывода</span></i></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>           
+foreach (var userElem in result.Output)</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>           
+</span><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>{</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>           
+<i>// Если элемент стандартного вывода пользователя не равен эталонному
+элементу </i>                </span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:35.4pt;margin-bottom:.0001pt;line-height:normal'><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'>    </span><span
+        lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>if</span><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'> (</span><span
+        lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>userElem</span><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'> != </span><span
+        lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>modeOutput</span><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'>[</span><span
+        lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>counter</span><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'>])</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>               
+{</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>                   
+<i>// Запишем комментарий для пользователя, который будет выведен ему и  </i></span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><i><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>                  
+// прекратим работу чекера отдав управление системе</span></i></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>                   
+</span><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>result</span><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'>.</span><span
+        lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>Comment</span><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'> = $&quot;Ошибка
+на позиции {</span><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>counter</span><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'>}: <br>
+                                                     ожидалось{ </span><span
+        lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>modeOutput</span><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'> [</span><span
+        lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>counter</span><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'>] }, получено {</span><span
+        lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>userElem</span><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'>}&quot;;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>                   
+</span><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>return</span><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'>;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>               
+}</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>               
+++</span><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>counter</span><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'>;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>           
+}</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>            </span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><i><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>           
+// Если пользовательский вывод содержал меньше значений, чем требуется</span></i></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>           
+</span><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>if</span><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'> (</span><span
+        lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>counter</span><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'> &lt; </span><span
+        lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>modeOutput</span><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'>.</span><span
+        lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>Count</span><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'>)</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>           
+{</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>               
+<i>//Запишем комментарий об этом и так же прекратим работу чекера</i></span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>               
+</span><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>result</span><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'>.</span><span
+        lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>Comment</span><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'> = $&quot;Количество
+выводов в программе {</span><span lang=EN-US style='font-size:12.0pt;
+font-family:"Times New Roman",serif'>counter</span><span style='font-size:12.0pt;
+font-family:"Times New Roman",serif'>} </span></p>
+
+<p class=MsoNormal style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;
+margin-left:106.2pt;margin-bottom:.0001pt;text-indent:35.4pt;line-height:normal'><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'>ожидалось {</span><span
+        lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>modeOutput</span><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'>.</span><span
+        lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>Count</span><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'>}&quot;;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>               
+</span><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>return</span><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'>;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>           
+}</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>          
+ <i>//Получим потоки чтения для пользовательской программы и эталонной</i></span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>           
+</span><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>using
+var srUser = new StreamReader(GetFilePath(pathToUserProgram));</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>           
+using var srModel = new StreamReader(GetFilePath(pathToModelProgram));</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>           
+</span><i><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>//Сравним
+пользовательский вывод в файл и эталонный</span></i></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>           
+</span><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>if
+(srUser.ReadToEnd() != srModel.ReadToEnd())</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>           
+</span><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>{</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>               
+result.Comment = $&quot;Выводы в файлах не совпадают&quot;;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>               
+return;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>           
+}</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><i><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>          
+// Если все проверки до этого были успешны запишем комментарий об успешности </span></i></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><i><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>          
+// выполненного теста и пометим флаг </span></i><i><span lang=EN-US
+                                                         style='font-size:12.0pt;font-family:"Times New Roman",serif'>IsCorret</span></i><i><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'> в значение </span></i><i><span
+        lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>true</span></i><i><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'>, если этого не  </span></i></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><i><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>          
+// сделать тестовый прогон будет считаться ошибочным и в следствии вся задача </span></i></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><i><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>          
+// будет   оценена в 0 из </span></i><i><span lang=EN-US style='font-size:12.0pt;
+font-family:"Times New Roman",serif'>N</span></i><i><span style='font-size:
+12.0pt;font-family:"Times New Roman",serif'>, где </span></i><i><span
+        lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>N</span></i><i><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'> – количество
+тестовых наборов </span></i></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>           
+</span><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>result.Comment
+= &quot;</span><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>Всё</span><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'> </span><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'>хоккей</span><span
+        lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>&quot;;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>           
+result.IsCorrect = true;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>       
+}</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>       
+<i>//</i></span><i><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>Функция</span></i><i><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'> </span></i><i><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'>для</span></i><i><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'> </span></i><i><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'>получения</span></i><i><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'> </span></i><i><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'>выходного</span></i><i><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'> </span></i><i><span
+        style='font-size:12.0pt;font-family:"Times New Roman",serif'>файла</span></i></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>       
+private string GetFilePath(string pathToProgram)</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>       
+{</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>           
+return Path.Combine(Directory.GetParent(pathToProgram).ToString(),
+&quot;output.txt&quot;);</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>       
+</span><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>}</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>   
+}</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+normal'><span style='font-size:12.0pt;font-family:"Times New Roman",serif'>}</span></p>
+
+<span style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'><br
+        clear=all style='page-break-before:always'>
+</span>
+
+<p class=MsoNormal><span style='font-size:12.0pt;line-height:107%;font-family:
+"Times New Roman",serif'>&nbsp;</span></p>
+</div>
+</body>
+</html>

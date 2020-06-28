@@ -21,9 +21,16 @@
         </thead>
         <tbody id="tbodyContent">
     </table>
+    <button onclick="ShowHelpWindow()" class="btn btn-primary edit-item">HELP</button>
 </div>
 
 <script>
+    document.onkeydown = document.onkeyup = document.onkeypress = (ev => {
+            if(ev.key === 'F1')
+            {
+                ShowHelpWindow();
+            }
+        });
     CreateTable();
     
     function CreateTable() {
@@ -152,5 +159,9 @@
             let loader = document.getElementById('loader');
             loader.style.backgroundColor = "#ffffff";
             loader.innerText = "";
+          }
+          
+          function ShowHelpWindow() {
+            window.open("TeacherInstructionChecker.html", 'Инструкция по чекерам', 'width=800,menubar=no, toolbar=no, location=no'); 
           }
 </script>

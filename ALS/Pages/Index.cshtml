@@ -18,15 +18,35 @@ function ShowInfo()
     let roles = JSON.parse(sessionStorage.getItem('roles'));
     if (roles == null) return;
     if (roles.includes('Teacher')) {
+        let contentBlock = document.getElementById("content");
+        let chooseBlock = document.createElement('div');
+        contentBlock.appendChild(chooseBlock);
+        let buttonComponentsInstruction = document.createElement('button');
+        let buttonTemplateInstruction = document.createElement('button');
+        buttonComponentsInstruction.innerText = "Инструкция по компонентам";
+        buttonTemplateInstruction.innerText = "Инструкция по шаблонам";
+        buttonComponentsInstruction.classList = "btn btn-primary edit-item";
+        buttonTemplateInstruction.classList = "btn btn-primary edit-item";
+        chooseBlock.appendChild(buttonTemplateInstruction);
+        chooseBlock.appendChild(buttonComponentsInstruction);
+        let helpBlock = document.createElement('div');
+        helpBlock.id = "helpBlock";
+        contentBlock.appendChild(helpBlock);
+        buttonComponentsInstruction.onclick = (ev => {
+            $('#helpBlock').load('TeacherInstructionComponents.html');
+        });
+        
+        buttonTemplateInstruction.onclick = (ev => {
+            $('#helpBlock').load('TemplateInstruction.html');
+        });
+        $('#helpBlock').load('TeacherInstructionComponents.html');
         
     }
     if (roles.includes('Admin')) {
         
     }
     if (roles.includes('Student')) {
-        $(function() {
             $('#content').load('UserInstruction.html');
-        });
     }
 }
 ShowInfo();

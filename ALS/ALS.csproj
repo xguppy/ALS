@@ -25,10 +25,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="wwwroot" />
-    </ItemGroup>
-
-    <ItemGroup>
       <_ContentIncludedByDefault Remove="Pages\TemplateLW\Create.cshtml" />
       <_ContentIncludedByDefault Remove="Pages\TemplateLW\Delete.cshtml" />
       <_ContentIncludedByDefault Remove="Pages\TemplateLW\Index.cshtml" />
