@@ -225,8 +225,16 @@ namespace ALS
             if (!context.LaboratoryWorks.Any())
             {
                 //context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 9, ThemeId = 2, Name = "lr1", Description = "lr1_description", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
-                context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 9, ThemeId = 1, Name = "ЛР1 - работа с числами", Description = "Выполнить операции с числами", Constraints = "{\"Memory\": 4096000,\"Time\": 60000,\"Checker\" : \"AbsoluteChecker\"}", DisciplineCipher = "pr1", Evaluation=Evaluation.NotStrict});
-                context.LaboratoryWorks.Add(new LaboratoryWork { TemplateLaboratoryWorkId = 1, UserId = 9, ThemeId = 2, Name = "ЛР2 - работа с файлами", Description = "Выполнить операции с числами из файла input.txt и запишите в файл output.txt", Constraints = "{\"Memory\": 4096000,\"Time\": 60000,\"Checker\" : \"FileChecker\", \"Finaliter\" : \"FileFinaliter\", \"Preparer\": \"FilePreparer\"}", DisciplineCipher = "pr1", Evaluation = Evaluation.Strict });
+                context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 9, ThemeId = 1, Name = "ЛР1 - работа с числами", Description = "Выполнить операции с числами", Constraints = "{\"Memory\": 4096000,\"Time\": 5000,\"Checker\" : \"AbsoluteChecker\"}", DisciplineCipher = "pr1", Evaluation=Evaluation.NotStrict});
+                context.LaboratoryWorks.Add(new LaboratoryWork { TemplateLaboratoryWorkId = 1, UserId = 9, ThemeId = 2, Name = "ЛР2 - работа с файлами", Description = "Выполнить операции с числами из файла input.txt и запишите в файл output.txt", Constraints = "{\"Memory\": 4096000,\"Time\": 5000,\"Checker\" : \"FileChecker\", \"Finaliter\" : \"FileFinaliter\", \"Preparer\": \"FilePreparer\"}", DisciplineCipher = "pr1", Evaluation = Evaluation.Strict });
+                context.LaboratoryWorks.Add(new LaboratoryWork
+                {
+                    TemplateLaboratoryWorkId = 1, UserId = 9, ThemeId = 2, Name = "ЛР3 - работа со строками",
+                    Description =
+                        "В стандартный поток ввода принимаются 10 строк, по одной выполнить для каждой строки выполнить операцию, указанную в варианте и вывести в стандартный поток вывода результирующи строки",
+                    Constraints = "{\"Memory\": 4096000,\"Time\": 5000,\"Checker\" : \"AbsoluteChecker\"}",
+                    DisciplineCipher = "pr1", Evaluation = Evaluation.Penalty
+                });
                 //context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 2, ThemeId = 1, Name = "lr1", Description = "lr1_description", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
                 //context.LaboratoryWorks.Add(new LaboratoryWork { UserId = 2, ThemeId = 1, Name = "lr2", Description = "Вывести четные элементы", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1"});
                 //context.LaboratoryWorks.Add(new LaboratoryWork { TemplateLaboratoryWorkId = 3, UserId = 2, ThemeId = 2, Name = "lr3", Description = "descrition", Constraints = "{\"Memory\": 4096000, \"Time\": 60000}", DisciplineCipher = "pr1" });
@@ -236,8 +244,9 @@ namespace ALS
             {
                 context.Variants.Add(new Variant { VariantNumber = 1, LaboratoryWorkId = 1, Description = "var descr" });
                 context.Variants.Add(new Variant { VariantNumber = 2, LaboratoryWorkId = 1, Description = "Тест" });
-                context.Variants.Add(new Variant { VariantNumber = 1, LaboratoryWorkId = 2, LinkToModel = Path.Combine(Environment.CurrentDirectory, "executeModel", $"{ProcessCompiler.CreatePath(2, 1)}.exe"), Description = "В стандартный поток ввода принимаются 10 целых чисел. Вывести в стандартный поток вывода только чётные числа.", InputDataRuns = "\"тест1[60] : #случайноеЦелое(10 , 200, 10);тест2 [20]: 2|4|6|8|6|10|12|14|18;тест3 [20]: 1|2|3|4|5|6|7|8;\""});
-                context.Variants.Add(new Variant { VariantNumber = 3, LaboratoryWorkId = 1, LinkToModel = Path.Combine(Environment.CurrentDirectory, "executeModel", $"{ProcessCompiler.CreatePath(1, 3)}.exe"), Description = "Прочитать числа из одного файла и записать квадраты этих чисел в другой. Считывать символы до встречи буквы 'n'", InputDataRuns = "\"тест1[60] : #случайноеЦелое(10 , 200, 10);тест2 [20]: 2|4|6|8|6|10|12|14|18;тест3 [20]: 1|2|3|4|5|6|7|8;\"" });
+                context.Variants.Add(new Variant { VariantNumber = 1, LaboratoryWorkId = 3, LinkToModel = Path.Combine(Environment.CurrentDirectory, "executeModel", $"{ProcessCompiler.CreatePath(2, 1)}.exe"), Description = "В стандартный поток ввода принимаются 10 целых чисел. Вывести в стандартный поток вывода только чётные числа.", InputDataRuns = "\"тест1[60] : 2|4|6|8|6|10|12|14|18|20;тест2 [20]: 2|4|6|8|6|10|12|14|18|20;тест3 [20]: 2|4|6|8|6|10|12|14|18|20;тест4 [20]: 2|4|6|8|6|10|12|14|18|20;тест5 [20]: 1|2|3|4|5|6|7|8|9|10;\""});
+                context.Variants.Add(new Variant { VariantNumber = 1, LaboratoryWorkId = 2, LinkToModel = Path.Combine(Environment.CurrentDirectory, "executeModel", $"{ProcessCompiler.CreatePath(1, 3)}.exe"), Description = "Прочитать числа из одного файла и записать квадраты этих чисел в другой. Считывать символы до встречи буквы 'n'", InputDataRuns = "\"тест1[60] : #случайноеЦелое(10 , 200, 10);тест2 [20]: 2|4|6|8|6|10|12|14|18|20;тест3 [20]: 1|2|3|4|5|6|7|8|9|10;\"" });
+                context.Variants.Add(new Variant { VariantNumber = 3, LaboratoryWorkId = 1, LinkToModel = Path.Combine(Environment.CurrentDirectory, "executeModel", $"{ProcessCompiler.CreatePath(3, 1)}.exe"), Description = "Все символы в строке расположить в обратном порядке", InputDataRuns = "\"тест1[20] : asddsaasd|Hello|qwerrty|asdfdgfdgh|zxcbvcbv|asdasdasd|klkjkj|yhyhyh|opopopo|jkjkjkk;тест2 [5]: Jow|woJ|Raw|waR|Kill|Llik|ClikKK|Sam|Zxc|Cxz;тест3 [75]: Hi|Di|Ui|ds|sD|as|fd|qw|re|sd; \"" });
                 context.SaveChanges();
             }
 
@@ -248,6 +257,7 @@ namespace ALS
                 context.AssignedVariants.Add(new AssignedVariant {UserId = 1, VariantId = 2, AssignDateTime = DateTime.Now});
                 context.AssignedVariants.Add(new AssignedVariant {UserId = 1, VariantId = 1, AssignDateTime = DateTime.Now});
                 
+                context.AssignedVariants.Add(new AssignedVariant {UserId = 4, VariantId = 3, AssignDateTime = DateTime.Now});
                 context.AssignedVariants.Add(new AssignedVariant {UserId = 4, VariantId = 2, AssignDateTime = DateTime.Now});
                 context.AssignedVariants.Add(new AssignedVariant {UserId = 4, VariantId = 1, AssignDateTime = DateTime.Now});
                 
@@ -262,9 +272,6 @@ namespace ALS
             
             if (!context.Solutions.Any())
             {
-                context.Solutions.Add(new Solution { IsSolved = true, AssignedVariantId = 1, IsCompile = true, SendDate = DateTime.Now.AddDays(2)});
-                context.Solutions.Add(new Solution { IsSolved = true, AssignedVariantId = 2, IsCompile = true, SendDate = DateTime.Now.AddDays(1)});
-                context.Solutions.Add(new Solution { IsSolved = true, AssignedVariantId = 3, IsCompile = true, SendDate = DateTime.Now});
                 context.Solutions.Add(new Solution { IsSolved = false, SendDate = DateTime.Now.AddHours(20), IsCompile = true, AssignedVariantId = 4});
                 
                 
