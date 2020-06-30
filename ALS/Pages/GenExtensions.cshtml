@@ -88,8 +88,8 @@
                 success: (result) => {
                     document.location.reload(true);
                 },
-                error: (sendFail) => {
-                    alert(sendFail.responseText);
+                error: (response) => {
+                    alert(response.responseText);
                 }
             }
         );
@@ -171,7 +171,7 @@
                 },
                 error: (response) => {
                     console.log(response.responseText);
-                    alert('Не удалось обновить шаблон');
+                    alert('Не удалось обновить расширение');
                 }
             }
         );
@@ -201,7 +201,7 @@
 
     }
 
-    function deleteTlw(data) {
+    function deleteExt(data) {
         if (confirm("Уверены, что хотите удалить данный шаблон")) {
             $.ajax(
                 {

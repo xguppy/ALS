@@ -62,13 +62,18 @@ namespace ALS.Controllers
 
             try
             {
+                if (_db.GenExtensions.FirstOrDefault(x => x.Extension == extension) != default)
+                    throw new Exception("Расширение с таким именем уже существует");
                 await _db.GenExtensions.AddAsync(new GenExtension { Extension = extension});
                 await _db.SaveChangesAsync();
             }
             catch (DbUpdateException ex)
             {
-                await Response.WriteAsync(ex.InnerException.Message);
                 return BadRequest(ex.InnerException.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
             return Ok("Успех");
         }
