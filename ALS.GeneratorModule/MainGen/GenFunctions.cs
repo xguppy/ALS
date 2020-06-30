@@ -41,21 +41,6 @@ namespace Generator.MainGen
                     break;
             }
             return ls;
-            /*if (_f == null)
-                ls.Add(("0", fs.Raw));
-            else
-            {
-                switch (fs.FuncsEnum)
-                {
-                    case FuncsEnum.justString:
-                        ls.Add(("0", fs.Raw));
-                        break;
-
-                    default:
-                        ls = _f[fs.FuncsEnum].Call(fs);
-                        break;
-                }
-            }*/
         }
     }
 }

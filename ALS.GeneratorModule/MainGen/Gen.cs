@@ -140,26 +140,7 @@ namespace Generator.MainGen
             p.SetValue(_gf.WhatToDoWithParam(fs));
             return p;
         }
-        // получение списка готовых тестовых данных из json
-        public List<(string, List<string>)> GetTestsFromJson(string json)
-        {
-            var t = new StringBuilder(JsonConvert.DeserializeObject<string>(json));
-            var tests = GetParams(t);
-            List<(string, List<string>)> result = tests.Select(x => {
-                var name = x.Name;
-                var rawTests = x.Data.ToList().Select(x => x.Value).ToList();
-                return (name, rawTests);
-            }).ToList();
-
-            return result;
-        }
-
-        public List<Param> GetTestsFromJsonParam(string json)
-        {
-            var t = new StringBuilder(JsonConvert.DeserializeObject<string>(json));
-            return GetParams(t);
-        }
-
+        
         public async Task<(string task, string code, string tests)> Run(string fileName, int lr = 1, int var = 1, bool needCompile = false)
         {
             (string task, string code,string tests) = await GenerateDataAsync(fileName);
@@ -184,6 +165,72 @@ namespace Generator.MainGen
                 new System.Uri(Path.Combine(Environment.CurrentDirectory, PathExecuteModel(name))).AbsoluteUri, 
                 tests
             );
+        }
+
+        //Создание тестов
+
+        //получить слудующий тест
+        private IEnumerable<Test> GetNextTest(StringBuilder block)
+        {
+            // получение объекта-параметра
+            while (_pr.GetParamString(block, out string paramStr))
+            {
+                // создание готового параметра
+                var p = CreateTestAsync(paramStr);
+                yield return p.Result;
+            }
+        }
+
+        // создание списка готовых к использования тестов
+        private List<Test> GetTests(StringBuilder block)
+        {
+            List<Test> list = new List<Test>();
+            foreach (Test t in GetNextTest(block))
+            {
+                list.Add(t);
+            }
+            return list;
+        }
+
+        // установка весов
+        private double GetWeigth(string weigth)
+        {
+            weigth = weigth.Replace('.', ',');
+            double res = 20.0;
+            if (!double.TryParse(weigth, out res))
+            {
+                if (int.TryParse(weigth, out int tmp))
+                    res = tmp;
+            }
+            if (res < 1.0e-12)
+                res = 20.0;
+            return res;
+        }
+
+        // создание готового теста
+        private async Task<Test> CreateTestAsync(string paramStr)
+        {
+            Param p = await Task.Run(() => _pr.CreateRawParam(paramStr));
+            Test t = new Test();
+            t.Weight = GetWeigth(p.Key);
+            t.Name = p.Name;
+            foreach (var data in p.Data)
+            {
+                var fs = await Task.Run(() => _pr.CreateFunctionStruct(data.Value));
+                var res = _gf.WhatToDoWithParam(fs);
+                foreach (var i in res)
+                {
+                    t.Data.Add(i.Item2);
+                }
+            }
+            return t;
+        }
+
+        // получение списка готовых тестовых данных из json
+        public List<Test> GetTestsFromJson(string json)
+        {
+            var t = new StringBuilder(JsonConvert.DeserializeObject<string>(json));
+            return GetTests(t);
         }
     }
 }

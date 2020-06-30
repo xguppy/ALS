@@ -92,8 +92,11 @@ namespace ALS.Controllers
                         //Получим входные данные для задачи
                         var gen = new Gen();
 
+                        // testData: класс Test с полями Name, Data, Weight
+                        // имя   вес   данные                    | если нужные еще какие-либо данные 
+                        // test [30] : #случайноеЦелое(10,20,10) | n;
                         var testData = gen.GetTestsFromJson(assignedVar.Variant.InputDataRuns);
-                        testNames = testData.Select(td => td.Item1).ToArray();
+                        testNames = testData.Select(td => td.Name).ToArray();
                         //Получим ограничения лабы
                         var constrainsLab = JsonConvert.DeserializeObject<Constrains>(
                             assignedVar.Variant.LaboratoryWork.Constraints,
@@ -110,7 +113,7 @@ namespace ALS.Controllers
                             constrainsLab = OverridingConstrains(constrainsLab, constrainsVar);
                         }
                         var verification = new Verification(programFileUser, newPathProgram, constrainsLab);
-                        resultTests = await verification.RunTests(testData.Select(t => t.Item2).ToList());
+                        resultTests = await verification.RunTests(testData.Select(t => t.Data).ToList());
                     }
                     catch (Exception e)
                     {

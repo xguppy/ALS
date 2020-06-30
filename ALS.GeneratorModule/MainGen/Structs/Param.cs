@@ -19,13 +19,17 @@ namespace Generator.MainGen.Structs
             Value = default;
             Data = data;
             Name = name;
-            Key = key != default ? (Data.ContainsKey(key) ? key : "0") : "0";
+            Key = key != default ? key : "0";/*key != default ? (Data.ContainsKey(key) ? key : "0") : "0"*/;
         }
 
         // получение наиболее подходящего значения
         public string GetBestData()
         {
-            return Data[Key];
+            if (Data.Count < 1) return "";
+            string result = Data.ElementAt(0).Value;
+            if (Data.ContainsKey(Key))
+                result = Data[Key];
+            return result;
         }
 
         // установка готовых значений
