@@ -110,7 +110,8 @@ namespace ALS.Controllers
                             constrainsLab = OverridingConstrains(constrainsLab, constrainsVar);
                         }
                         var verification = new Verification(programFileUser, newPathProgram, constrainsLab);
-                        resultTests = await verification.RunTests(testData.Select(t => t.Item2).ToList());
+                        var ddd = testData.Select(t => t.Item2).ToList();
+                        resultTests = await verification.RunTests(ddd);
                     }
                     catch (Exception e)
                     {

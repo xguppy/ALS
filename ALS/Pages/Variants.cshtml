@@ -7,8 +7,8 @@
 <h3>Варианты </h3>
 <div class="container">
     <p class="form-group row">
-        <label class="col-sm-4 col-form-label font-weight-bold">Сортировка по лабораторным работам</label>
-        <select class="col-sm-8 form-control" name="getByLaboratoryWork" id="getByLaboratoryWork"></select>
+        <label class="col-sm-3 col-form-label font-weight-bold">Лабораторная работа</label>
+        <select class="col-sm-9 form-control" name="getByLaboratoryWork" id="getByLaboratoryWork"></select>
     </p>
     <table style="width: 100%" class="table table-hover" border="1">
         <thead>
@@ -35,10 +35,11 @@
             <div class="modal-body">
                 @using (Html.BeginForm("Create", "Variants", FormMethod.Post))
                 {
-                    <p class="form-group row">
-                        <label class="col-sm-2 col-form-label font-weight-bold">Лабораторная работа</label>
-                        <select class="form-control col-sm-9" name="LaboratoryWorkId" id="newLaboratoryWork"></select>
-                    </p>
+                    <!--
+        <p class="form-group hide row">
+            <label class="col-sm-2 col-form-label font-weight-bold">Лабораторная работа</label>
+            <select class="form-control col-sm-9" name="LaboratoryWorkId" id="newLaboratoryWork"></select>
+        </p>-->
                     <p class="form-group row">
                         <label class="col-sm-2 col-form-label font-weight-bold">Номер варианта</label>
                         <input class="form-control col-sm-5" id="newNumber" name="Number" type="number" min="1" value="1" />
@@ -56,7 +57,7 @@
                         </p>
                         <p class="form-group">
                             <label class="col-form-label font-weight-bold">Входные данные</label>
-                            @Html.TextArea("InputData", "[{\"Data\": [\"#rnd(1 | 20 | int | 10)\"], \"Name\": \"тест1\"}, {\"Data\": [\"#rnd(1 | 20 | int | 10)\"], \"Name\": \"тест2\"}, {\"Data\": [\"1\", \"2\", \"3\", \"4\", \"5\", \"6\", \"7\", \"8\", \"9\", \"10\"], \"Name\": \"тест3\"}]", new { @class = "form-control", id = "newInputData" })
+                            @Html.TextArea("InputData", "тест1[80] : #случайноеЦелое(10 , 200, 10);тест2 [20]: 1|2|3|4|5|6|7|8;", new { @class = "form-control", id = "newInputData" })
                         </p>
                     </div>
                     <p>
@@ -106,11 +107,11 @@
             <div class="modal-body">
                 @using (Html.BeginForm("Update", "Variants", FormMethod.Post))
                 {
-
-                    <p class="form-group row">
-                        <label class="col-sm-2 col-form-label font-weight-bold">Лабораторная работа</label>
-                        <select class="form-control col-sm-9" name="LaboratoryWorkId" id="EditLaboratoryWork"></select>
-                    </p>
+                    <!--
+        <p class="form-group row">
+            <label class="col-sm-2 col-form-label font-weight-bold">Лабораторная работа</label>
+            <select class="form-control col-sm-9" name="LaboratoryWorkId" id="EditLaboratoryWork"></select>
+        </p>-->
                     <p class="form-group row">
                         <label class="col-sm-2 col-form-label font-weight-bold">Номер варианта</label>
                         <input class="form-control col-sm-5" id="EditNumber" name="Number" type="number" min="1" value="1" />
@@ -247,8 +248,8 @@
                         tr.appendChild(td);
                         tbdy.appendChild(tr);
                     }
-                    if (firstInit) {
-                        updateConstrains(); // обновляет ограничения в соответствии с ЛР и убирает поля которые будут перезаписаны генератором
+                    updateConstrains2();
+                    if (firstInit) { // обновляет ограничения в соответствии с ЛР и убирает поля которые будут перезаписаны генератором
                         addSelectItems('checker', 'sCheckerCreate', false);
                         addSelectItems('checker', 'sCheckerEdit', false);
                         addSelectItems('preparer', 'sPreparerCreate', true);
@@ -268,7 +269,7 @@
                 }
             }
         );
-        if (firstInitThemes) {
+        /*if (firstInitThemes) {
             $.ajax(
                 {
                     type: 'GET',
@@ -297,7 +298,7 @@
                 }
             );
             firstInitThemes = false;
-        }
+        }*/
         
     }
     
@@ -393,18 +394,31 @@
         timeSlider = document.getElementById('timeInputCreate');
         memSliderEdit = document.getElementById('memInputEdit');
         timeSliderEdit = document.getElementById('timeInputEdit');
-        if (updatevalues) {
-            document.getElementById('memLabelCreate').innerHTML = `Память - ${memSlider.value}`;
-            document.getElementById('timeLabelCreate').innerHTML = `Время - ${timeSlider.value}`;
-            document.getElementById('memLabelEdit').innerHTML = `Память - ${memSliderEdit.value}`;
-            document.getElementById('timeLabelEdit').innerHTML = `Время - ${timeSliderEdit.value}`;
-        }
-        else {
+        if (firstInit) {
             memSlider.oninput = () => { document.getElementById('memLabelCreate').innerHTML = `Память - ${memSlider.value}`; }
             timeSlider.oninput = () => { document.getElementById('timeLabelCreate').innerHTML = `Время - ${timeSlider.value}`; }
             memSliderEdit.oninput = () => { document.getElementById('memLabelEdit').innerHTML = `Память - ${memSliderEdit.value}`; }
             timeSliderEdit.oninput = () => { document.getElementById('timeLabelEdit').innerHTML = `Время - ${timeSliderEdit.value}`; }
         }
+        else {
+            document.getElementById('memLabelCreate').innerHTML = `Память - ${memSlider.value}`;
+            document.getElementById('timeLabelCreate').innerHTML = `Время - ${timeSlider.value}`;
+            document.getElementById('memLabelEdit').innerHTML = `Память - ${memSliderEdit.value}`;
+            document.getElementById('timeLabelEdit').innerHTML = `Время - ${timeSliderEdit.value}`;
+
+        }
+        /*if (updatevalues) {
+            document.getElementById('memLabelCreate').innerHTML = `Память - ${memSlider.value}`;
+            document.getElementById('timeLabelCreate').innerHTML = `Время - ${timeSlider.value}`;
+            document.getElementById('memLabelEdit').innerHTML = `Память - ${memSliderEdit.value}`;
+            document.getElementById('timeLabelEdit').innerHTML = `Время - ${timeSliderEdit.value}`;
+        }
+        else if (firstInit){
+            memSlider.oninput = () => { document.getElementById('memLabelCreate').innerHTML = `Память - ${memSlider.value}`; }
+            timeSlider.oninput = () => { document.getElementById('timeLabelCreate').innerHTML = `Время - ${timeSlider.value}`; }
+            memSliderEdit.oninput = () => { document.getElementById('memLabelEdit').innerHTML = `Память - ${memSliderEdit.value}`; }
+            timeSliderEdit.oninput = () => { document.getElementById('timeLabelEdit').innerHTML = `Время - ${timeSliderEdit.value}`; }
+        }*/
     }
 
     function addSelectItems(path, selectid, nullable) {
@@ -434,7 +448,7 @@
         let divgenpart = document.getElementById("generationPart");
 
         const f = () => {
-            id = $('#newLaboratoryWork option:selected')[0].dataset.id
+            let id = $('#getByLaboratoryWork option:selected')[0].dataset.id;
             $.ajax({
                 type: 'GET',
                 url: `/api/LaboratoryWorks/get`,
@@ -444,9 +458,11 @@
                 success: (item) => {
                     divgenpart.hidden = (item.templateLaboratoryWorkId !== null);
                     constr = JSON.parse(item.constraints);
+                    let prep = constr.Preparer === "" ? "null" : `${constr.Preparer}`;
+                    let fin = constr.Finaliter === "" ? "null" : `${constr.Finaliter}`;
                     $("#myModal").find("select[id='sCheckerCreate']").val(`${constr.Checker}`);
-                    $("#myModal").find("select[id='sPreparerCreate']").val(`${constr.Preparer}`);
-                    $("#myModal").find("select[id='sFinaliterCreate']").val(`${constr.Finaliter}`);
+                    $("#myModal").find("select[id='sPreparerCreate']").val(prep);
+                    $("#myModal").find("select[id='sFinaliterCreate']").val(fin);
                     $("#myModal").find("input[id='memInputCreate']").val(constr.Memory);
                     $("#myModal").find("input[id='timeInputCreate']").val(constr.Time);
                     initSliders(true);
@@ -460,11 +476,40 @@
         sCreate.addEventListener("change", f);
     }
 
+    function updateConstrains2() {
+        let divgenpart = document.getElementById("generationPart");
+        let id = $('#getByLaboratoryWork option:selected')[0].dataset.id;
+        $.ajax({
+            type: 'GET',
+            url: `/api/LaboratoryWorks/get`,
+            beforeSend: (xhr) => {
+                xhr.setRequestHeader("laboratoryWorkId", id);
+            },
+            success: (item) => {
+                divgenpart.hidden = (item.templateLaboratoryWorkId !== null);
+                constr = JSON.parse(item.constraints);
+                let prep = constr.Preparer === undefined ? "null" : `${constr.Preparer}`;
+                let fin = constr.Finaliter === undefined ? "null" : `${constr.Finaliter}`;
+                $("#myModal").find("select[id='sCheckerCreate']").val(`${constr.Checker}`);
+                $("#myModal").find("select[id='sPreparerCreate']").val(prep);
+                $("#myModal").find("select[id='sFinaliterCreate']").val(fin);
+                //$('select option[value="Mazda"]).prop('selected', true);
+                //$("#myModal").find(`select[id='sFinaliterCreate' value='${fin}']`).prop('selected', true);
+                $("#myModal").find("input[id='memInputCreate']").val(constr.Memory);
+                $("#myModal").find("input[id='timeInputCreate']").val(constr.Time);
+                initSliders(true);
+            },
+            error: (fail) => {
+                alert(fail.responseText);
+            }
+        });
+    }
+
     function createVariant() {
         let preparer = document.getElementById("sPreparerCreate").value === "null" ? "" : `,"Preparer": "${document.getElementById("sPreparerCreate").value}"`;
         let finaliter = document.getElementById("sFinaliterCreate").value === "null" ? "" : `,"Finaliter" : "${document.getElementById("sFinaliterCreate").value}"`;
         let variant = {
-            LaboratoryWorkId: $('#newLaboratoryWork option:selected')[0].dataset.id,
+            LaboratoryWorkId: $('#getByLaboratoryWork option:selected')[0].dataset.id,//$('#newLaboratoryWork option:selected')[0].dataset.id,
             VariantNumber: $('#newNumber').val(),
             Description: $('#newDescription').val(),
             LinkToModel: $('#hiddenPathSolution').val(),
@@ -555,7 +600,7 @@
         let preparer = document.getElementById("sPreparerEdit").value === "null" ? "" : `,"Preparer": "${document.getElementById("sPreparerEdit").value}"`;
         let finaliter = document.getElementById("sFinaliterEdit").value === "null" ? "" : `,"Finaliter" : "${document.getElementById("sFinaliterEdit").value}"`;
         let variant = {
-            LaboratoryWorkId: $('#EditLaboratoryWork option:selected')[0].dataset.id,
+            LaboratoryWorkId: $('#getByLaboratoryWork option:selected')[0].dataset.id,//$('#EditLaboratoryWork option:selected')[0].dataset.id,
             VariantNumber: $('#EditNumber').val(),
             Description: $('#EditDescription').val(),
             LinkToModel: $('#EditLink').val(),
