@@ -26,7 +26,7 @@ namespace ALS.CheckModule.Component.Checker
                 return;
             }
 
-            result.Comment = "Всё хоккей";
+            result.Comment = "Тест пройден успешно";
             result.IsCorrect = true;
         }
     }

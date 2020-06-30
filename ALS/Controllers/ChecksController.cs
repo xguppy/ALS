@@ -234,10 +234,10 @@ namespace ALS.Controllers
                     currentMark = sumTest == testComplete ? 1 : 0;
                     return Math.Abs(currentMark - 1) < 0.0001;
                 case Evaluation.NotStrict:
-                    currentMark = testComplete / sumTest;
+                    currentMark = Convert.ToDouble(testComplete) / sumTest;
                     return IsSolved(testComplete, sumTest);
                 case Evaluation.Penalty:
-                    currentMark -= testComplete / sumTest;
+                    currentMark -= Convert.ToDouble(testComplete) / sumTest;
                     return IsSolved(testComplete, sumTest);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(evaluation), evaluation, "Выбранная стратегия оценивания отсутствует");
@@ -249,7 +249,7 @@ namespace ALS.Controllers
         /// <param name="testComplete">Пройденные тесты</param>
         /// <param name="sumTest">Всего тестов</param>
         /// <returns>Решена ли задача</returns>
-        private static bool IsSolved(int testComplete, int sumTest) => (testComplete / sumTest) * 100 > 70;
+        private static bool IsSolved(int testComplete, int sumTest) => (Convert.ToDouble(testComplete) / sumTest) * 100 > 70;
 
         private static Constrains OverridingConstrains(Constrains labConstrains, Constrains varConstrains)
         {

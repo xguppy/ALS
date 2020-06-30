@@ -1,0 +1,484 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+<meta name=Generator content="Microsoft Word 15 (filtered)">
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:8.0pt;
+	margin-left:0cm;
+	line-height:107%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+p.MsoListParagraph, li.MsoListParagraph, div.MsoListParagraph
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:8.0pt;
+	margin-left:36.0pt;
+	line-height:107%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+p.MsoListParagraphCxSpFirst, li.MsoListParagraphCxSpFirst, div.MsoListParagraphCxSpFirst
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:36.0pt;
+	margin-bottom:.0001pt;
+	line-height:107%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+p.MsoListParagraphCxSpMiddle, li.MsoListParagraphCxSpMiddle, div.MsoListParagraphCxSpMiddle
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:36.0pt;
+	margin-bottom:.0001pt;
+	line-height:107%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+p.MsoListParagraphCxSpLast, li.MsoListParagraphCxSpLast, div.MsoListParagraphCxSpLast
+	{margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:8.0pt;
+	margin-left:36.0pt;
+	line-height:107%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+.MsoChpDefault
+	{font-family:"Calibri",sans-serif;}
+.MsoPapDefault
+	{margin-bottom:8.0pt;
+	line-height:107%;}
+ /* Page Definitions */
+ @page WordSection1
+	{size:595.3pt 841.9pt;
+	margin:42.5pt 42.5pt 2.0cm 70.85pt;}
+div.WordSection1
+	{page:WordSection1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0cm;}
+ul
+	{margin-bottom:0cm;}
+-->
+</style>
+
+</head>
+
+<body lang=RU>
+
+<div class=WordSection1>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>Инструкция
+преподавателя по работе с компонентами</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:12.0pt;line-height:107%;
+font-family:"Times New Roman",serif'>Термины</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:12.0pt;line-height:107%;
+font-family:"Times New Roman",serif'>Пользовательский компонент</span></b><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>
+– подпрограмма, которая выполняет какую-либо деятельность перед проверкой студенческого
+решения, во время выполнения проверки и после завершения проверки.</span></p>
+
+<p class=MsoNormal><b><span style='font-size:12.0pt;line-height:107%;
+font-family:"Times New Roman",serif'>Preparer (Подготовитель)</span></b><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>
+– компонент, позволяющий провести подготовку пользовательской и эталонной
+программы перед запуском.</span></p>
+
+<p class=MsoNormal><b><span style='font-size:12.0pt;line-height:107%;
+font-family:"Times New Roman",serif'>Checker (Компаратор)</span></b><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>
+– компонент, позволяющий сравнить результаты работы студенческой программы и
+эталонной.</span></p>
+
+<p class=MsoNormal><b><span style='font-size:12.0pt;line-height:107%;
+font-family:"Times New Roman",serif'>Finaliter (Завершитель)</span></b><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>
+– компонент, позволяющий организовать какую-либо последовательность действий
+после проверки.</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;line-height:107%;font-family:
+"Times New Roman",serif'>Пользовательские компоненты запускаются
+последовательно в разные этапы работы ИС. Для каждого набора тестовых данных
+последовательность запускается заново. Цепочка работы компонентов представлена
+на рисунке 1.</span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'><img
+width=622 height=211 id="Рисунок 31"
+src="img/image001.gif"></span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>Рисунок
+1 – Схема работы пользовательских компонент</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;line-height:107%;font-family:
+"Times New Roman",serif'>Компоненты должны быть написаны на ЯП </span><span
+lang=EN-US style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>C</span><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>#
+в соответствии с правилами текущей инструкции.</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;line-height:107%;font-family:
+"Times New Roman",serif'>Компоненты автоматически включаются в сборку и подключаются
+к основной системе посредством рефлексии.</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;line-height:107%;font-family:
+"Times New Roman",serif'>Для написания кода компонента можно использовать любой
+текстовый редактор (</span><span lang=EN-US style='font-size:12.0pt;line-height:
+107%;font-family:"Times New Roman",serif'>VSCode</span><span style='font-size:
+12.0pt;line-height:107%;font-family:"Times New Roman",serif'>, </span><span
+lang=EN-US style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>Notepad</span><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>++,
+</span><span lang=EN-US style='font-size:12.0pt;line-height:107%;font-family:
+"Times New Roman",serif'>VisualStudio</span><span style='font-size:12.0pt;
+line-height:107%;font-family:"Times New Roman",serif'> и пр.)</span></p>
+
+<p class=MsoNormal><b><span style='font-size:12.0pt;line-height:107%;
+font-family:"Times New Roman",serif'>Введение</span></b></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;line-height:107%;font-family:
+"Times New Roman",serif'>Для начала работы с компонентами вы должны
+авторизоваться в системе. Для этого перейдите по адресу системы (который должен
+сообщить Вам системный администратор).</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;line-height:107%;font-family:
+"Times New Roman",serif'>После перехода в ИС вы увидите окно с просьбой
+авторизоваться (рис. 2)</span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><img width=543
+height=171 id="Рисунок 1"
+src="img/image002.gif"></p>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>Рисунок
+2 – Приветственное окно входа в систему (В данном случае система находится на
+локальном компьютере, поэтому мы видим в адресной строке “</span><span
+lang=EN-US style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>localhost</span><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>:5000”</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;line-height:107%;font-family:
+"Times New Roman",serif'>Затем введите свой </span><span lang=EN-US
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>email</span><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>
+и пароль, которые вы ввели при прохождении процедуры регистрации у
+администратора системы. После ввода данных в текстовые поля нажмите на кнопку
+“Логин”, Вы должны увидеть окно, представленное на рисунке 3</span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'><img
+width=643 height=74 id="Рисунок 35"
+src="img/image003.gif"></span></p>
+
+<p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center'><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>Рисунок
+3 – Главное меню преподавателя</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;line-height:107%;font-family:
+"Times New Roman",serif'>В шапке ИС вы можете увидеть пункты меню системы:</span></p>
+
+<p class=MsoListParagraphCxSpFirst style='text-indent:-18.0pt'><span
+style='font-size:12.0pt;line-height:107%;font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>«Домой»
+или «</span><span lang=EN-US style='font-size:12.0pt;line-height:107%;
+font-family:"Times New Roman",serif'>ALS</span><span style='font-size:12.0pt;
+line-height:107%;font-family:"Times New Roman",serif'>» - переход к главной странице
+сайта;</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-18.0pt'><span
+style='font-size:12.0pt;line-height:107%;font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>«Шаблоны»
+– страница манипуляций с шаблонами лабораторных работа, для генерации
+вариантов;</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-18.0pt'><span
+style='font-size:12.0pt;line-height:107%;font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>«Варианты»
+- страница для Добавления/Редактирования/Создания вариантов для лабораторной
+работы;</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-18.0pt'><span
+style='font-size:12.0pt;line-height:107%;font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>«Назначение
+варианта» - Страница для назначения вариантов для студентов;</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-18.0pt'><span
+style='font-size:12.0pt;line-height:107%;font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>«Темы»
+- создание общей предметной области объединяющий множество лабораторных работ;</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-18.0pt'><span
+style='font-size:12.0pt;line-height:107%;font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><b><span style='font-size:12.0pt;line-height:107%;font-family:
+"Times New Roman",serif'>«Чекеры»</span></b><span style='font-size:12.0pt;
+line-height:107%;font-family:"Times New Roman",serif'> - страница для
+манипуляции с чекерами;</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-18.0pt'><span
+style='font-size:12.0pt;line-height:107%;font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><b><span style='font-size:12.0pt;line-height:107%;font-family:
+"Times New Roman",serif'>«Подготовители» - </span></b><span style='font-size:
+12.0pt;line-height:107%;font-family:"Times New Roman",serif'>страница для
+манипуляции с подготовителями;</span></p>
+
+<p class=MsoListParagraphCxSpLast style='text-indent:-18.0pt'><span
+style='font-size:12.0pt;line-height:107%;font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><b><span style='font-size:12.0pt;line-height:107%;font-family:
+"Times New Roman",serif'>«Завершители» - </span></b><span style='font-size:
+12.0pt;line-height:107%;font-family:"Times New Roman",serif'>страница для
+манипуляции с завершителями.</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;line-height:107%;font-family:
+"Times New Roman",serif'>Для скачивания исходных кодов компонентов и отправки
+на сервер используются стандартные диалоги браузера.</span></p>
+
+<p class=MsoNormal><b><span style='font-size:12.0pt;line-height:107%;
+font-family:"Times New Roman",serif'>Страница с компонентами</span></b></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;line-height:107%;font-family:
+"Times New Roman",serif'>Для того чтобы манипулировать с чекерами требуется
+перейти в пункт меню с одноимённым названием - «Чекеры». После того как Вы
+перейдёте, перед Вами отобразиться страница манипуляции, которая показана на
+рисунке 4.</span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'><img
+width=548 height=118 id="Рисунок 34"
+src="img/image004.gif"></span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>Рисунок
+4 – Страница манипуляции с чекерами</span></p>
+
+<p class=MsoNormal><b><span style='font-size:12.0pt;line-height:107%;
+font-family:"Times New Roman",serif'>Просмотр кода компонента</span></b></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;line-height:107%;font-family:
+"Times New Roman",serif'>Для того чтобы просмотреть код чекера, Вы можете его
+скачать с помощью кнопки «Получить код». После будет открыт стандартный диалог
+на скачивания файла, и Вы сможете просмотреть файл исходного кода любым
+текстовым редактором. На рисунке 5 показан диалог скачивания файла “</span><span
+lang=EN-US style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>AbsoluteChecker</span><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>.</span><span
+lang=EN-US style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>cs</span><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>”.</span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><img width=565
+height=389 id="Рисунок 4"
+src="img/image005.gif"></p>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>Рисунок
+5 – Стандартный диалог скачивания файла (браузер </span><span lang=EN-US
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>Firefox</span><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>)</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;line-height:107%;font-family:
+"Times New Roman",serif'>Нужно заметить, что стандартный файл-шаблон </span><span
+lang=EN-US style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>AbsoluteChecker</span><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>.</span><span
+lang=EN-US style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>cs</span><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>
+нельзя удалить из системы (Кнопка отмечена серым оттенком и не является
+доступной).</span></p>
+
+<p class=MsoNormal><b><span style='font-size:12.0pt;line-height:107%;
+font-family:"Times New Roman",serif'>Добавление компонента в систему</span></b></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;line-height:107%;font-family:
+"Times New Roman",serif'>Файл на ЯП </span><span lang=EN-US style='font-size:
+12.0pt;line-height:107%;font-family:"Times New Roman",serif'>c</span><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>#
+(.</span><span lang=EN-US style='font-size:12.0pt;line-height:107%;font-family:
+"Times New Roman",serif'>cs</span><span style='font-size:12.0pt;line-height:
+107%;font-family:"Times New Roman",serif'>)  и его содержимое(исходный код)
+должны соблюдать некоторые правила чтобы быть добавлены в систему:</span></p>
+
+<p class=MsoListParagraphCxSpFirst style='text-indent:-18.0pt'><span
+style='font-size:12.0pt;line-height:107%;font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>В
+файл должны быть подключены следующие пространства имён:</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-left:72.0pt;text-indent:-18.0pt'><span
+style='font-size:12.0pt;line-height:107%;font-family:"Courier New"'>o<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp; </span></span><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>System.Collections.Generic</span><span
+lang=EN-US style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>;</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-left:72.0pt;text-indent:-18.0pt'><span
+style='font-size:12.0pt;line-height:107%;font-family:"Courier New"'>o<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp; </span></span><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>Для
+конкретной компоненты пространство имён должно быть разным:</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-left:90.0pt;text-indent:0cm'><span
+lang=EN-US style='font-size:12.0pt;line-height:107%;font-family:Wingdings'>§<span
+style='font:7.0pt "Times New Roman"'>&nbsp; </span></span><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>Для</span><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'> </span><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>чекера</span><span
+lang=EN-US style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>
+- ALS.CheckModule.Compare.Preparer;</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-left:90.0pt;text-indent:0cm'><span
+lang=EN-US style='font-size:12.0pt;line-height:107%;font-family:Wingdings'>§<span
+style='font:7.0pt "Times New Roman"'>&nbsp; </span></span><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>Для</span><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'> </span><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>финалайтера</span><span
+lang=EN-US style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>
+- ALS.CheckModule.Compare.Finaliter;</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-left:90.0pt;text-indent:0cm'><span
+lang=EN-US style='font-size:12.0pt;line-height:107%;font-family:Wingdings'>§<span
+style='font:7.0pt "Times New Roman"'>&nbsp; </span></span><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>Для</span><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'> </span><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>препейрера</span><span
+lang=EN-US style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>
+- ALS.CheckModule.Compare.Checker;</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-left:72.0pt;text-indent:-18.0pt'><span
+style='font-size:12.0pt;line-height:107%;font-family:"Courier New"'>o<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp; </span></span><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>ALS.CheckModule.Compare.DataStructures</span><span
+lang=EN-US style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>;</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-18.0pt'><span
+style='font-size:12.0pt;line-height:107%;font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>Созданный
+класс компонента и имя файла должны совпадать (учитывая регистр);</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-18.0pt'><span
+style='font-size:12.0pt;line-height:107%;font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>Класс
+должен реализовывать интерфейс своей компоненты (</span><span lang=EN-US
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>IChecker</span><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>,
+</span><span lang=EN-US style='font-size:12.0pt;line-height:107%;font-family:
+"Times New Roman",serif'>IPreparer</span><span style='font-size:12.0pt;
+line-height:107%;font-family:"Times New Roman",serif'> и </span><span
+lang=EN-US style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>IFinaliter</span><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>);</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-18.0pt'><span
+style='font-size:12.0pt;line-height:107%;font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>Рекомендую
+располагать класс в пространстве имён родной сборки для компоненты:</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-left:72.0pt;text-indent:-18.0pt'><span
+style='font-size:12.0pt;line-height:107%;font-family:"Courier New"'>o<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp; </span></span><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>Для
+чекера - ALS.CheckModule.Component.Checker;</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-left:72.0pt;text-indent:-18.0pt'><span
+style='font-size:12.0pt;line-height:107%;font-family:"Courier New"'>o<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp; </span></span><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>Для
+финалайтера - ALS.CheckModule.Component.Finaliter;</span></p>
+
+<p class=MsoListParagraphCxSpLast style='margin-left:72.0pt;text-indent:-18.0pt'><span
+style='font-size:12.0pt;line-height:107%;font-family:"Courier New"'>o<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp; </span></span><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>Для
+препейрера - ALS.CheckModule.Component.Preparer;</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;line-height:107%;font-family:
+"Times New Roman",serif'>Описание сигнатуры реализуемых методов представлены в
+приложении 1.</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;line-height:107%;font-family:
+"Times New Roman",serif'>Пример написания чекера представлен в приложении 2.</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;line-height:107%;font-family:
+"Times New Roman",serif'>Для добавления пользовательской компоненты в систему,
+требуется нажать на кнопку «Обзор…» на странице компонента. И в стандартном
+диалоге (для вашего браузера) выбрать файл с компонентом.</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;line-height:107%;font-family:
+"Times New Roman",serif'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;line-height:107%;font-family:
+"Times New Roman",serif'>Пример добавления компоненты представлен на рисунке 6.</span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><img width=617
+height=360 id="Рисунок 5"
+src="img/image006.gif"></p>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>Рисунок
+6 – Выбираем файл с компонентой</span></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;line-height:107%;font-family:
+"Times New Roman",serif'>После выбора файла на экране должно быть выведено
+сообщение об удачном выполнении операции (рис. 7)</span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><img width=623
+height=206 id="Рисунок 8"
+src="img/image007.jpg"></p>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>Рисунок
+7 – Сообщение об удачном добавлении</span></p>
+
+<p class=MsoNormal><i><span style='font-size:12.0pt;line-height:107%;
+font-family:"Times New Roman",serif'>Файловый диалог разрешает добавить только
+один файл в систему за раз!!!</span></i></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;line-height:107%;font-family:
+"Times New Roman",serif'>&nbsp;</span></p>
+
+<p class=MsoNormal><b><span style='font-size:12.0pt;line-height:107%;
+font-family:"Times New Roman",serif'>Удаление компоненты из системы</span></b></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;line-height:107%;font-family:
+"Times New Roman",serif'>Для того чтобы удалить компоненту из системы нажмите
+на кнопку «Удалить чекер». После на экране будет выведено сообщение об удачном
+выполнении операции (рис. 8)</span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><img width=623
+height=212 id="Рисунок 9"
+src="img/image008.jpg"></p>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='font-size:12.0pt;line-height:107%;font-family:"Times New Roman",serif'>Рисунок
+8 – Сообщение об удачном удалении</span></p>
+
+<span style='font-size:11.0pt;font-family:"Calibri",sans-serif'><br clear=all
+style='page-break-before:always'>
+</span>
+    
+</div>
+
+</body>
+
+</html>

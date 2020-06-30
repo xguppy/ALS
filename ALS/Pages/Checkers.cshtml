@@ -9,7 +9,7 @@
 <h3>Чекеры </h3>
 <div style="margin-bottom: 1%">
     <input onchange="sendSolution(this)" class="btn btn-primary edit-item" type="file" accept=".cs"/>
-    <span style="float: right; text-align: right;" id="loader"></span>
+    <span style="float: right; text-align: right; color: aliceblue; font-size: 120%" id="loader"></span>
 </div>
 <div class="container">
     <table style="width: 100%" class="table table-hover" border="1">
@@ -21,9 +21,16 @@
         </thead>
         <tbody id="tbodyContent">
     </table>
+    <button onclick="ShowHelpWindow()" class="btn btn-primary edit-item">HELP</button>
 </div>
 
 <script>
+    document.onkeydown = document.onkeyup = document.onkeypress = (ev => {
+            if(ev.key === 'F1')
+            {
+                ShowHelpWindow();
+            }
+        });
     CreateTable();
     
     function CreateTable() {
@@ -85,14 +92,13 @@
   
   function RemoveChecker(nameChecker) {
         if (confirm("Вы точно хотите удалить этот чекер?")) {
-            let loader = document.getElementById('loader');
             $.ajax(
                          {
                             type: 'POST',
                             url: '/api/Checker/Delete',
                             beforeSend: (xhr) => 
                             {
-                                loader.innerText = "Идёт процесс удаления";
+                                loaderSet("Идёт процесс удаления");
                                 xhr.setRequestHeader("nameComponent", nameChecker);
                             },
                             success: (textChecker) =>
@@ -103,7 +109,7 @@
                             },
                             error: (checkerFail) =>
                             {
-                                loader.innerText = "";
+                                loaderDiasble();
                                 alert(checkerFail.responseText);
                             }
                          }
@@ -118,7 +124,6 @@
               for (var i = 0; i < files.length; i++) {
                   dataFile.append('componentFile', files[i]);
               }
-              let loader = document.getElementById('loader');
               $.ajax(
                   {
                       type: 'POST',
@@ -129,20 +134,34 @@
                       async: false,
                       beforeSend: (xhr) =>
                       {
-                          loader.innerText = "Идёт загрузка";
+                          loaderSet("Идёт загрузка");
                       },
                       success: (result) =>
                       {
-                          loader.innerText = "";
+                          loaderDiasble();
                           CreateTable();
                           alert(result);
                       },
                       error: (sendFail) =>
                       {
-                          loader.innerText = "";
+                          loaderDiasble();
                           alert(sendFail.responseText);
                       }
                   }
               );
+          }
+          function loaderSet(text) {
+            let loader = document.getElementById('loader');
+            loader.style.backgroundColor = "#007bff";
+            loader.innerText = text;
+          }
+          function loaderDiasble() {
+            let loader = document.getElementById('loader');
+            loader.style.backgroundColor = "#ffffff";
+            loader.innerText = "";
+          }
+          
+          function ShowHelpWindow() {
+            window.open("TeacherInstructionChecker.html", 'Инструкция по чекерам', 'width=800,menubar=no, toolbar=no, location=no'); 
           }
 </script>
