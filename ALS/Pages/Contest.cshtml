@@ -12,198 +12,186 @@
 <div class="container">
     <table style="width: 100%" class="table table-hover" border="1">
         <thead>
-        <tr>
-        <td>Лабораторная работа</td>
-        <td>Описание лабораторной работы</td>
-        <td>Система оценивания</td>
-        <td>Номер варианта</td>
-        <td>Описание варианта</td>
-        <td>Статус</td>
+            <tr>
+                <td>Лабораторная работа</td>
+                <td>Описание лабораторной работы</td>
+                <td>Система оценивания</td>
+                <td>Номер варианта</td>
+                <td>Описание варианта</td>
+                <td>Статус</td>
         </thead>
         <tbody id="tbodyContent">
     </table>
     <button onclick="ShowHelpWindow()" class="btn btn-primary edit-item">HELP</button>
 </div>
 
+<script src="~/lib/markdown-it/markdown-it.min.js"></script>
+<script src="~/lib/KaTeX/katex.min.js"></script>
+<script src="~/lib/markdown-it-katex/markdown-it-katex.js"></script>
+<link rel="stylesheet" href="~/lib/KaTeX/katex.min.css">
 <script>
     document.onkeydown = document.onkeyup = document.onkeypress = (ev => {
-        if(ev.key === 'F1')
-        {
+        if (ev.key === 'F1') {
             ShowHelpWindow();
         }
     });
     $.ajax(
-              {
-                  type: 'GET',
-                  url: '/api/disciplines/getall',
-                  async: false,
-                  beforeSend: (xhr) => 
-                  {
-                  },
-                  success: (disciplines) =>
-                  {
-                      let sel = $('#disciplineSelect');
-                      
-                            if(disciplines.length === 0)
-                            {
-                                alert('Не назначена ни одна дисциплина');
-                                history.go(-1);
-                            }
-                          for (let discipline of disciplines)
-                          {
-                              let opt = document.createElement('option');
-                              opt.text = discipline.name;
-                              opt.dataset.id = discipline.cipher;
-                              sel.append(opt);
-                          }
-                  },
-                  error: (awFail) =>
-                  {
-                      document.body.innerHTML = '';
-                      alert('Нет доступа');
-                      history.go(-1);
-                  }
-              }
-        );
-    
-        CreateTable();
-        
-        function getDiscipline() 
         {
-          return $('#disciplineSelect option:selected')[0].dataset.id;
-        }
-        function sendSolution(evt)
-        {
-            var files = evt.target.files; // FileList object
-            var dataFile = new FormData();
-            for (var i = 0; i < files.length; i++) {
-                dataFile.append('uploadedSources', files[i]);
-            }
-            $.ajax(
-                {
-                    type: 'POST',
-                    url: '/api/Checks/Check',
-                    contentType: false,
-                    data: dataFile,
-                    processData: false,
-                    async: false,
-                    beforeSend: (xhr) =>
-                    {
-                        let field = evt.target.parentElement;
-                        field.innerHTML = "<b>Идёт обработка</b>";
-                        xhr.setRequestHeader("variantId", evt.target.dataset.id);
-                    },
-                    success: (result) =>
-                    {
-                        let tbdy = document.getElementById('tbodyContent');
-                        tbdy.innerHTML = ""; //Удалим все дочерние узлы
-                        CreateTable();
-                        alert(result);
-                    },
-                    error: (sendFail) =>
-                    {
-                        alert(sendFail.responseText);
-                        CreateTable();
-                    }
+            type: 'GET',
+            url: '/api/disciplines/getall',
+            async: false,
+            beforeSend: (xhr) => {
+            },
+            success: (disciplines) => {
+                let sel = $('#disciplineSelect');
+
+                if (disciplines.length === 0) {
+                    alert('Не назначена ни одна дисциплина');
+                    history.go(-1);
                 }
-            );
+                for (let discipline of disciplines) {
+                    let opt = document.createElement('option');
+                    opt.text = discipline.name;
+                    opt.dataset.id = discipline.cipher;
+                    sel.append(opt);
+                }
+            },
+            error: (awFail) => {
+                document.body.innerHTML = '';
+                alert('Нет доступа');
+                history.go(-1);
+            }
         }
-        function CreateTable() {
-            var disciplineId = getDiscipline();
-            
-            $.ajax(
-                          {
-                              type: 'GET',
-                              url: '/api/AssignedVariants/GetWorkVariants',
-                              contentType:  "application/json; charset=utf-8",
-                              dataType: "json",
-                              async: false,
-                              beforeSend: (xhr) => 
-                              {
-                                  xhr.setRequestHeader("disciplineId", disciplineId);
-                              },
-                              success: (result) =>
-                              {
-                                  let tbdy = document.getElementById('tbodyContent');
-                                  tbdy.innerHTML = ""; //Удалим все дочерние узлы
-                                  for(let task of result)
-                                  {
-                                      let tr = document.createElement('tr');
-                                      tbdy.appendChild(tr);
+    );
 
-                                      let tdNameLab = document.createElement('td');
-                                      tdNameLab.appendChild(document.createTextNode(task.name));
-                                      tr.appendChild(tdNameLab);
+    CreateTable();
 
-                                      let tdDescLab = document.createElement('td');
-                                      tdDescLab.appendChild(document.createTextNode(task.description));
-                                      tr.appendChild(tdDescLab);
-                                      
-                                      let evaText;
-                                      switch (task.evaluation) {
-                                         case 0:
-                                             evaText = "Строго"
-                                             break;
-                                         case 1:
-                                             evaText = "Не сторого"
-                                             break;
-                                         case 2:
-                                              evaText = "Со штрафом"
-                                              break;
-                                       }
-                                      let tdEvaluation = document.createElement('td');
-                                      tdEvaluation.appendChild(document.createTextNode(evaText));
-                                      tr.appendChild(tdEvaluation);
-                                      
-                                      let tdVariantNumber = document.createElement('td');
-                                      tdVariantNumber.appendChild(document.createTextNode(task.variantId));
-                                      tr.appendChild(tdVariantNumber);
-
-                                      let tdVariantDesc = document.createElement('td');
-                                      tdVariantDesc.appendChild(document.createTextNode(task.varDescription));
-                                      tr.appendChild(tdVariantDesc);
-
-                                      let tdSolution = document.createElement('td');
-                                      if (task.isSolved)
-                                      {
-                                          let counter = 0;
-                                          let allTest = task.testRuns.length;
-                                          for(let item of task.testRuns)
-                                          {
-                                              if(item.isCorrect)
-                                              {
-                                                  counter++;
-                                              }
-                                          }
-                                          tdSolution.appendChild(document.createTextNode("Задача решена" + "\nВсего решено " + counter + "/" + allTest + "\nОценка:" + task.mark * 100));
-                                      }
-                                      else
-                                      {
-                                          let buttonSend = document.createElement('input');
-                                          buttonSend.type = "file";
-                                          buttonSend.className = "files";
-                                          buttonSend.accept = ".cpp, .h, .c";
-                                          buttonSend.dataset.id = task.variantId;
-                                          buttonSend.multiple = true;
-                                          buttonSend.addEventListener('change', sendSolution, false);
-                                          buttonSend.className = "btn btn-primary edit-item";
-                                          tdSolution.appendChild(buttonSend);
-                                      }
-                                      tr.appendChild(tdSolution);
-                                  }
-                              },
-                              error: (awFail) =>
-                              {
-                                  document.body.innerHTML = '';
-                                  alert('Нет доступа');
-                                  history.go(-1);
-                              }
-                          }
-            );
+    function getDiscipline() {
+        return $('#disciplineSelect option:selected')[0].dataset.id;
+    }
+    function sendSolution(evt) {
+        var files = evt.target.files; // FileList object
+        var dataFile = new FormData();
+        for (var i = 0; i < files.length; i++) {
+            dataFile.append('uploadedSources', files[i]);
         }
-        
-        function ShowHelpWindow() {
-          window.open("UserInstruction.html", 'Инструкция по отправке решения', 'width=800,menubar=no, toolbar=no, location=no'); 
-        }
-        
+        $.ajax(
+            {
+                type: 'POST',
+                url: '/api/Checks/Check',
+                contentType: false,
+                data: dataFile,
+                processData: false,
+                async: false,
+                beforeSend: (xhr) => {
+                    let field = evt.target.parentElement;
+                    field.innerHTML = "<b>Идёт обработка</b>";
+                    xhr.setRequestHeader("variantId", evt.target.dataset.id);
+                },
+                success: (result) => {
+                    let tbdy = document.getElementById('tbodyContent');
+                    tbdy.innerHTML = ""; //Удалим все дочерние узлы
+                    CreateTable();
+                    alert(result);
+                },
+                error: (sendFail) => {
+                    alert(sendFail.responseText);
+                    CreateTable();
+                }
+            }
+        );
+    }
+    function CreateTable() {
+        var disciplineId = getDiscipline();
+
+        $.ajax(
+            {
+                type: 'GET',
+                url: '/api/AssignedVariants/GetWorkVariants',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                beforeSend: (xhr) => {
+                    xhr.setRequestHeader("disciplineId", disciplineId);
+                },
+                success: (result) => {
+                    let md = window.markdownit();
+                    md.use(math_plugin);
+                    let tbdy = document.getElementById('tbodyContent');
+                    tbdy.innerHTML = ""; //Удалим все дочерние узлы
+                    for (let task of result) {
+                        let tr = document.createElement('tr');
+                        tbdy.appendChild(tr);
+
+                        let tdNameLab = document.createElement('td');
+                        tdNameLab.appendChild(document.createTextNode(task.name));
+                        tr.appendChild(tdNameLab);
+
+                        let tdDescLab = document.createElement('td');
+                        tdDescLab.appendChild(document.createTextNode(task.description));
+                        tr.appendChild(tdDescLab);
+
+                        let evaText;
+                        switch (task.evaluation) {
+                            case 0:
+                                evaText = "Строго"
+                                break;
+                            case 1:
+                                evaText = "Не сторого"
+                                break;
+                            case 2:
+                                evaText = "Со штрафом"
+                                break;
+                        }
+                        let tdEvaluation = document.createElement('td');
+                        tdEvaluation.appendChild(document.createTextNode(evaText));
+                        tr.appendChild(tdEvaluation);
+
+                        let tdVariantNumber = document.createElement('td');
+                        tdVariantNumber.appendChild(document.createTextNode(task.variantId));
+                        tr.appendChild(tdVariantNumber);
+
+                        let tdVariantDesc = document.createElement('td');
+                        tdVariantDesc.innerHTML = md.render(task.varDescription);
+                        //tdVariantDesc.appendChild(document.createTextNode(md.render(task.varDescription)));
+                        tr.appendChild(tdVariantDesc);
+
+                        let tdSolution = document.createElement('td');
+                        if (task.isSolved) {
+                            let counter = 0;
+                            let allTest = task.testRuns.length;
+                            for (let item of task.testRuns) {
+                                if (item.isCorrect) {
+                                    counter++;
+                                }
+                            }
+                            tdSolution.appendChild(document.createTextNode("Задача решена" + "\nВсего решено " + counter + "/" + allTest + "\nОценка:" + task.mark * 100));
+                        }
+                        else {
+                            let buttonSend = document.createElement('input');
+                            buttonSend.type = "file";
+                            buttonSend.className = "files";
+                            buttonSend.accept = ".cpp, .h, .c";
+                            buttonSend.dataset.id = task.variantId;
+                            buttonSend.multiple = true;
+                            buttonSend.addEventListener('change', sendSolution, false);
+                            buttonSend.className = "btn btn-primary edit-item";
+                            tdSolution.appendChild(buttonSend);
+                        }
+                        tr.appendChild(tdSolution);
+                    }
+                },
+                error: (awFail) => {
+                    document.body.innerHTML = '';
+                    alert('Нет доступа');
+                    history.go(-1);
+                }
+            }
+        );
+    }
+
+    function ShowHelpWindow() {
+        window.open("UserInstruction.html", 'Инструкция по отправке решения', 'width=800,menubar=no, toolbar=no, location=no');
+    }
+
 </script>

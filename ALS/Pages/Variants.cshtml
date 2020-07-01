@@ -17,7 +17,7 @@
                 <td>Номер варианта</td>
                 <td>Описание</td>
                 @{/*<td>Ссылка на модель (эталонная программа)</td>
-                                        <td>Входные данные</td>*/}
+                                          <td>Входные данные</td>*/}
                 <td>Действие</td>
             </tr>
         </thead>
@@ -25,75 +25,87 @@
     </table>
 </div>
 
+
+
 <button class="btn btn-info btn-lg" type="button" data-toggle="modal" data-target="#myModal">Добавить вариант</button>
 <div id="myModal" class="modal fade">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Новый вариант</h4><button class="close" type="button" data-dismiss="modal">×</button>
-            </div>
-            <div class="modal-body">
-                @using (Html.BeginForm("Create", "Variants", FormMethod.Post))
-                {
-                    <!--
-        <p class="form-group hide row">
-            <label class="col-sm-2 col-form-label font-weight-bold">Лабораторная работа</label>
-            <select class="form-control col-sm-9" name="LaboratoryWorkId" id="newLaboratoryWork"></select>
-        </p>-->
-                    <p class="form-group row">
-                        <label class="col-sm-2 col-form-label font-weight-bold">Номер варианта</label>
-                        <input class="form-control col-sm-5" id="newNumber" name="Number" type="number" min="1" value="1" />
-                    </p>
-                    <div id="generationPart">
-                        <p class="form-group">
-                            <label class="col-form-label font-weight-bold">Описание варианта</label>
-                            @Html.TextArea("Description", "описание", new { @class = "form-control", id = "newDescription" })
+            <div id="myModalCreate">
+                <div class="modal-header">
+                    <h4 class="modal-title">Новый вариант</h4><button class="close" type="button" data-dismiss="modal">×</button>
+                </div>
+                <div class="modal-body">
+                    @using (Html.BeginForm("Create", "Variants", FormMethod.Post))
+                    {
+                        <!--
+            <p class="form-group hide row">
+                <label class="col-sm-2 col-form-label font-weight-bold">Лабораторная работа</label>
+                <select class="form-control col-sm-9" name="LaboratoryWorkId" id="newLaboratoryWork"></select>
+            </p>-->
+                        <p class="form-group row">
+                            <label class="col-sm-2 col-form-label font-weight-bold">Номер варианта</label>
+                            <input class="form-control col-sm-5" id="newNumber" name="Number" type="number" min="1" value="1" />
                         </p>
-                        <p class="form-group">
-                            <div id="crtUploadSolution" class="form-group">
-                                <label class="col-form-label font-weight-bold">Эталонное решение</label>
-                                <label class="hide" id="hiddenPathSolution"></label>
-                            </div>
-                        </p>
-                        <p class="form-group">
-                            <label class="col-form-label font-weight-bold">Входные данные</label>
-                            @Html.TextArea("InputData", "тест1[80] : #случайноеЦелое(10 , 200, 10);\n\rтест2 [20]: 1|2|3|4|5|6|7|8;", new { @class = "form-control", id = "newInputData" })
-                        </p>
-                    </div>
-                    <p>
-                        <label class="col-form-label font-weight-bold">Ограничения (JSON)</label>
-                        <table class="table table-bordered">
-                            <tr>
-                                <td>
-                                    <div class="form-group row">
-                                        <label id="memLabelCreate" class="col-sm-2 col-form-label font-weight-bold">Память - 4096000</label>
-                                        <input type="range" class="col-sm-10 form-control-range" id="memInputCreate" min="2096000" max="6096000" value="4096000" step="10000" />
-                                    </div>
+                        <div id="generationPart">
+                            <p class="form-group">
+                                <label class="col-form-label font-weight-bold">Описание варианта</label>
+                                @Html.TextArea("Description", "описание", new { @class = "form-control", id = "newDescription" })
+                            </p>
+                            <p class="form-group">
+                                <div id="crtUploadSolution" class="form-group">
+                                    <label class="col-form-label font-weight-bold">Эталонное решение</label>
+                                    <label class="hide" id="hiddenPathSolution"></label>
+                                </div>
+                            </p>
+                            <p class="form-group">
+                                <label class="col-form-label font-weight-bold">Входные данные</label>
+                                @Html.TextArea("InputData", "тест1[80] : #случайноеЦелое(10 , 200, 10);\n\rтест2 [20]: 1|2|3|4|5|6|7|8;", new { @class = "form-control", id = "newInputData" })
+                            </p>
+                        </div>
+                        <p>
+                            <label class="col-form-label font-weight-bold">Ограничения (JSON)</label>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <td>
+                                        <div class="form-group row">
+                                            <label id="memLabelCreate" class="col-sm-2 col-form-label font-weight-bold">Память - 4096000</label>
+                                            <input type="range" class="col-sm-10 form-control-range" id="memInputCreate" min="2096000" max="6096000" value="4096000" step="10000" />
+                                        </div>
 
-                                    <div class="form-group row">
-                                        <label id="timeLabelCreate" class="col-sm-2 col-form-label font-weight-bold">Время - 60000</label>
-                                        <input type="range" class="col-sm-10 form-control-range" id="timeInputCreate" min="10000" max="90000" value="60000" step="10000" />
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-sm-2 col-form-label font-weight-bold">Чекер</label>
-                                        @Html.DropDownList("Checker", new List<SelectListItem>(), new { @class = "form-control col-sm-9", @id = "sCheckerCreate" })
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-sm-2 col-form-label font-weight-bold">Подготовщик</label>
-                                        @Html.DropDownList("Preparer", new List<SelectListItem>(), new { @class = "form-control col-sm-9", @id = "sPreparerCreate" })
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-sm-2 col-form-label font-weight-bold">Финализатор</label>
-                                        @Html.DropDownList("Finaliter", new List<SelectListItem>(), new { @class = "form-control col-sm-9", @id = "sFinaliterCreate" })
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
-                    </p>
-                    <p><input type="button" class="btn btn-dark" value="Отправить" onclick="createVariant()" /></p>
-                }
+                                        <div class="form-group row">
+                                            <label id="timeLabelCreate" class="col-sm-2 col-form-label font-weight-bold">Время - 60000</label>
+                                            <input type="range" class="col-sm-10 form-control-range" id="timeInputCreate" min="10000" max="90000" value="60000" step="10000" />
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label font-weight-bold">Чекер</label>
+                                            @Html.DropDownList("Checker", new List<SelectListItem>(), new { @class = "form-control col-sm-9", @id = "sCheckerCreate" })
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label font-weight-bold">Подготовщик</label>
+                                            @Html.DropDownList("Preparer", new List<SelectListItem>(), new { @class = "form-control col-sm-9", @id = "sPreparerCreate" })
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label font-weight-bold">Финализатор</label>
+                                            @Html.DropDownList("Finaliter", new List<SelectListItem>(), new { @class = "form-control col-sm-9", @id = "sFinaliterCreate" })
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </p>
+                        <p><input type="button" class="btn btn-dark" value="Отправить" onclick="createVariant()" /></p>
+                    }
+                </div>
             </div>
             <div class="modal-footer"><button class="btn btn-default" type="button" data-dismiss="modal">Закрыть</button></div>
+        </div>
+        <div class="gooey">
+            <span class="dot"></span>
+            <div class="dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </div>
     </div>
 </div>
@@ -108,10 +120,10 @@
                 @using (Html.BeginForm("Update", "Variants", FormMethod.Post))
                 {
                     <!--
-        <p class="form-group row">
-            <label class="col-sm-2 col-form-label font-weight-bold">Лабораторная работа</label>
-            <select class="form-control col-sm-9" name="LaboratoryWorkId" id="EditLaboratoryWork"></select>
-        </p>-->
+                    <p class="form-group row">
+                        <label class="col-sm-2 col-form-label font-weight-bold">Лабораторная работа</label>
+                        <select class="form-control col-sm-9" name="LaboratoryWorkId" id="EditLaboratoryWork"></select>
+                    </p>-->
                     <p class="form-group row">
                         <label class="col-sm-2 col-form-label font-weight-bold">Номер варианта</label>
                         <input class="form-control col-sm-5" id="EditNumber" name="Number" type="number" min="1" value="1" />
@@ -176,6 +188,7 @@
 <script src="~/lib/KaTeX/katex.min.js"></script>
 <script src="~/lib/markdown-it-katex/markdown-it-katex.js"></script>
 <link rel="stylesheet" href="~/lib/KaTeX/katex.min.css">
+<link href="~/loading.css" rel="stylesheet" />
 <script>
 
     $.ajax(
@@ -194,6 +207,7 @@
                 }
                 Init();
                 selectSort.addEventListener("change", Init);
+                $(".gooey").hide();
             },
             error: (labFail) => {
                 console.log(labFail);
@@ -211,7 +225,6 @@
             {
                 type: 'GET',
                 url: '/api/variants/GetAllByLaboratoryId',
-                //url: '/api/variants/GetAll',
                 beforeSend: (xhr) => {
                     xhr.setRequestHeader("laboratoryWorkId", laboratorywokid);
                 },
@@ -220,16 +233,14 @@
                     md.use(math_plugin);
                     $("#tbodyContent").empty();
                     let tbdy = document.getElementById('tbodyContent');
-                    //tbdy.innerHTML = "";
                     for (let variant of variants) {
                         let tr = document.createElement('tr');
                         variant.rawDescription = variant['description'];
-                        //let rawDescription = variant['description'];
                         for (let prop in variant) {
                             if (prop !== 'variantId' && prop !== 'laboratoryWorkId') {
                                 let td = document.createElement('td');
                                 if (variant[prop] != null) {
-                                    if (prop === 'description') td.innerHTML = md.render(variant[prop]);// + katex.renderToString("");
+                                    if (prop === 'description') td.innerHTML = md.render(variant[prop]);
                                     else td.appendChild(document.createTextNode(variant[prop]));
                                 }
                                 if (prop === 'name')
@@ -249,7 +260,7 @@
                         tbdy.appendChild(tr);
                     }
                     updateConstrains2();
-                    if (firstInit) { // обновляет ограничения в соответствии с ЛР и убирает поля которые будут перезаписаны генератором
+                    if (firstInit) {
                         addSelectItems('checker', 'sCheckerCreate', false);
                         addSelectItems('checker', 'sCheckerEdit', false);
                         addSelectItems('preparer', 'sPreparerCreate', true);
@@ -260,7 +271,7 @@
                         createFileUpload("crtUploadSolution", uploadSolution);
                         createFileUpload("updUploadSolution", updateSolution);
                         firstInit = false;
-                    }                    
+                    }
                 },
                 error: (varFail) => {
                     document.body.innerHTML = '';
@@ -269,39 +280,7 @@
                 }
             }
         );
-        /*if (firstInitThemes) {
-            $.ajax(
-                {
-                    type: 'GET',
-                    url: '/api/laboratoryworks/getall',
-                    beforeSend: (xhr) => {
-                    },
-                    success: (lws) => {
-                        let selects = [
-                            document.getElementById('newLaboratoryWork'),
-                            document.getElementById('EditLaboratoryWork')
-                        ];
-                        for (let lw of lws) {
-                            let opt = document.createElement('option');
-                            opt.dataset.id = lw.laboratoryWorkId;
-                            opt.innerText = lw.name;
-                            for (let x of selects)
-                                x.appendChild(opt.cloneNode(true));
-                        }
-                    },
-                    error: (labFail) => {
-                        console.log(labFail);
-                        document.body.innerHTML = '';
-                        alert('Нет доступа');
-                        history.go(-1);
-                    }
-                }
-            );
-            firstInitThemes = false;
-        }*/
-        
     }
-    
 
     function checkAndSendSolution(file, varid, lwid, fSuccess) {
         $.ajax(
@@ -524,19 +503,24 @@
                 dataType: "json",
                 data: JSON.stringify(variant),
                 beforeSend: (xhr) => {
+                    $("#myModalCreate").animate({ opacity: 0 });//.fadeOut(500);
+                    $(".gooey").show();
                 },
                 success: (response) => {
                     document.location.reload(true);
                 },
                 error: (request) => {
-                    console.log(request.responseText);
                     let err = 'Не удалось добавить вариант';
                     if (request.responseText != undefined)
                         err += `: ${request.responseText}`;
+                    console.log(err);
                     alert(err);
                 }
             }
-        );
+        ).always(() => {
+            $("#myModalCreate").animate({ opacity: 100 });;
+            $(".gooey").hide();
+        });
     }
     function removeVariant(variantId) {
         if (confirm("Вы точно хотите удалить этот вариант?")) {
