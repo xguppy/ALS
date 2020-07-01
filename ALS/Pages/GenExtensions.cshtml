@@ -16,7 +16,10 @@
         {
             <tr>
                 <td>@item.GenExtensionId</td>
-                <td>@item.Extension.Substring(item.Extension.LastIndexOf("genExtensions"))</td>
+                <td>@{
+                    var p = item.Extension.Substring(item.Extension.LastIndexOf("genExtensions"));
+                    p = p.Remove(p.Length - 4);
+                    }@p</td>
                 <td>
                     <input type="button" id="buttonUpdate" class="btn btn-primary edit-item" value="Редактировать" onclick="updateExt(@item.GenExtensionId, '@item.Extension' )" />
                     <input type="button" id="buttonDelete" class="btn btn-danger remove-item" value="Удалить" onclick="deleteExt(@item.GenExtensionId)" />

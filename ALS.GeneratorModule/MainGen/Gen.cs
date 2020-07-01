@@ -22,6 +22,7 @@ namespace Generator.MainGen
         private Services _services = new Services();
         private const char _matchChar = '@';
         private readonly string _fextension;
+        private const double _defaultWeight = 20.0;
         public Gen()
         {
             // инициализация стандартных настроек
@@ -196,14 +197,14 @@ namespace Generator.MainGen
         private double GetWeigth(string weigth)
         {
             weigth = weigth.Replace('.', ',');
-            double res = 20.0;
+            double res = _defaultWeight;
             if (!double.TryParse(weigth, out res))
             {
                 if (int.TryParse(weigth, out int tmp))
                     res = tmp;
             }
             if (res < 1.0e-12)
-                res = 20.0;
+                res = _defaultWeight;
             return res;
         }
 
