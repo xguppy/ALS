@@ -87,6 +87,7 @@ namespace ALS.Controllers
                     //Прогоним по тестам
                     List<ResultRun> resultTests;
                     string[] testNames;
+                    double[] weights;
                     try
                     {
                         //Получим входные данные для задачи
@@ -97,6 +98,7 @@ namespace ALS.Controllers
                         // test [30] : #случайноеЦелое(10,20,10) | n;
                         var testData = gen.GetTestsFromJson(assignedVar.Variant.InputDataRuns);
                         testNames = testData.Select(td => td.Name).ToArray();
+                        weights = testData.Select(td => td.Weight).ToArray();
                         //Получим ограничения лабы
                         var constrainsLab = JsonConvert.DeserializeObject<Constrains>(
                             assignedVar.Variant.LaboratoryWork.Constraints,
@@ -145,8 +147,7 @@ namespace ALS.Controllers
                     }
 
                     var countCompleteTest = resultTests.Count(rt => rt.IsCorrect);
-                    var currMark = assignedVar.Mark;
-                    solution.IsSolved = Rate(evaluation, countCompleteTest, resultTests.Count, ref currMark);
+                    solution.IsSolved = Rate(evaluation, resultTests, weights,  out var currMark);
                     assignedVar.Mark = currMark;
                     await _db.SaveChangesAsync();
                     //Выведем количество верных тестовых прогонов и комментарии к ним
@@ -229,19 +230,31 @@ namespace ALS.Controllers
             return testsLog.ToString();
         }
         
-        private static bool Rate(Evaluation evaluation, int testComplete, int sumTest, ref double currentMark)
+        private static bool Rate(Evaluation evaluation, List<ResultRun> results, double[] weights, out double mark)
         {
+            var sumTest = results.Count;
+            var testComplete = results.Count(res => res.IsCorrect);
             switch (evaluation)
             {
                 case Evaluation.Strict:
-                    currentMark = sumTest == testComplete ? 1 : 0;
-                    return Math.Abs(currentMark - 1) < 0.0001;
+                    mark = sumTest == testComplete ? 1 : 0;
+                    return Math.Abs(mark - 1) < 0.0001;
                 case Evaluation.NotStrict:
-                    currentMark = Convert.ToDouble(testComplete) / sumTest;
+                    mark = Convert.ToDouble(testComplete) / sumTest;
                     return IsSolved(testComplete, sumTest);
                 case Evaluation.Penalty:
-                    currentMark -= Convert.ToDouble(testComplete) / sumTest;
-                    return IsSolved(testComplete, sumTest);
+                    var sumOfWeights = weights.Sum();
+                    int numOfTest = 0;
+                    mark = 1.0d;
+                    foreach (var weight in weights)
+                    {
+                        if (!results[numOfTest].IsCorrect)
+                        {
+                            mark -= weight / sumOfWeights;
+                        }
+                        numOfTest++;
+                    }
+                    return mark >= 0.70;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(evaluation), evaluation, "Выбранная стратегия оценивания отсутствует");
             }
