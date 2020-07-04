@@ -3,4 +3,6 @@ ALS is a unique, learning environment for schoolchildren and technical students 
 ## How to build
 ALS is targeting netcoreapp 3.1 and postgres 10.7+
 ## In planning
-* Code rating system (only penalty)
+* Implementation
+* Work with an IDE
+
