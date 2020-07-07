@@ -1,0 +1,171 @@
+@page
+@model ALS.Pages.UserAdmin
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Студенты";
+}
+
+<h3>Студенты </h3>
+<p class="form-group row">
+        <label class="col-sm-3 col-form-label font-weight-bold">Группа</label>
+        <select class="col-sm-9 form-control" name="getByGroup" id="getByGroup"></select>
+    </p>
+<div class="container">
+    <table style="width: 100%" class="table table-hover" border="1">
+        <thead>
+        <tr>
+        <td>Почта</td>
+        <td>Имя</td>    
+        <td>Фамилия</td>
+        <td>Отчество</td>
+        <td>Действия</td>
+        </thead>
+        <tbody id="tbodyContent">
+    </table>
+</div>
+<button class="btn btn-info btn-lg" type="button" data-toggle="modal" data-target="#myModal">Добавить студента</button>
+
+
+<div id="myModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header"><h4 class="modal-title">Новый пользователь</h4><button class="close" type="button" data-dismiss="modal">×</button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("Register", "Users", FormMethod.Post))
+                {
+                    @Html.Label("Электронная почта:\t")
+                    @Html.TextBox("Email", null, new {id = "newName"})
+                    @Html.Label("Год начала обучения:\t")
+                    @Html.TextBox("Year", null, new {id = "newYear"})
+                    @Html.Label("Специальность:\t")
+                    @Html.DropDownList("SpecialityId", Model.Specialities, new {id = "newSpecialityId"})
+                    <p><input type="button" class="btn btn-dark" value="Отправить" onclick="createGroup()" /></p>
+                }
+            </div>
+            <div class="modal-footer"><button class="btn btn-default" type="button" data-dismiss="modal">Закрыть</button></div>
+        </div>
+    </div>
+</div>
+
+<div id="edit" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header"><h4 class="modal-title">Редактирование группы</h4><button class="close" type="button" data-dismiss="modal">×</button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("Update", "Groups", FormMethod.Post))
+                {
+                    @Html.Label("Наименование группы:\t")
+                    @Html.TextBox("Name", null, new {id = "EditName"})
+                    @Html.Label("Год начала обучения:\t")
+                    @Html.TextBox("Year", null, new {id = "EditYear"})
+                    @Html.Label("Специальность:\t")
+                    @Html.DropDownList("SpecialityId", Model.Specialities, new {id = "EditSpecialityId"})
+                    @Html.Hidden("groupId", null, new {id = "EditGroupId"});
+                    <p><input type="button" class="btn btn-dark" value="Отправить" onclick="editGroup()" /></p>
+                }
+            </div>
+            <div class="modal-footer"><button class="btn btn-default" type="button" data-dismiss="modal">Закрыть</button></div>
+        </div>
+    </div>
+</div>
+
+<div id="resetPwd" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header"><h4 class="modal-title">Редактирование группы</h4><button class="close" type="button" data-dismiss="modal">×</button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("Update", "Groups", FormMethod.Post))
+                {
+                    @Html.Label("Новый пароль:\t")
+                    @Html.TextBox("Name", null, new {id = "EditName"})
+                    @Html.Label("Год начала обучения:\t")
+                    @Html.TextBox("Year", null, new {id = "EditYear"})
+                    @Html.Label("Специальность:\t")
+                    @Html.DropDownList("SpecialityId", Model.Specialities, new {id = "EditSpecialityId"})
+                    @Html.Hidden("groupId", null, new {id = "EditGroupId"});
+                    <p><input type="button" class="btn btn-dark" value="Отправить" onclick="editGroup()" /></p>
+                }
+            </div>
+            <div class="modal-footer"><button class="btn btn-default" type="button" data-dismiss="modal">Закрыть</button></div>
+        </div>
+    </div>
+</div>
+
+<script>
+$.ajax(
+        {
+            type: 'GET',
+            url: '/api/groups/getall',
+            beforeSend: (xhr) => {
+            },
+            success: (groups) => {
+                let selectSort = document.getElementById('getByGroup');
+                for (let group of groups) {
+                    let opt = document.createElement('option');
+                    opt.dataset.id = group.groupId;
+                    opt.innerText = group.name;
+                    selectSort.appendChild(opt);
+                }
+                Init();
+                selectSort.addEventListener("change", Init);
+            },
+            error: (groupsFail) => {
+                document.body.innerHTML = '';
+                alert('Нет доступа');
+                history.go(-1);
+            }
+        }
+    );
+
+
+function Init() {
+    let groupId = $('#getByGroup option:selected')[0].dataset.id
+    let table = document.getElementById('tbodyContent');
+    table.innerHTML = '';
+    $.ajax(
+                {
+                    type: 'GET',
+                    url: '/api/users/GetUsersByGroup',
+                    beforeSend: (xhr) => {
+                        xhr.setRequestHeader("groupId", groupId);
+                    },
+                    success: (users) => {
+                        for(let user of users)
+                        {
+                            let tr = document.createElement('tr');
+                            table.appendChild(tr);
+                            let tdUserEmail = document.createElement('td');
+                            tdUserEmail.innerText = user.email;
+                            tdUserEmail.dataset.id = user.id;
+                            tr.appendChild(tdUserEmail);
+                            let tdUserName = document.createElement('td');
+                            tdUserName.innerText = user.name;
+                            tr.appendChild(tdUserName);
+                            let tdUserSurname = document.createElement('td');
+                            tdUserSurname.innerText = user.surname;
+                            tr.appendChild(tdUserSurname);
+                            let tdUserPatronymic = document.createElement('td');
+                            tdUserPatronymic.innerText = user.patronymic;
+                            tr.appendChild(tdUserPatronymic);
+                            tdUserActions = document.createElement('td');
+                            tdUserActions.innerHTML = '<button style="margin-right: 5%" data-toggle="modal" onclick="editPrepareVariant(this)" data-target="#edit" class="btn btn-primary edit-item">Редактировать</button>' +
+                                                        '<button style="margin-right: 5%" data-toggle="modal" onclick="editPrepareVariant(this)" data-target="#edit" class="btn btn-primary edit-item">Сбросить пароль</button>'
+                                                        '<button onclick="removeUser(' + variant.variantId + ')" class="btn btn-danger remove-item">Удалить</button>';
+                        }
+                    },
+                    error: (usersFail) => {
+                        document.body.innerHTML = '';
+                        alert('Нет доступа');
+                        history.go(-1);
+                    }
+                }
+            );
+}
+
+
+
+</script>

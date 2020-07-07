@@ -68,10 +68,12 @@ namespace ALS.Controllers
         public async Task Register([FromBody] UserRegisterDTO model)
         {
             var appUser = new User { Email = model.Email, Name = model.Name, Surname = model.Surname, Patronymic = model.Patronymic, PwHash = _authService.GetHashedPassword(model.Password), GroupId = model.GroupId };
-
+            
             try
             {
                 await _db.Users.AddAsync(appUser);
+                var roleUsr = await _db.Roles.FirstOrDefaultAsync(role => role.RoleName == model.Role);
+                await _db.UserRoles.AddAsync(new UserRole {Role = roleUsr, User = appUser});
                 await _db.SaveChangesAsync();
                 await SendIdentityResponse(model.Email, appUser);
             }
@@ -88,10 +90,46 @@ namespace ALS.Controllers
             if (await _db.Groups.Include(group => group.Users).FirstOrDefaultAsync(group => group.GroupId == groupId) !=
                 null)
             {
-                return Ok(_db.Users.Where(user => user.GroupId == groupId).Select(user => new {user.Id, user.Name, user.Surname, user.Patronymic}));
+                return Ok(_db.Users.Where(user => user.GroupId == groupId).Select(user => new {user.Email, user.Id, user.Name, user.Surname, user.Patronymic}));
             }
 
             return BadRequest("Пользователи в группе отсутствуют");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAdminUsers()
+            => Ok(await Task.Run(() => _db.Users.Where(user => user.UserRoles.Any(ur => ur.Role.RoleName == RoleEnum.Admin)).Select(user => new {user.Email, user.Id, user.Name, user.Surname, user.Patronymic})));
+        
+        [HttpGet]
+        public async Task<IActionResult> GetTeachersUsers()
+            => Ok(await Task.Run(() => _db.Users.Where(user => user.UserRoles.Any(ur => ur.Role.RoleName == RoleEnum.Teacher)).Select(user => new {user.Email, user.Id, user.Name, user.Surname, user.Patronymic})));
+
+        [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+        public async Task<IActionResult> ResetPassword(int userId, string password)
+        {
+            var usr = await _db.Users.FirstOrDefaultAsync(user => user.Id == userId);
+            usr.PwHash = _authService.GetHashedPassword(password);
+            _db.Users.Update(usr);
+            await _db.SaveChangesAsync();
+            return Ok(userId);
+        }
+
+        [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+        public async Task<IActionResult> DeleteUser(int userId)
+        {
+            var usr = await _db.Users.Include(user => user.UserRoles).FirstOrDefaultAsync(user => user.Id == userId);
+            try
+            {
+                _db.Users.Remove(usr);
+                await _db.SaveChangesAsync();
+                return Ok(userId);
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Есть зависимые сущности");
+            }
         }
     }
 }

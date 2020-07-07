@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using ALS.EntityСontext;
 
 namespace ALS.DTO
 {
@@ -20,5 +21,7 @@ namespace ALS.DTO
         public string Patronymic { get; set; }
 
         public int? GroupId { get; set; } = null;
+        
+        public RoleEnum Role { get; set; }
     }
 }

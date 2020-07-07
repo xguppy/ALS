@@ -1,0 +1,23 @@
+@page
+@model ALS.Pages.Plans
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Рабочий план";
+}
+
+<h3>Рабочий план </h3>
+<div class="container">
+    <table style="width: 100%" class="table table-hover" border="1">
+        <thead>
+        <tr>
+        <td>Дисциплина</td>
+        <td>Имя преподавателя</td>    
+        <td>Фамилия преподавателя</td>
+        <td>Отчество преподавателя</td>
+        <td>Группа</td>
+        </thead>
+        <tbody id="tbodyContent">
+    </table>
+</div>
+<button class="btn btn-info btn-lg" type="button" data-toggle="modal" data-target="#myModal">Добавить элемент плана</button>
