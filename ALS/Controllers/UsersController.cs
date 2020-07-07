@@ -105,7 +105,7 @@ namespace ALS.Controllers
             => Ok(await Task.Run(() => _db.Users.Where(user => user.UserRoles.Any(ur => ur.Role.RoleName == RoleEnum.Teacher)).Select(user => new {user.Email, user.Id, user.Name, user.Surname, user.Patronymic})));
 
         [HttpPost]
-        public async Task<IActionResult> EditUser([FromHeader] int userId, [FromHeader] UserRegisterDTO model)
+        public async Task<IActionResult> EditUser([FromHeader] int userId, [FromBody] UserEditDTO model)
         {
             var usr = _db.Users.FirstOrDefault(user => user.Id == userId);
 
@@ -146,7 +146,7 @@ namespace ALS.Controllers
                 await _db.SaveChangesAsync();
                 return Ok(userId);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return BadRequest("Есть зависимые сущности");
             }

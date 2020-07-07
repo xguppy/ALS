@@ -15,12 +15,100 @@
         <td>Имя</td>    
         <td>Фамилия</td>
         <td>Отчество</td>
+        <td>Действия</td>
         </thead>
         <tbody id="tbodyContent">
     </table>
 </div>
 <button class="btn btn-info btn-lg" type="button" data-toggle="modal" data-target="#myModal">Добавить преподавателя</button>
+
+<div id="myModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header"><h4 class="modal-title">Новый пользователь</h4><button class="close" type="button" data-dismiss="modal">×</button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("Register", "Users", FormMethod.Post))
+                {
+                    @Html.Label("Электронная почта:\t")
+                    @Html.TextBox("Email", null, new {id = "newEmail"})
+                    <br/>
+                    @Html.Label("Имя:\t")
+                    @Html.TextBox("Name", null, new {id = "newName"})
+                    <br/>
+                    @Html.Label("Фамилия:\t")
+                    @Html.TextBox("Surname", null, new {id = "newSurname"})
+                    <br/>
+                    @Html.Label("Отчётсво:\t")
+                    @Html.TextBox("Patronymic", null, new {id = "newPatronymic"})
+                    <br/>
+                    @Html.Label("Пароль:\t")
+                    @Html.TextBox("Password", null, new {id = "newPassword", type = "password"})
+                    <br/>
+                    @Html.Label("Повторите пароль:\t")
+                    @Html.TextBox("RepeatePassword", null, new {id = "newRepeatePassword", type = "password"})
+                    <p><input type="button" class="btn btn-dark" value="Отправить" onclick="createUser()" /></p>
+                }
+            </div>
+            <div class="modal-footer"><button class="btn btn-default" type="button" data-dismiss="modal">Закрыть</button></div>
+        </div>
+    </div>
+</div>
+
+<div id="edit" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header"><h4 class="modal-title">Редактирование пользователя</h4><button class="close" type="button" data-dismiss="modal">×</button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("EditUser", "Users", FormMethod.Post))
+                {
+                    @Html.Label("Электронная почта:\t")
+                    @Html.TextBox("Email", null, new {id = "editEmail"})
+                    <br/>
+                    @Html.Label("Имя:\t")
+                    @Html.TextBox("Name", null, new {id = "editName"})
+                    <br/>
+                    @Html.Label("Фамилия:\t")
+                    @Html.TextBox("Surname", null, new {id = "editSurname"})
+                    <br/>
+                    @Html.Label("Отчётсво:\t")
+                    @Html.TextBox("Patronymic", null, new {id = "editPatronymic"})
+                    @Html.Hidden("userId", null, new {id = "editUserId"});
+                    <p><input type="button" class="btn btn-dark" value="Отправить" onclick="editUser()" /></p>
+                }
+            </div>
+            <div class="modal-footer"><button class="btn btn-default" type="button" data-dismiss="modal">Закрыть</button></div>
+        </div>
+    </div>
+</div>
+
+<div id="resetPwd" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header"><h4 class="modal-title">Сброс пароля</h4><button class="close" type="button" data-dismiss="modal">×</button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("ResetPassword", "Users", FormMethod.Post))
+                {
+                    @Html.Label("Пароль:\t")
+                    @Html.TextBox("Password", null, new {id = "resetPassword", type = "password"})
+                    <br/>
+                    @Html.Label("Повторите пароль:\t")
+                    @Html.TextBox("RepeatePassword", null, new {id = "resetRepeatePassword", type = "password"})
+                    @Html.Hidden("userId", null, new {id = "resetPwdUserId"});
+                    <p><input type="button" class="btn btn-dark" value="Отправить" onclick="resetPasswordFun()" /></p>
+                }
+            </div>
+            <div class="modal-footer"><button class="btn btn-default" type="button" data-dismiss="modal">Закрыть</button></div>
+        </div>
+    </div>
+</div>
+
 <script>
+Init();
+
+function Init() {
     let table = document.getElementById('tbodyContent');
     table.innerHTML = '';
     $.ajax(
@@ -47,10 +135,11 @@
                             let tdUserPatronymic = document.createElement('td');
                             tdUserPatronymic.innerText = user.patronymic;
                             tr.appendChild(tdUserPatronymic);
-                            tdUserActions = document.createElement('td');
-                            tdUserActions.innerHTML = '<button style="margin-right: 5%" data-toggle="modal" onclick="editPrepareVariant(this)" data-target="#edit" class="btn btn-primary edit-item">Редактировать</button>' +
-                                                        '<button style="margin-right: 5%" data-toggle="modal" onclick="editPrepareVariant(this)" data-target="#edit" class="btn btn-primary edit-item">Сбросить пароль</button>' + 
-                                                        '<button onclick="removeUser(' + variant.variantId + ')" class="btn btn-danger remove-item">Удалить</button>';
+                            let tdUserActions = document.createElement('td');
+                            tdUserActions.innerHTML = '<button style="margin-right: 5%" data-toggle="modal" onclick="editPrepareUser(this)" data-target="#edit" class="btn btn-primary edit-item">Редактировать</button>' +
+                                                        '<button style="margin-right: 5%" data-toggle="modal" onclick="prepareResetPwd(' + user.id + ')" data-target="#resetPwd" class="btn btn-primary edit-item">Сбросить пароль</button>' +
+                                                        '<button onclick="removeUser(' + user.id + ')" class="btn btn-danger remove-item">Удалить</button>';
+                            tr.appendChild(tdUserActions);
                         }
                     },
                     error: (usersFail) => {
@@ -60,5 +149,157 @@
                     }
                 }
             );
+}
+
+function prepareResetPwd(id) {
+  $("#resetPwd").find("input[type='hidden']").val(id);
+}
+
+
+function resetPasswordFun() {
+      let password = $('#resetPassword').val();
+      let repeatePassword = $('#resetRepeatePassword').val();
+      if(password !== repeatePassword)
+      {
+          alert("Пароли не совпадают");
+          return;
+      }
+      
+      $.ajax(
+            {
+                type: 'POST',
+                url: '/api/users/resetpassword',
+                beforeSend: (xhr) =>
+                {
+                    xhr.setRequestHeader('userId', $('#resetPwdUserId').val());
+                    xhr.setRequestHeader('password', password);
+                },
+                success: (g) =>
+                {
+                    $('#resetPwd').modal('hide');
+                    alert("Пароль успешно изменён");
+                },
+                error: (response) =>
+                {
+                    alert('Не удалось обновить пароль пользователя');
+                }
+            }
+          );
+}
+
+function editPrepareUser(obj) {
+                let id = $(obj).parent("td").prev("td").prev("td").prev("td").prev("td").data('id');
+            
+                let email = $(obj).parent("td").prev("td").prev("td").prev("td").prev("td").text();
+                
+                let name = $(obj).parent("td").prev("td").prev("td").prev("td").text();
+                
+                let surname = $(obj).parent("td").prev("td").prev("td").text();
+                
+                let patronymic = $(obj).parent("td").prev("td").text();
+                
+                
+                $("#edit").find("input[id='editEmail']").val(email);
+                $("#edit").find("input[id='editName']").val(name);
+                $("#edit").find("input[id='editSurname']").val(surname);
+                $("#edit").find("input[id='editPatronymic']").val(patronymic);
+                $("#edit").find("input[type='hidden']").val(id);
+      }
+      
+      
+      function createUser() {
+          let password = $('#newPassword').val();
+          let repeatePassword = $('#newRepeatePassword').val();
+          if(password !== repeatePassword)
+          {
+              alert("Пароли не совпадают");
+              return;
+          }
+          let user = {
+                                     Email: $('#newEmail').val(),
+                                     Name: $('#newName').val(),
+                                     Surname: $('#newSurname').val(),
+                                     Patronymic: $('#newSurname').val(),
+                                     Password: $('#newPassword').val(),
+                                     GroupId: null,
+                                     Role: 1
+                                     };
+                        $.ajax(
+                            {
+                                type: 'POST',
+                                url: '/api/users/register',
+                                contentType:  "application/json; charset=utf-8",
+                                dataType: "json",
+                                data: JSON.stringify(user),
+                                beforeSend: (xhr) =>
+                                {
+                                },
+                                success: (g) =>
+                                {
+                                    $('#myModal').modal('hide');
+                                    Init();
+                                },
+                                error: (response) =>
+                                {
+                                    alert('Не удалось добавить пользователя');
+                                }
+                            }
+                          );
+      }
+      
+      function editUser() {
+                  let user = {
+                                                 Email: $('#editEmail').val(),
+                                                 Name: $('#editName').val(),
+                                                 Surname: $('#editSurname').val(),
+                                                 Patronymic: $('#editPatronymic').val()
+                                                 };
+                  $.ajax(
+                                        {
+                                            type: 'POST',
+                                            url: '/api/users/edituser',
+                                            contentType:  "application/json; charset=utf-8",
+                                            dataType: "json",
+                                            data: JSON.stringify(user),
+                                            beforeSend: (xhr) =>
+                                            {
+                                                xhr.setRequestHeader('userId', $('#editUserId').val());
+                                            },
+                                            success: (g) =>
+                                            {
+                                                $('#edit').modal('hide');
+                                                Init();
+                                            },
+                                            error: (response) =>
+                                            {
+                                                alert('Не удалось обновить пользователя');
+                                            }
+                                        }
+                                      );
+      }
+      
+      function removeUser(userId) {
+        if(confirm("Вы действительно хотите удалить этого пользователя?"))
+         {
+             $.ajax(
+                         {
+                             type: 'POST',
+                             url: '/api/users/deleteuser',
+                             beforeSend: (xhr) =>
+                             {
+                                 xhr.setRequestHeader('userId', userId);
+                             },
+                             success: (g) =>
+                             {
+                                 Init();
+                             },
+                             error: (response) =>
+                             {
+                                 alert('Не удалось удалить пользователя');
+                             }
+                         }
+                       );
+         }
+      }
 
 </script>
