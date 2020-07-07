@@ -105,8 +105,28 @@ namespace ALS.Controllers
             => Ok(await Task.Run(() => _db.Users.Where(user => user.UserRoles.Any(ur => ur.Role.RoleName == RoleEnum.Teacher)).Select(user => new {user.Email, user.Id, user.Name, user.Surname, user.Patronymic})));
 
         [HttpPost]
+        public async Task<IActionResult> EditUser([FromHeader] int userId, [FromHeader] UserRegisterDTO model)
+        {
+            var usr = _db.Users.FirstOrDefault(user => user.Id == userId);
+
+            if (usr == null)
+            {
+                return BadRequest("Пользователь не найден");
+            }
+
+            usr.Email = model.Email;
+            usr.Name = model.Name;
+            usr.Surname = model.Surname;
+            usr.Patronymic = model.Patronymic;
+
+            _db.Users.Update(usr);
+            await _db.SaveChangesAsync();
+            return Ok(usr);
+        }
+
+        [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
-        public async Task<IActionResult> ResetPassword(int userId, string password)
+        public async Task<IActionResult> ResetPassword([FromHeader] int userId, [FromHeader] string password)
         {
             var usr = await _db.Users.FirstOrDefaultAsync(user => user.Id == userId);
             usr.PwHash = _authService.GetHashedPassword(password);
@@ -117,7 +137,7 @@ namespace ALS.Controllers
 
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
-        public async Task<IActionResult> DeleteUser(int userId)
+        public async Task<IActionResult> DeleteUser([FromHeader] int userId)
         {
             var usr = await _db.Users.Include(user => user.UserRoles).FirstOrDefaultAsync(user => user.Id == userId);
             try
